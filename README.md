@@ -1,2 +1,2 @@
-# mssivimss-vehiculos
-CU040_ProgramarMantenimientoVehicular_SIVIMSS
+# mssivimss-arquetipo
+Arquetipo_SIVIMSS
