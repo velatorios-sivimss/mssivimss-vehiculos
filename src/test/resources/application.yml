@@ -1,7 +1,6 @@
 server:
-  port: 9091
   servlet:
-    contextPath: /mssivimss-vehiculos
+    contextPath: /mssivimss-arquetipo
 spring:
   mvc:
     pathmatch:
@@ -26,10 +25,10 @@ logos:
   msit_logo_sistema: /sivimss_data/LOGOS/logoSistema.png
 
 endpoints:
-   dominio-consulta: http://localhost:8090/mssivimss-mod-catalogos/generico/consulta
-   dominio-consulta-paginado: http://localhost:8090/mssivimss-mod-catalogos/generico/paginado
-   dominio-crear: http://localhost:8090/mssivimss-mod-catalogos/generico/crear
-   dominio-actualizar: http://localhost:8090/mssivimss-mod-catalogos/generico/actualizar
+   dominio-consulta: http://localhost:1080/mssivimss-mod-catalogos/generico/consulta
+   dominio-consulta-paginado: http://localhost:1080/mssivimss-mod-catalogos/generico/paginado
+   dominio-crear: http://localhost:1080/mssivimss-mod-catalogos/generico/crear
+   dominio-actualizar: http://localhost:1080/mssivimss-mod-catalogos/generico/actualizar
 
 jwt:
   secretkey-flujo: funcionamuybien
