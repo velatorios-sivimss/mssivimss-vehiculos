@@ -21,12 +21,16 @@ public class Solicitud {
         final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_SOLICITUD");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getIdMttoVehicular().toString());
+        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getSolicitud().getIdMttoVehicular().toString());
         q.agregarParametroValues("ID_MTTO_TIPO", request.getSolicitud().getIdMttoTipo().toString());
         q.agregarParametroValues("ID_MTTOMODALIDAD", request.getSolicitud().getIdMttoModalidad().toString());
-        q.agregarParametroValues("FEC_REGISTRO", request.getSolicitud().getFecRegistro());
+        if(request.getSolicitud().getFecRegistro()==null){
+            q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
+        } else {
+            q.agregarParametroValues("FEC_REGISTRO", "'" + request.getSolicitud().getFecRegistro() + "'");
+        }
         if(request.getSolicitud().getDesMttoCorrectivo()!=null) {
-            q.agregarParametroValues("DES_MTTO_CORRECTIVO", request.getSolicitud().getDesMttoCorrectivo());
+            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
         }
         if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", request.getSolicitud().getIdMttoModalidadDet().toString());

@@ -21,7 +21,7 @@ public class MttoVerifiInicio {
         final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_VERIF_INICIO");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getIdMttoVehicular().toString());
+        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getVerificacionInicio().getIdMttoVehicular().toString());
         q.agregarParametroValues("ID_NIVELACEITE", request.getVerificacionInicio().getIdNivelAceite().toString());
         q.agregarParametroValues("ID_NIVELAGUA", request.getVerificacionInicio().getIdNivelAgua().toString());
         q.agregarParametroValues("ID_CALNEUTRASEROS", request.getVerificacionInicio().getIdCalNeuTraseros().toString());

@@ -21,12 +21,12 @@ public class Registro {
         final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_REGISTRO");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getIdMttoVehicular().toString());
+        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getRegistro().getIdMttoVehicular().toString());
         q.agregarParametroValues("ID_MTTOMODALIDAD", request.getRegistro().getIdMttoModalidad().toString());
         q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
-        q.agregarParametroValues("DES_NOTAS", request.getRegistro().getDesNotas());
-        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
-        q.agregarParametroValues("DES_NUMCONTRATO", request.getRegistro().getDesNumcontrato());
+        q.agregarParametroValues("DES_NOTAS", "'"+request.getRegistro().getDesNotas() +"'");
+        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor());
+        q.agregarParametroValues("DES_NUMCONTRATO", "'" +request.getRegistro().getDesNumcontrato() + "'");
         q.agregarParametroValues("IND_ESTATUS", "1");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
@@ -42,9 +42,9 @@ public class Registro {
         Map<String, Object> parametro = new HashMap<>();
         q.agregarParametroValues("ID_MTTOMODALIDAD", request.getRegistro().getIdMttoModalidad().toString());
         q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
-        q.agregarParametroValues("DES_NOTAS", request.getRegistro().getDesNotas());
+        q.agregarParametroValues("DES_NOTAS", "'" +request.getRegistro().getDesNotas() + "'");
         q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
-        q.agregarParametroValues("DES_NUMCONTRATO", request.getRegistro().getDesNumcontrato());
+        q.agregarParametroValues("DES_NUMCONTRATO", "'" +request.getRegistro().getDesNumcontrato() + "'");
         q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();

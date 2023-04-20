@@ -10,6 +10,7 @@ import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.service.MttoVehicularService;
+import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.vehiculos.util.Response;
@@ -49,20 +50,23 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/generico/crear";
-        String jsonResult = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request.getDatos());
-        MttoVehicularRequest requestDto = this.mapper.readValue(jsonResult, MttoVehicularRequest.class);
+        Gson json = new Gson();
+        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
         Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
         if (response.getCodigo() == 200) {
             log.info("Registro exitoso");
+
             if(requestDto.getVerificacionInicio()!=null){
-                requestDto.getVerificacionInicio().setIdMttoVehicular(null);
+                requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                 llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
             if(requestDto.getSolicitud()!=null){
+                requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                 llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
             if(requestDto.getRegistro()!=null){
+                requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                 llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
             return response;
@@ -74,8 +78,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> modificarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/generico/actualizar";
-        String jsonResult = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request.getDatos());
-        MttoVehicularRequest requestDto = this.mapper.readValue(jsonResult,MttoVehicularRequest.class);
+        Gson json = new Gson();
+        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = null;
         Response<?> response = llamarServicio(mttoVehicular.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
         if (response.getCodigo() == 200) {
@@ -98,8 +102,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> modificarEstatusMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/generico/actualizar";
-        String jsonResult = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request.getDatos());
-        MttoVehicularRequest requestDto = this.mapper.readValue(jsonResult,MttoVehicularRequest.class);
+        Gson json = new Gson();
+        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto=null;
         log.info("Nuevo estatus {}", requestDto.getIdEstatus());
         Response<?> response = llamarServicio(mttoVehicular.cambiarEstatus(requestDto.getIdMttoVehicular(), requestDto.getIdEstatus(), usuarioDto).getDatos(), path, authentication);

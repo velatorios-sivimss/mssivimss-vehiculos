@@ -28,8 +28,6 @@ public class MttoVehicular {
         q.agregarParametroValues("ID_DELEGACION", request.getIdDelegacion().toString());
         q.agregarParametroValues("ID_VELATORIO", request.getIdVelatorio().toString());
         q.agregarParametroValues("FEC_ALTA", FECHAACTUAL);
-        q.agregarParametroValues("FEC_ACTUALIZACION", null);
-        q.agregarParametroValues("FEC_BAJA", null);
         q.agregarParametroValues("IND_ESTATUS", "1");
         String query = q.obtenerQueryInsertar();
         logger.info(query);

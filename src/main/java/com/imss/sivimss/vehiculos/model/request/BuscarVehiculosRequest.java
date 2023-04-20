@@ -1,9 +1,12 @@
 package com.imss.sivimss.vehiculos.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.*;
 
+@Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BuscarVehiculosRequest {
     @JsonProperty
     private Integer nivelOficina;

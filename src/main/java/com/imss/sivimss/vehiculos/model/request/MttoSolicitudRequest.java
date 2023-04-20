@@ -18,7 +18,7 @@ public class MttoSolicitudRequest {
     @JsonProperty
     private Integer  idMttoModalidad;
     @JsonProperty
-    private String  fecRegistro;
+    private String fecRegistro;
     @JsonProperty
     private String  desMttoCorrectivo;
     @JsonProperty
