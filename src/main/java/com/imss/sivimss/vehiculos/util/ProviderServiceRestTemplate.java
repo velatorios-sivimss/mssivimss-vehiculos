@@ -36,17 +36,16 @@ public class ProviderServiceRestTemplate {
 					Response.class);
 			return validarResponse(respuestaGenerado);
 		} catch (IOException exception) {
-			log.error("Error",exception);
 			log.error("Ha ocurrido un error al recuperar la informacion");
 			throw exception;
 		}
 	}
 
-	public Response<?> consumirServicioReportes(Map<String, Object> dato, String nombreReporte, String tipoReporte,
+	public Response<?> consumirServicioReportes(Map<String, Object> dato,
 			String url, Authentication authentication) throws IOException {
 		try {
 			Response<?> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
-					new DatosReporteDTO(dato, nombreReporte, tipoReporte),
+					new DatosReporteDTO(dato),
 					jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
 			return validarResponse(respuestaGenerado);
 		} catch (IOException exception) {

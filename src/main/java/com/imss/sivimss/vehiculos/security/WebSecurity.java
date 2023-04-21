@@ -32,7 +32,7 @@ public class WebSecurity {
 
 	/**
 	 * 
-	 * @param http
+	 * @param httpSecurity
 	 * @return las urls permitidas
 	 * @throws Exception
 	 */
