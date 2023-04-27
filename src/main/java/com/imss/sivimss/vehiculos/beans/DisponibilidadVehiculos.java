@@ -69,11 +69,15 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultarDisponibilidadVehiculo(DatosRequest request) {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
-				.select("sv.ID_VEHICULO AS idVehiculo","sv.DESCRIPCION","IFNULL(sdv.DISPONIBLE,1) AS disponible")
+				.select("sv.ID_VEHICULO AS idVehiculo","sv.DESCRIPCION AS descripcion","IFNULL(sdv.DISPONIBLE,1) AS disponible")
 				.from("svt_vehiculos sv")
 				.leftJoin("svt_disponibilidad_vehiculo sdv", "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
 				.where("sv.ID_VELATORIO = :idVel")
-				.setParameter(PARAM_IDVELATORIO, this.idVelatorio);
+				.setParameter(PARAM_IDVELATORIO, this.idVelatorio)
+				.and("DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
+				.and("DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo)
+				.or(" DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
+				.and("DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo);
 		final String query = queryUtil.build();
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		request.getDatos().put(AppConstantes.QUERY, encoded);

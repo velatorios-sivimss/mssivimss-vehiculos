@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 
 import com.google.gson.Gson;
+import com.imss.sivimss.vehiculos.beans.DisponibilidadVehiculos;
 import com.imss.sivimss.vehiculos.security.jwt.JwtTokenProvider;
 
 
@@ -26,6 +28,14 @@ public class ProviderServiceRestTemplate {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
+	@Autowired
+	private LogUtil logUtil;
+
+	private static final String ALTA = "alta";
+	private static final String BAJA = "baja";
+	private static final String MODIFICACION = "modificacion";
+	private static final String CONSULTA = "consulta";
+	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 	private static final Logger log = LoggerFactory.getLogger(ProviderServiceRestTemplate.class);
 
 	public Response<?> consumirServicio(Map<String, Object> dato, String url, Authentication authentication)
@@ -44,6 +54,8 @@ public class ProviderServiceRestTemplate {
 	public Response<?> consumirServicioReportes(Map<String, Object> dato,
 			String url, Authentication authentication) throws IOException {
 		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consumirServicioReportes", this.getClass().getPackage().toString(), "Resilencia", GENERA_DOCUMENTO, authentication);
+		
 			Response<?> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
 					new DatosReporteDTO(dato),
 					jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
