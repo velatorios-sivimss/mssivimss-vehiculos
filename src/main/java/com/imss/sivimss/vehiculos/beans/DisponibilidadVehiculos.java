@@ -73,11 +73,13 @@ public class DisponibilidadVehiculos {
 				.from("svt_vehiculos sv")
 				.leftJoin("svt_disponibilidad_vehiculo sdv", "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
 				.where("sv.ID_VELATORIO = :idVel")
-				.setParameter(PARAM_IDVELATORIO, this.idVelatorio)
-				.and("DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
-				.and("DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo)
-				.or(" DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
-				.and("DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo);
+				.setParameter(PARAM_IDVELATORIO, this.idVelatorio);
+		if(this.fecIniRepo != null || this.fecFinRepo != null){
+			queryUtil = queryUtil.and("DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
+					.and("DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo)
+					.or(" DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
+					.and("DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo);
+		}
 		final String query = queryUtil.build();
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		request.getDatos().put(AppConstantes.QUERY, encoded);
