@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -22,7 +24,10 @@ import com.imss.sivimss.vehiculos.util.MensajeResponseUtil;
 import com.imss.sivimss.vehiculos.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.vehiculos.util.Response;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehiculosService {
 
 	@Value("${endpoints.dominio-consulta-paginado}")
@@ -51,8 +56,6 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 	DisponibilidadVehiculos vehiculo;
 
 	private static final String ALTA = "alta";
-	private static final String BAJA = "baja";
-	private static final String MODIFICACION = "modificacion";
 	private static final String CONSULTA = "consulta";
 	private static final String GENERA_DOCUMENTO = "Genera_Documento";
 
@@ -60,6 +63,8 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 																	// búsqueda.
 	private static final String ERROR_AL_DESCARGAR_DOCUMENTO = "64"; // Error en la descarga del documento.Intenta nuevamente.
 	private static final String AGREGADO_CORRECTAMENTE = "30"; // Agregado correctamente.
+	private static final String ERROR_QUERY = "Error al ejecutar el query ";
+	Response<?> response;
 	
 	@Override
 	public Response<?> consultaVehiculos(DatosRequest request, Authentication authentication)
@@ -68,12 +73,18 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "Resilencia", CONSULTA, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-				providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),
-						urlConsultaGenericoPaginado, authentication),
-				NO_SE_ENCONTRO_INFORMACION);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			String consulta = vehiculo.consultarDisponibilidadVehiculo(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error( ERROR_QUERY+ decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 	}
 
 	@Override
@@ -83,12 +94,19 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consultaVehiculoDisponible", this.getClass().getPackage().toString(), "Resilencia", CONSULTA, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-				providerRestTemplate.consumirServicio(vehiculo.consultaDetalleVehiculo(request).getDatos(),
-						urlConsultaGenericoPaginado, authentication),
-				NO_SE_ENCONTRO_INFORMACION);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculoDisponible", this.getClass().getPackage().toString(), "consultaVehiculoDisponible", CONSULTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultaDetalleVehiculo(request).getDatos(),
+					urlConsultaGenericoPaginado, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			String consulta = vehiculo.consultaDetalleVehiculo(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 	}
 	
 	@Override
@@ -98,12 +116,20 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consultaODS", this.getClass().getPackage().toString(), "Resilencia", CONSULTA, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-				providerRestTemplate.consumirServicio(vehiculo.consultaDetalleODS(request).getDatos(),
-						urlConsultaGenericoPaginado, authentication),
-				NO_SE_ENCONTRO_INFORMACION);
+		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaODS", this.getClass().getPackage().toString(), "consultaODS", CONSULTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultaDetalleODS(request).getDatos(),
+					urlConsultaGenericoPaginado, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse( response, NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			String consulta = vehiculo.consultaDetalleODS(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 	}
 
 	@Override
@@ -113,12 +139,19 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consultaOperador", this.getClass().getPackage().toString(), "Resilencia", CONSULTA, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-				providerRestTemplate.consumirServicio(vehiculo.consultaOperador(request).getDatos(),
-						urlConsultaGenericoPaginado, authentication),
-				NO_SE_ENCONTRO_INFORMACION);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaOperador", this.getClass().getPackage().toString(), "consultaOperador", CONSULTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultaOperador(request).getDatos(),
+					urlConsultaGenericoPaginado, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse( response, NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			String consulta = vehiculo.consultaDetalleODS(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 	}
 	@Override
 	public Response<?> consultarVelatorio(DatosRequest request, Authentication authentication)
@@ -141,12 +174,19 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo  = new DisponibilidadVehiculos (vehiculoRequest);
 		UsuarioDto usuarioDto = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".registraSalidaVehiculos", this.getClass().getPackage().toString(), "Resilencia", ALTA, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-		providerRestTemplate.consumirServicio(vehiculo.registrarVehiculoSalida(request).getDatos(),
-				urlConsultaGenerica, authentication),
-		AGREGADO_CORRECTAMENTE);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".registraSalidaVehiculo", this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.registrarVehiculoSalida(request).getDatos(),
+					urlConsultaGenerica, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, AGREGADO_CORRECTAMENTE);
+		} catch (Exception e) {
+			String consulta = vehiculo.registrarVehiculoSalida(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, ALTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 	}
 
 	@Override
@@ -158,12 +198,18 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo  = new DisponibilidadVehiculos (vehiculoRequest);
 		UsuarioDto usuarioDto = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".registraSalidaVehiculos", this.getClass().getPackage().toString(), "Resilencia", ALTA, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-		providerRestTemplate.consumirServicio(vehiculo.registrarVehiculoEntrada(request).getDatos(),
-				urlConsultaGenerica, authentication),
-		AGREGADO_CORRECTAMENTE);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".registraEntradaVehiculo", this.getClass().getPackage().toString(), "registraEntradaVehiculo", ALTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.registrarVehiculoEntrada(request).getDatos(), 	urlConsultaGenerica, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, AGREGADO_CORRECTAMENTE);
+		} catch (Exception e) {
+			String consulta = vehiculo.registrarVehiculoSalida(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, ALTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 	}
 
 	@Override
@@ -174,10 +220,18 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		Map<String, Object> envioDatos = vehiculo.generarReportePDF(reporteDto,nombrePdfReportes);
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".generaDocumento", this.getClass().getPackage().toString(), "Resilencia", GENERA_DOCUMENTO, authentication);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication)
-				, ERROR_AL_DESCARGAR_DOCUMENTO);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".generarDocumento", this.getClass().getPackage().toString(), "generarDocumento", GENERA_DOCUMENTO, authentication);
+			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			String consulta = vehiculo.generarReportePDF(reporteDto, nombrePdfReportes).get("condicion").toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + consulta, GENERA_DOCUMENTO,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
 		
 	}
 }

@@ -43,6 +43,17 @@ public class DisponibilidadVehiculos {
 	
 	
 	private static final String TABLA_SVC_VELATORIO_SV = "SVC_VELATORIO sv";
+	private static final String TABLA_SVT_VEHICULO_SV =  "SVT_VEHICULOS sv";  
+	private static final String TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV = "SVT_DISPONIBILIDAD_VEHICULO sdv";  
+	private static final String TABLA_SVC_ORDEN_SERVICIO_SOS = "SVC_ORDEN_SERVICIO sos"; 
+	private static final String TABLA_SVC_CONTRATANTE_SC = "SVC_CONTRATANTE sc";  
+	private static final String TABLA_SVC_PERSONA_SP = "SVC_PERSONA sp";
+	private static final String TABLA_SVC_FINADO_SF = "SVC_FINADO sf"; 
+	private static final String TABLA_SVC_PERSONA_SP2 ="SVC_PERSONA sp2"; 
+	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = "SVC_INFORMACION_SERVICIO sis"; 
+	private static final String TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV = "SVC_INFORMACION_SERVICIO_VELACION sisv";  
+	private static final String TABLA_SVC_CP_SC2 = "SVC_CP sc2";
+	
 	private static final String NOW = "CURRENT_TIMESTAMP()";
 	
 	private static final String PARAM_IDVELATORIO = "idVel";
@@ -69,9 +80,9 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultarDisponibilidadVehiculo(DatosRequest request) {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
-				.select("sv.ID_VEHICULO AS idVehiculo","sv.DESCRIPCION AS descripcion","IFNULL(sdv.DISPONIBLE,1) AS disponible")
-				.from("svt_vehiculos sv")
-				.leftJoin("svt_disponibilidad_vehiculo sdv", "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
+				.select("sv.ID_VEHICULO AS idVehiculo","sv.DESCRIPCION AS descripcion","IFNULL(sdv.DISPONIBLE,1) AS disponible","IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA) AS fecha")
+				.from(TABLA_SVT_VEHICULO_SV)
+				.leftJoin(TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV, "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
 				.where("sv.ID_VELATORIO = :idVel")
 				.setParameter(PARAM_IDVELATORIO, this.idVelatorio);
 		if(this.fecIniRepo != null || this.fecFinRepo != null){
@@ -91,9 +102,20 @@ public class DisponibilidadVehiculos {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
 				.select("sv.ID_VEHICULO AS idVehiculo","sv.DES_MARCA AS marca","sv.DES_MODELO AS modelo"
-						,"sv.DES_PLACAS AS placas","sv.TARJETA_CIRCULACION AS   tarjetaCirculacion")
-				.from("svt_vehiculos sv")
-				.leftJoin("svt_disponibilidad_vehiculo sdv", "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
+						,"sv.DES_PLACAS AS placas","sv.TARJETA_CIRCULACION AS   tarjetaCirculacion"
+						,"sos.CVE_FOLIO AS folioODS","CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
+						,"CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
+						,"sc2.DES_MNPIO AS nombreDestino")
+				.from(TABLA_SVT_VEHICULO_SV)
+				.leftJoin(TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV, "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
+				.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_ORDEN_SERVICIO = sdv.ID_ODS")
+				.join(TABLA_SVC_CONTRATANTE_SC, "sc.ID_CONTRATANTE = sos.ID_CONTRATANTE")
+				.join(TABLA_SVC_PERSONA_SP, "sp.ID_PERSONA = sc.ID_PERSONA")
+				.leftJoin(TABLA_SVC_FINADO_SF, "sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
+				.leftJoin(TABLA_SVC_PERSONA_SP2," sp2.ID_PERSONA = sf.ID_PERSONA")
+				.join(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
+				.join(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV, "sisv.ID_INFORMACION_SERVICIO  = sis.ID_INFORMACION_SERVICIO")
+				.join(TABLA_SVC_CP_SC2,"sc2.ID_CODIGO_POSTAL = sisv.ID_CP")
 				.where("sv.ID_VEHICULO = :" + PARAM_IDVEHICULO)
 				.setParameter(PARAM_IDVEHICULO, this.idVehiculo);
 		final String query = queryUtil.build();
