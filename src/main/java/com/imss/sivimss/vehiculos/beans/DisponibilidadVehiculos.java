@@ -170,7 +170,8 @@ public class DisponibilidadVehiculos {
 				.leftJoin(TABLA_SVC_PERSONA_SP2, "sp2.ID_PERSONA = sf.ID_PERSONA")
 				.innerJoin(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
 				.innerJoin(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV, "sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
-				.innerJoin(TABLA_SVC_CP_SC2, "sc2.ID_CODIGO_POSTAL = sisv.ID_CP ")
+				.innerJoin(TABAL_SVT_DOMICILIO_SD, "sd.ID_DOMICILIO = sisv.ID_DOMICILIO")
+				.innerJoin(TABLA_SVC_CP_SC2, "sc2.ID_CODIGO_POSTAL = sd.ID_CP ")
 				.where("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
 		final String query = queryUtil.build();
