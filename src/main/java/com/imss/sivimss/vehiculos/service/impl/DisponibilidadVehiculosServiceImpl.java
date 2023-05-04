@@ -97,10 +97,33 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculoDisponible", this.getClass().getPackage().toString(), "consultaVehiculoDisponible", CONSULTA, authentication);
 			response = providerRestTemplate.consumirServicio(vehiculo.consultaDetalleVehiculo(request).getDatos(),
-					urlConsultaGenericoPaginado, authentication);
+					urlConsultaGenerica, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
 			String consulta = vehiculo.consultaDetalleVehiculo(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error(ERROR_QUERY + decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
+	}
+	
+
+	@Override
+	public Response<?> consultaVehiculoDetallexDia(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
+		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculoDetalleDia", this.getClass().getPackage().toString(), "consultaVehiculoDetalleDia", CONSULTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultaDetalleVehiculoxDia(request).getDatos(),
+					urlConsultaGenerica, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			String consulta = vehiculo.consultaDetalleVehiculoxDia(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,

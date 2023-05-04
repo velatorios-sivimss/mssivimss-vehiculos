@@ -40,6 +40,7 @@ public class DisponibilidadVehiculos {
 	private Integer idUsuarioAlta;
 	private String fecIniRepo;
 	private String fecFinRepo;
+	private String fecDia;
 	
 	
 	private static final String TABLA_SVC_VELATORIO_SV = "SVC_VELATORIO sv";
@@ -52,6 +53,7 @@ public class DisponibilidadVehiculos {
 	private static final String TABLA_SVC_PERSONA_SP2 ="SVC_PERSONA sp2"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = "SVC_INFORMACION_SERVICIO sis"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV = "SVC_INFORMACION_SERVICIO_VELACION sisv";  
+	private static final String TABAL_SVT_DOMICILIO_SD = "svt_domicilio sd ";
 	private static final String TABLA_SVC_CP_SC2 = "SVC_CP sc2";
 	
 	private static final String NOW = "CURRENT_TIMESTAMP()";
@@ -75,6 +77,7 @@ public class DisponibilidadVehiculos {
 		this.kmFinal = vehiculoRequest.getKmFinal();
 		this.fecIniRepo = vehiculoRequest.getFecIniRepo();
 		this.fecFinRepo = vehiculoRequest.getFecFinRepo();
+		this.fecDia = vehiculoRequest.getFecDia();
 	}
 
 	public DatosRequest consultarDisponibilidadVehiculo(DatosRequest request) {
@@ -115,10 +118,40 @@ public class DisponibilidadVehiculos {
 				.leftJoin(TABLA_SVC_PERSONA_SP2," sp2.ID_PERSONA = sf.ID_PERSONA")
 				.join(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
 				.join(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV, "sisv.ID_INFORMACION_SERVICIO  = sis.ID_INFORMACION_SERVICIO")
-				.join(TABLA_SVC_CP_SC2,"sc2.ID_CODIGO_POSTAL = sisv.ID_CP")
+				.join(TABAL_SVT_DOMICILIO_SD, "sd.ID_DOMICILIO = sisv.ID_DOMICILIO")
+				.join(TABLA_SVC_CP_SC2,"sc2.ID_CODIGO_POSTAL = sd.ID_CP")
 				.where("sv.ID_VEHICULO = :" + PARAM_IDVEHICULO)
 				.setParameter(PARAM_IDVEHICULO, this.idVehiculo);
 		final String query = queryUtil.build();
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		request.getDatos().put(AppConstantes.QUERY, encoded);
+
+		return request;
+	}
+	
+	
+	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request) {
+		
+		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
+				+ ", sv.TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
+				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
+				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
+				+ ", sc2.DES_MNPIO AS nombreDestino, sdv.HORA_ENTRADA AS horaEntrada, sdv.HORA_SALIDA AS horaSalida, sdv.NIVEL_GASOLINA_INICIAL AS nivelGasIni "
+				+ ", sdv.NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.KM_INICIAL AS kmInicial, sdv.KM_FINAL AS kmFin, sdv.FEC_ENTRADA, sdv.FEC_SALIDA "
+				+ " FROM " + TABLA_SVT_VEHICULO_SV
+				+ " LEFT JOIN " + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO "
+				+ " JOIN " + TABLA_SVC_ORDEN_SERVICIO_SOS + " ON sos.ID_ORDEN_SERVICIO = sdv.ID_ODS  "
+				+ " JOIN " + TABLA_SVC_CONTRATANTE_SC + " ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE "
+				+ " JOIN " + TABLA_SVC_PERSONA_SP + " ON sp.ID_PERSONA = sc.ID_PERSONA  "
+				+ "	LEFT JOIN " + TABLA_SVC_FINADO_SF + " ON sf.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
+				+ "	LEFT JOIN " + TABLA_SVC_PERSONA_SP2 + " ON sp2.ID_PERSONA = sf.ID_PERSONA "
+				+ " JOIN " + TABLA_SVC_INFORMACION_SERVICIO_SIS + " ON sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO "
+				+ "	JOIN " + TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV + " ON sisv.ID_INFORMACION_SERVICIO  = sis.ID_INFORMACION_SERVICIO "
+				+ " JOIN " + TABAL_SVT_DOMICILIO_SD + " ON sd.ID_DOMICILIO = sisv.ID_DOMICILIO "
+				+ " JOIN " + TABLA_SVC_CP_SC2 + " ON sc2.ID_CODIGO_POSTAL = sd.ID_CP "
+				+ " WHERE (sdv.FEC_ENTRADA = '" + this.fecDia + "' OR sdv.FEC_SALIDA = '" + this.fecDia + "') AND sv.ID_VEHICULO = " + this.idVehiculo 
+				+ " ORDER BY sdv.DISPONIBLE DESC";
+
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 
@@ -130,14 +163,14 @@ public class DisponibilidadVehiculos {
 				.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 						,"concat(sp2.NOM_PERSONA, ' '  , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 						,"sc2.DES_MNPIO AS nombreDestino")
-				.from("svc_orden_servicio sos")
-				.innerJoin("svc_contratante sc", "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
-				.innerJoin("svc_persona sp", "sc.ID_PERSONA = sp.ID_PERSONA")
-				.leftJoin("svc_finado sf", "sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
-				.leftJoin("svc_persona sp2", "sp2.ID_PERSONA = sf.ID_PERSONA")
-				.innerJoin("svc_informacion_servicio sis", "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
-				.innerJoin("svc_informacion_servicio_velacion sisv", "sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
-				.innerJoin("svc_cp sc2", "sc2.ID_CODIGO_POSTAL = sisv.ID_CP ")
+				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
+				.innerJoin(TABLA_SVC_CONTRATANTE_SC, "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
+				.innerJoin(TABLA_SVC_PERSONA_SP, "sc.ID_PERSONA = sp.ID_PERSONA")
+				.leftJoin(TABLA_SVC_FINADO_SF, "sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
+				.leftJoin(TABLA_SVC_PERSONA_SP2, "sp2.ID_PERSONA = sf.ID_PERSONA")
+				.innerJoin(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
+				.innerJoin(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV, "sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
+				.innerJoin(TABLA_SVC_CP_SC2, "sc2.ID_CODIGO_POSTAL = sisv.ID_CP ")
 				.where("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
 		final String query = queryUtil.build();

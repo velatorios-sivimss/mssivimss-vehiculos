@@ -29,4 +29,5 @@ public class VehiculoRequest {
 	private Integer idResponsable;
 	private String fecIniRepo;
 	private String fecFinRepo;
+	private String fecDia;
 }
