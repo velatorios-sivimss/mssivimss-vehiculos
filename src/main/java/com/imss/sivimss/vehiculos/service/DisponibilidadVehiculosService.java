@@ -12,6 +12,7 @@ public interface DisponibilidadVehiculosService {
 
 	Response<?> consultaVehiculos(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultaVehiculoDisponible(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?> consultaVehiculoDetallexDia(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultaOperador(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultaODS(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultarVelatorio(DatosRequest request, Authentication authentication) throws IOException;
