@@ -158,23 +158,48 @@ public class DisponibilidadVehiculos {
 		return request;
 	}
 	public DatosRequest consultaDetalleODS(DatosRequest request) {
-		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil
-				.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
-						,"concat(sp2.NOM_PERSONA, ' '  , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
-						,"sc2.DES_MNPIO AS nombreDestino")
-				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
-				.innerJoin(TABLA_SVC_CONTRATANTE_SC, "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
-				.innerJoin(TABLA_SVC_PERSONA_SP, "sc.ID_PERSONA = sp.ID_PERSONA")
-				.leftJoin(TABLA_SVC_FINADO_SF, "sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
-				.leftJoin(TABLA_SVC_PERSONA_SP2, "sp2.ID_PERSONA = sf.ID_PERSONA")
-				.innerJoin(TABLA_SVC_INFORMACION_SERVICIO_SIS, "sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
-				.innerJoin(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV, "sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
-				.innerJoin(TABAL_SVT_DOMICILIO_SD, "sd.ID_DOMICILIO = sisv.ID_DOMICILIO")
-				.innerJoin(TABLA_SVC_CP_SC2, "sc2.ID_CODIGO_POSTAL = sd.ID_CP ")
+		SelectQueryUtil queryUno = new SelectQueryUtil();
+		SelectQueryUtil queryDos = new SelectQueryUtil();
+		queryUno.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
+				,"concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
+				,"sc2.DES_MNPIO AS nombreOrigen"," sc4.DES_MNPIO AS nombreDestino")
+				.from("SVC_ORDEN_SERVICIO sos")
+				.join("SVC_CONTRATANTE sc", "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
+				.join("SVC_PERSONA sp","sc.ID_PERSONA = sp.ID_PERSONA")
+				.leftJoin("SVC_FINADO sf","sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
+				.leftJoin("SVC_PERSONA sp2","sp2.ID_PERSONA = sf.ID_PERSONA")
+				.join("SVC_INFORMACION_SERVICIO sis","sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
+				.join("SVC_INFORMACION_SERVICIO_VELACION sisv","sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
+				.join("svt_domicilio sd ","sd.ID_DOMICILIO = sisv.ID_DOMICILIO")
+				.join("SVC_CP sc2","sc2.ID_CODIGO_POSTAL = sd.ID_CP")
+				.join("svt_domicilio sd2 ","sd2.ID_DOMICILIO = sisv.ID_DOMICILIO")
+				.join("SVC_CP sc3","sc3.ID_CODIGO_POSTAL = sd2.ID_CP")
+				.leftJoin("svc_sala ss ","ss.ID_SALA  = sis.ID_SALA")
+				.join("svc_velatorio sv","sv.ID_VELATORIO = ss.ID_VELATORIO")
+				.join("svt_domicilio sd3","sd3.ID_DOMICILIO = sv.ID_DOMICILIO") 
+				.join("svc_cp sc4","sc4.ID_CODIGO_POSTAL = sd3.ID_CP")
 				.where("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
-		final String query = queryUtil.build();
+		queryDos.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
+				, "concat(sp2.NOM_PERSONA, ' '  , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
+				, "sc2.DES_MNPIO AS nombreOrigen","sc4.DES_MNPIO AS nombreDestino")
+				.from("SVC_ORDEN_SERVICIO sos")
+				.join("SVC_CONTRATANTE sc","sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
+				.join("SVC_PERSONA sp","sc.ID_PERSONA = sp.ID_PERSONA")
+				.leftJoin("SVC_FINADO sf","sos.ID_ORDEN_SERVICIO = sf.ID_ORDEN_SERVICIO")
+				.leftJoin("SVC_PERSONA sp2","sp2.ID_PERSONA = sf.ID_PERSONA")
+				.join("SVC_INFORMACION_SERVICIO sis","sis.ID_ORDEN_SERVICIO = sos.ID_ORDEN_SERVICIO")
+				.join("SVC_INFORMACION_SERVICIO_VELACION sisv","sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
+				.join("svt_domicilio sd ","sd.ID_DOMICILIO = sisv.ID_DOMICILIO")
+				.join("SVC_CP sc2","sc2.ID_CODIGO_POSTAL = sd.ID_CP")
+				.join("svt_domicilio sd2 ","sd2.ID_DOMICILIO = sisv.ID_DOMICILIO")
+				.join("SVC_CP sc3","sc3.ID_CODIGO_POSTAL = sd2.ID_CP")
+				.leftJoin("svt_panteon sp3","sp3.ID_PANTEON = sis.ID_PANTEON")
+				.join("svt_domicilio sd3","sd3.ID_DOMICILIO = sp3.ID_DOMICILIO") 
+				.join("svc_cp sc4","sc4.ID_CODIGO_POSTAL = sd3.ID_CP")
+				.where("sos.CVE_FOLIO = :idODS" )
+				.setParameter("idODS", this.idODS);
+		final String query = queryUno.union(queryDos);
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 
@@ -184,9 +209,9 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultaOperador(DatosRequest request) {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
-				.select("CONCAT(su.NOM_USUARIO,' ', su.NOM_APELLIDO_PATERNO,' ', su.NOM_APELLIDO_MATERNO ) AS nombreResponsable")
+				.select("so.ID_OPERADOR AS idResponsable"," CONCAT(sp.NOM_PERSONA ,' ', sp.NOM_PRIMER_APELLIDO ,' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreResponsable")
 				.from("svt_operadores so")
-				.innerJoin("svt_usuarios su", "su.ID_USUARIO = so.ID_USUARIO")
+				.innerJoin("svc_persona sp", "sp.ID_PERSONA  = so.ID_PERSONA")
 				.where("so.ID_VEHICULO = :idVehi")
 				.setParameter(PARAM_IDVEHICULO, this.idVehiculo);
 		final String query = queryUtil.build();
