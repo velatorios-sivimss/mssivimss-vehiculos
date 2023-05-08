@@ -108,7 +108,7 @@ public class DisponibilidadVehiculos {
 						,"sv.DES_PLACAS AS placas","sv.TARJETA_CIRCULACION AS   tarjetaCirculacion"
 						,"sos.CVE_FOLIO AS folioODS","CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
 						,"CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
-						,"sc2.DES_MNPIO AS nombreDestino, sos.ID_ORDEN_SERVICIO AS idODS ")
+						,"sc2.DES_MNPIO AS nombreDestino, sos.ID_ORDEN_SERVICIO AS idODS","IFNULL(sdv.DISPONIBLE,1) AS disponible")
 				.from(TABLA_SVT_VEHICULO_SV)
 				.leftJoin(TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV, "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
 				.join(TABLA_SVC_ORDEN_SERVICIO_SOS, "sos.ID_ORDEN_SERVICIO = sdv.ID_ODS")
@@ -137,7 +137,7 @@ public class DisponibilidadVehiculos {
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
 				+ ", sc2.DES_MNPIO AS nombreDestino, sdv.HORA_ENTRADA AS horaEntrada, sdv.HORA_SALIDA AS horaSalida, sdv.NIVEL_GASOLINA_INICIAL AS nivelGasIni "
-				+ ", sdv.NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.KM_INICIAL AS kmInicial, sdv.KM_FINAL AS kmFin, sdv.FEC_ENTRADA, sdv.FEC_SALIDA "
+				+ ", sdv.NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.KM_INICIAL AS kmInicial, sdv.KM_FINAL AS kmFin, sdv.FEC_ENTRADA, sdv.FEC_SALIDA, IFNULL(sdv.DISPONIBLE,1) AS disponible"
 				+ " FROM " + TABLA_SVT_VEHICULO_SV
 				+ " LEFT JOIN " + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO "
 				+ " JOIN " + TABLA_SVC_ORDEN_SERVICIO_SOS + " ON sos.ID_ORDEN_SERVICIO = sdv.ID_ODS  "
