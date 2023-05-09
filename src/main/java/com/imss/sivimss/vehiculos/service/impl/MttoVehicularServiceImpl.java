@@ -32,10 +32,10 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Value("${endpoints.dominio-consulta}")
     private String urlDominioConsulta;
 
+    private static final String PATH_CONSULTA="/generico/consulta";
+    
     @Autowired
     private ProviderServiceRestTemplate providerRestTemplate;
-
-    private Gson json = new Gson();
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -54,6 +54,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
         Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+        log.info(response.getCodigo());
         if (response.getCodigo() == 200) {
             log.info("Registro exitoso");
 
@@ -128,4 +129,25 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Response<?> response = providerRestTemplate.consumirServicio(dato,url,authentication);
         return response;
     }
+
+	@Override
+	public Response<?> detalleVerifInicio(DatosRequest request, Authentication authentication) throws IOException {
+		  log.info("Obtiene detalle de la verificacion al inicio de la jornada");
+	        return providerRestTemplate.consumirServicio(verifiInicio.detalleVerificacion(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
+	                authentication);
+	}
+
+	@Override
+	public Response<?> detalleSolicitudMtto(DatosRequest request, Authentication authentication) throws IOException {
+		  log.info("Obtiene detalle de la solicitud de mantenimiento");
+	        return providerRestTemplate.consumirServicio(solicitud.detalleSolicitud(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
+	                authentication);
+	}
+
+	@Override
+	public Response<?> detalleRegistroMtto(DatosRequest request, Authentication authentication) throws IOException {
+		log.info("Obtiene detalle del registro de mantenimiento");
+        return providerRestTemplate.consumirServicio(registro.detalleRegistro(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
+                authentication);
+	}
 }

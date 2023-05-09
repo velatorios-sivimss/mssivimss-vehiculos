@@ -5,6 +5,7 @@ import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.QueryHelper;
+import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,12 +51,12 @@ public class Solicitud {
         Map<String, Object> parametro = new HashMap<>();
         q.agregarParametroValues("ID_MTTO_TIPO", request.getSolicitud().getIdMttoTipo().toString());
         q.agregarParametroValues("ID_MTTOMODALIDAD", request.getSolicitud().getIdMttoModalidad().toString());
-        q.agregarParametroValues("FEC_REGISTRO", request.getSolicitud().getFecRegistro().toString());
+        q.agregarParametroValues("FEC_REGISTRO", "'" + request.getSolicitud().getFecRegistro() + "'");
         if(request.getSolicitud().getDesMttoCorrectivo()!=null) {
-            q.agregarParametroValues("DES_MTTO_CORRECTIVO", request.getSolicitud().getDesMttoCorrectivo().toString());
+            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
         }
         if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
-            q.agregarParametroValues("ID_MTTOMODALIDAD_DET", request.getSolicitud().getIdMttoModalidadDet().toString());
+            q.agregarParametroValues("ID_MTTOMODALIDAD_DET", "'" + request.getSolicitud().getIdMttoModalidadDet().toString()  + "'");
         }
         q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
@@ -78,4 +79,55 @@ public class Solicitud {
         dr.setDatos(parametro);
         return dr;
     }
+	public DatosRequest detalleSolicitud(DatosRequest request) {
+		String palabra = request.getDatos().get("palabra").toString();
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("SOLI.ID_MTTO_SOLICITUD",
+                        "SOLI.ID_MTTO_TIPO",
+                        "SOLI.ID_MTTOMODALIDAD",
+                        "SOLI.FEC_REGISTRO",
+                        "SOLI.DES_MTTO_CORRECTIVO",
+                        "SOLI.ID_MTTOMODALIDAD_DET",
+                        "SOLI.IND_ESTATUS",
+                        "MTTO_VEH.ID_MTTOESTADO",
+                        "MTTO_VEH.ID_VEHICULO",
+                        "MTTO_VEH.ID_DELEGACION",
+                        "MTTO_VEH.ID_VELATORIO",
+                        "MTTO_VEH.FEC_ALTA",
+                        "MTTO_VEH.FEC_ACTUALIZACION",
+                        "MTTO_VEH.FEC_BAJA",
+                        "MTTO_VEH.IND_ACTIVO",
+                        "MTTO_VEH.ID_USUARIO_ALTA",
+                        "SME.DES_MTTOESTADO",
+                        "SV.DES_MARCA",
+                        "SV.DES_MODELO",
+                        "SV.DES_PLACAS",
+                        "SV.DES_NUMSERIE",
+                        "SV.DES_NUMMOTOR",
+                        "SUV.DES_USO",
+                        "SD.DES_DELEGACION",
+                        "SVEL.NOM_VELATORIO",
+                        "SMT.DES_MTTO_TIPO",
+                        "SMM.DES_MODALIDAD")
+                .from("SVT_MTTO_SOLICITUD SOLI")
+                .join("SVT_MTTO_VEHICULAR MTTO_VEH", "MTTO_VEH.ID_MTTOVEHICULAR = SOLI.ID_MTTOVEHICULAR")
+                .join("SVC_MTTO_ESTADO SME","MTTO_VEH.ID_MTTOESTADO=SME.ID_MTTOESTADO")
+                .join("SVT_VEHICULOS SV","MTTO_VEH.ID_VEHICULO=SV.ID_VEHICULO")
+                .join("SVC_USO_VEHICULO SUV","SV.ID_USOVEHICULO=SUV.ID_USOVEHICULO")
+                .join("SVC_DELEGACION SD","MTTO_VEH.ID_DELEGACION=SD.ID_DELEGACION")
+                .join("SVC_VELATORIO SVEL","MTTO_VEH.ID_VELATORIO=SVEL.ID_VELATORIO")
+                .join("SVC_MTTO_TIPO SMT","SMT.ID_MTTO_TIPO=SOLI.ID_MTTO_TIPO")
+                .join("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =SOLI.ID_MTTOMODALIDAD");
+        if(palabra!=null && palabra.trim().length()>0) {
+            queryUtil.where("SOLI.ID_MTTO_SOLICITUD = :idSolicitud")
+                    .setParameter("idSolicitud", Integer.parseInt(palabra));
+        } else {
+            queryUtil.orderBy("SOLI.ID_MTTO_SOLICITUD");
+        }
+        String query = queryUtil.build();
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		request.getDatos().put(AppConstantes.QUERY, encoded);
+		logger.info(query);
+		return request;
+	}
 }

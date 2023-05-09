@@ -45,7 +45,7 @@ public class Vehiculos {
                         "VH.FEC_ADQUISICION",
                         "VH.TOTAL",
                         "VH.IMPORTE_PRIMA",
-                        "VH.IND_ESTATUS",
+                        "VH.IND_ACTIVO",
                         "VH.ID_OFICINA",
                         "OFI.DES_NIVELOFICINA",
                         "VE.NOM_VELATORIO",
@@ -63,7 +63,7 @@ public class Vehiculos {
                 .leftJoin("SVC_MTTO_ESTADO ME", "ME.ID_MTTOESTADO = MV.ID_MTTOESTADO")
                 .leftJoin("SVC_MTTO_MODALIDAD TM", "TM.ID_MTTOMODALIDAD = MS.ID_MTTOMODALIDAD")
                 .leftJoin("SVC_MTTO_TIPO MT", "MT.ID_MTTO_TIPO = MS.ID_MTTO_TIPO")
-                .where("VH.IND_ESTATUS = :idEstatus")
+                .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
         if (buscarRequest.getNivelOficina() != null) {
             queryUtil.where("VH.ID_OFICINA = :nivelOficina")
