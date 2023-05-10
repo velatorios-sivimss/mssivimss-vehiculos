@@ -75,7 +75,10 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication);
-			response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
+			if(request.getDatos().get("datos").toString().contains("paginado"))
+				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
+			else
+				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenerica, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
 			String consulta = vehiculo.consultarDisponibilidadVehiculo(request).getDatos().get(AppConstantes.QUERY).toString();
@@ -87,6 +90,7 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		}
 	}
 
+	
 	@Override
 	public Response<?> consultaVehiculoDisponible(DatosRequest request, Authentication authentication)
 			throws IOException {
