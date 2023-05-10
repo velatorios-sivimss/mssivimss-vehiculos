@@ -75,7 +75,7 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication);
-			if(request.getDatos().get("pagina") != null && request.getDatos().get("tamanio") != null )
+			if(request.getDatos().get("datos").toString().contains("paginado"))
 				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
 			else
 				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenerica, authentication);
