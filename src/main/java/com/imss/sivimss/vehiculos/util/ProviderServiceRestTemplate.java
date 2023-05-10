@@ -41,6 +41,7 @@ public class ProviderServiceRestTemplate {
 	public Response<?> consumirServicio(Map<String, Object> dato, String url, Authentication authentication)
 			throws IOException {
 		try {
+			dato.remove(AppConstantes.DATOS);
 			Response<?> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayToken(url,
 					new EnviarDatosRequest(dato), jwtTokenProvider.createToken((String) authentication.getPrincipal()),
 					Response.class);

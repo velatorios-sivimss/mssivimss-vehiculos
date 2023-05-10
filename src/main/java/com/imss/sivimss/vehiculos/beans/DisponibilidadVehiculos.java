@@ -83,7 +83,9 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultarDisponibilidadVehiculo(DatosRequest request) {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
-				.select("sv.ID_VEHICULO AS idVehiculo","sv.DESCRIPCION AS descripcion","IFNULL(sdv.DISPONIBLE,1) AS disponible","IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA) AS fecha")
+				.select("sv.ID_VEHICULO AS idVehiculo","sv.DESCRIPCION AS descripcion"," IFNULL(sdv.DISPONIBLE,1) AS disponible"
+						,"IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA) AS fecha"
+						,"IF(sdv.HORA_ENTRADA='00:00:00',sdv.HORA_SALIDA,sdv.HORA_ENTRADA) AS hora")
 				.from(TABLA_SVT_VEHICULO_SV)
 				.leftJoin(TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV, "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
 				.where("sv.ID_VELATORIO = :idVel")
@@ -94,6 +96,7 @@ public class DisponibilidadVehiculos {
 					.or(" DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') >= :fecIni").setParameter("fecIni", this.fecIniRepo)
 					.and("DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') <= :fecFin").setParameter("fecFin", this.fecFinRepo);
 		}
+		queryUtil.orderBy("fecha ASC");
 		final String query = queryUtil.build();
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
 		request.getDatos().put(AppConstantes.QUERY, encoded);
