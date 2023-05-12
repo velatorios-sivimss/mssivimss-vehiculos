@@ -11,6 +11,7 @@ import com.imss.sivimss.vehiculos.util.Response;
 public interface DisponibilidadVehiculosService {
 
 	Response<?> consultaVehiculos(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?> consultaVehiculosCalendario(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultaVehiculoDisponible(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultaVehiculoDetallexDia(DatosRequest request, Authentication authentication) throws IOException;
 	Response<?> consultaOperador(DatosRequest request, Authentication authentication) throws IOException;
