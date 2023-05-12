@@ -54,7 +54,7 @@ public class DisponibilidadVehiculos {
 	private static final String TABLA_SVC_PERSONA_SP2 =" SVC_PERSONA sp2"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = " SVC_INFORMACION_SERVICIO sis"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV = " SVC_INFORMACION_SERVICIO_VELACION sisv";  
-	private static final String TABAL_SVT_DOMICILIO_SD = "SVT DOMICILIO sd ";
+	private static final String TABAL_SVT_DOMICILIO_SD = "SVT_DOMICILIO sd ";
 	private static final String TABLA_SVC_CP_SC2 = " SVC_CP sc2";
 	private static final String TABLA_SVC_VELATORIO_SV2 = " SVC_VELATORIO sv2";
 	
