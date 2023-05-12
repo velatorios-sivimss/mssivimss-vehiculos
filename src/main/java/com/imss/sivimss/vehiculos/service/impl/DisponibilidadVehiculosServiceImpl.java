@@ -75,13 +75,10 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication);
-			if(request.getDatos().get("datos").toString().contains("paginado"))
-				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
-			else
-				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculo(request).getDatos(),	urlConsultaGenerica, authentication);
-		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculos(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
+			return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultarDisponibilidadVehiculo(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = vehiculo.consultarDisponibilidadVehiculos(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error( ERROR_QUERY+ decoded);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
@@ -90,6 +87,27 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		}
 	}
 
+
+	@Override
+	public Response<?> consultaVehiculosCalendario(DatosRequest request, Authentication authentication)
+			throws IOException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
+		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
+		try {
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculosCalendario", this.getClass().getPackage().toString(), "consultaVehiculosCalendario", CONSULTA, authentication);
+				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculosCalendario(request).getDatos(),	urlConsultaGenerica, authentication);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
+		} catch (Exception e) {
+			String consulta = vehiculo.consultarDisponibilidadVehiculosCalendario(request).getDatos().get(AppConstantes.QUERY).toString();
+			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+			log.error( ERROR_QUERY+ decoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
+					authentication);
+			throw new IOException("52", e.getCause());
+		}
+	}
 	
 	@Override
 	public Response<?> consultaVehiculoDisponible(DatosRequest request, Authentication authentication)
@@ -203,6 +221,8 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".registraSalidaVehiculo", this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.actualizaVehiculosParaSalir(request).getDatos(),
+					urlConsultaGenerica, authentication);
 			response = providerRestTemplate.consumirServicio(vehiculo.registrarVehiculoSalida(request).getDatos(),
 					urlConsultaGenerica, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, AGREGADO_CORRECTAMENTE);
@@ -227,6 +247,8 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".registraEntradaVehiculo", this.getClass().getPackage().toString(), "registraEntradaVehiculo", ALTA, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.actualizaVehiculosEntrada(request).getDatos(),
+					urlConsultaGenerica, authentication);
 			response = providerRestTemplate.consumirServicio(vehiculo.registrarVehiculoEntrada(request).getDatos(), 	urlConsultaGenerica, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, AGREGADO_CORRECTAMENTE);
 		} catch (Exception e) {
