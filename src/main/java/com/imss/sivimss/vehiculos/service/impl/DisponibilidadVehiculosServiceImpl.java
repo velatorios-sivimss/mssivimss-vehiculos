@@ -64,6 +64,8 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 	private static final String ERROR_AL_DESCARGAR_DOCUMENTO = "64"; // Error en la descarga del documento.Intenta nuevamente.
 	private static final String AGREGADO_CORRECTAMENTE = "30"; // Agregado correctamente.
 	private static final String ERROR_QUERY = "Error al ejecutar el query ";
+	private String formatoHora = "%H:%i";
+	
 	Response<?> response;
 	
 	@Override
@@ -75,10 +77,10 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication);
-			response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculos(request).getDatos(),	urlConsultaGenericoPaginado, authentication);
+			response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculos(request, formatoFecha, formatoHora).getDatos(),	urlConsultaGenericoPaginado, authentication);
 			return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultarDisponibilidadVehiculos(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = vehiculo.consultarDisponibilidadVehiculos(request, formatoFecha, formatoHora).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error( ERROR_QUERY+ decoded);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
@@ -97,10 +99,10 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculosCalendario", this.getClass().getPackage().toString(), "consultaVehiculosCalendario", CONSULTA, authentication);
-				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculosCalendario(request).getDatos(),	urlConsultaGenerica, authentication);
+				response = providerRestTemplate.consumirServicio(vehiculo.consultarDisponibilidadVehiculosCalendario(request, formatoFecha).getDatos(),	urlConsultaGenerica, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultarDisponibilidadVehiculosCalendario(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = vehiculo.consultarDisponibilidadVehiculosCalendario(request, formatoFecha).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error( ERROR_QUERY+ decoded);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
@@ -141,11 +143,11 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculoDetalleDia", this.getClass().getPackage().toString(), "consultaVehiculoDetalleDia", CONSULTA, authentication);
-			response = providerRestTemplate.consumirServicio(vehiculo.consultaDetalleVehiculoxDia(request).getDatos(),
+			response = providerRestTemplate.consumirServicio(vehiculo.consultaDetalleVehiculoxDia(request, formatoFecha, formatoHora).getDatos(),
 					urlConsultaGenerica, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultaDetalleVehiculoxDia(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = vehiculo.consultaDetalleVehiculoxDia(request, formatoFecha, formatoHora).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el query: " + decoded, CONSULTA,
