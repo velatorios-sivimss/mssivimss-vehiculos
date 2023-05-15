@@ -27,4 +27,6 @@ public class MttoSolicitudRequest {
     private String  desNotas;
     @JsonProperty
     private Integer idEstatus;
+    @JsonProperty
+    private Integer kilometraje;
 }

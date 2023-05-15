@@ -36,6 +36,12 @@ public class Solicitud {
         if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", request.getSolicitud().getIdMttoModalidadDet().toString());
         }
+        if(request.getSolicitud().getDesNotas()!=null) {
+            q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
+        }
+        if(request.getSolicitud().getKilometraje()!=null) {
+            q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
+        }
         q.agregarParametroValues("IND_ESTATUS", "1");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
@@ -57,6 +63,12 @@ public class Solicitud {
         }
         if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", "'" + request.getSolicitud().getIdMttoModalidadDet().toString()  + "'");
+        }
+        if(request.getSolicitud().getDesNotas()!=null) {
+            q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
+        }
+        if(request.getSolicitud().getKilometraje()!=null) {
+            q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
@@ -89,6 +101,8 @@ public class Solicitud {
                         "SOLI.DES_MTTO_CORRECTIVO",
                         "SOLI.ID_MTTOMODALIDAD_DET",
                         "SOLI.IND_ESTATUS",
+                        "SOLI.DES_NOTAS",
+                        "SOLI.KILOMETRAJE",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -100,6 +114,7 @@ public class Solicitud {
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
                         "SV.DES_MARCA",
+                        "SV.DES_SUBMARCA",
                         "SV.DES_MODELO",
                         "SV.DES_PLACAS",
                         "SV.DES_NUMSERIE",

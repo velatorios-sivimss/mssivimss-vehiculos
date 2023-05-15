@@ -23,15 +23,34 @@ public class Registro {
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         q.agregarParametroValues("ID_MTTOVEHICULAR", request.getRegistro().getIdMttoVehicular().toString());
-        q.agregarParametroValues("ID_MTTOMODALIDAD", request.getRegistro().getIdMttoModalidad().toString());
-        q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
-        q.agregarParametroValues("DES_NOTAS", "'"+request.getRegistro().getDesNotas() +"'");
-        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor());
-        q.agregarParametroValues("DES_NUMCONTRATO", "'" +request.getRegistro().getDesNumcontrato() + "'");
+        if(request.getRegistro().getIdMttoModalidad()!=null) {
+            q.agregarParametroValues("ID_MTTOMODALIDAD", request.getRegistro().getIdMttoModalidad().toString());
+        }
+        if(request.getRegistro().getIdMantenimiento()!=null) {
+            q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
+        }
+        if(request.getRegistro().getDesNotas()!=null) {
+            q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
+        }
+        if(request.getRegistro().getIdProveedor()!=null) {
+            q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
+        }
+        if(request.getRegistro().getDesNumcontrato()!=null) {
+            q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
+        }
         q.agregarParametroValues("ID_USUARIO_ALTA", request.getIdEstatus().toString());
         q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
         q.agregarParametroValues("IND_ACTIVO", "1");
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
+        if(request.getRegistro().getKilometraje()!=null) {
+            q.agregarParametroValues("KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+        }
+        if(request.getRegistro().getDesNombreTaller()!=null) {
+            q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
+        }
+        if(request.getRegistro().getCostoMtto()!=null) {
+            q.agregarParametroValues("COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -44,12 +63,34 @@ public class Registro {
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_REGISTRO");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        q.agregarParametroValues("ID_MTTOMODALIDAD", request.getRegistro().getIdMttoModalidad().toString());
-        q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
-        q.agregarParametroValues("DES_NOTAS", "'" +request.getRegistro().getDesNotas() + "'");
-        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
-        q.agregarParametroValues("DES_NUMCONTRATO", "'" +request.getRegistro().getDesNumcontrato() + "'");
-        q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
+        if(request.getRegistro().getIdMttoModalidad()!=null) {
+            q.agregarParametroValues("ID_MTTOMODALIDAD", request.getRegistro().getIdMttoModalidad().toString());
+        }
+        if(request.getRegistro().getIdMantenimiento()!=null) {
+            q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
+        }
+        if(request.getRegistro().getDesNotas()!=null) {
+            q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
+        }
+        if(request.getRegistro().getIdProveedor()!=null) {
+            q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
+        }
+        if(request.getRegistro().getDesNumcontrato()!=null) {
+            q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
+        }
+        q.agregarParametroValues("ID_USUARIO_ALTA", request.getIdEstatus().toString());
+        q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
+        q.agregarParametroValues("IND_ACTIVO", "1");
+        q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
+        if(request.getRegistro().getKilometraje()!=null) {
+            q.agregarParametroValues("KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+        }
+        if(request.getRegistro().getDesNombreTaller()!=null) {
+            q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
+        }
+        if(request.getRegistro().getCostoMtto()!=null) {
+            q.agregarParametroValues("COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+        }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -83,6 +124,9 @@ public class Registro {
                         "REG.IND_ACTIVO",
                         "REG.ID_USUARIO_ALTA",
                         "REG.FEC_ALTA",
+                        "REG.KILOMETRAJE",
+                        "REG.DES_NOMBRE_TALLER",
+                        "REG.COSTO_MTTO",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -94,6 +138,7 @@ public class Registro {
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
                         "SV.DES_MARCA",
+                        "SV.DES_SUBMARCA",
                         "SV.DES_MODELO",
                         "SV.DES_PLACAS",
                         "SV.DES_NUMSERIE",

@@ -1,5 +1,7 @@
 package com.imss.sivimss.vehiculos.beans;
 
+import com.google.gson.Gson;
+import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
@@ -76,4 +78,21 @@ public class MttoVehicular {
         return dr;
     }
 
+    public DatosRequest existe(MttoVehicularRequest request) {
+        String query = "";
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("MT.ID_MTTOVEHICULAR","MT.ID_VEHICULO","MT.IND_ACTIVO")
+                .from("SVT_MTTO_VEHICULAR MT")
+                .where("MT.IND_ACTIVO = :idEstatus")
+                .setParameter("idEstatus", 1)
+                .where("MT.ID_VEHICULO = :idVehiculo")
+                .setParameter("idVehiculo", request.getIdVehiculo());
+        query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
 }

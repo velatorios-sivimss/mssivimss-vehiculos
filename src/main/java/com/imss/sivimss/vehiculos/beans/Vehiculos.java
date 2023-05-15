@@ -53,16 +53,26 @@ public class Vehiculos {
                         "VE.CVE_ASIGNACION",
                         "ME.DES_MTTOESTADO",
                         "TM.DES_MODALIDAD",
-                        "MT.DES_MTTO_TIPO")
+                        "MT.DES_MTTO_TIPO",
+                        "MV.ID_MTTOVEHICULAR",
+                        "MS.ID_MTTO_SOLICITUD",
+                        "VI.ID_MTTOVERIFINICIO",
+                        "REG.ID_MTTO_REGISTRO",
+                        "MV.ID_DELEGACION",
+                        "DL.DES_DELEGACION",
+                        "(select case count(mvt.ID_VEHICULO) when 0 then 'false' else 'true' end as verificacion from svt_mtto_verif_inicio vit left join svt_mtto_vehicular mvt on (vit.ID_MTTOVEHICULAR=mvt.ID_MTTOVEHICULAR) where mvt.ID_VEHICULO =VH.ID_VEHICULO and vit.FEC_REGISTRO =CURRENT_DATE()) as verificacionDia")
                 .from("SVT_VEHICULOS VH")
                 .join("SVC_USO_VEHICULO UV", "VH.ID_USOVEHICULO = UV.ID_USOVEHICULO")
                 .join("SVC_VELATORIO VE", "VH.ID_VELATORIO = VE.ID_VELATORIO")
                 .join("SVC_NIVEL_OFICINA OFI", "VH.ID_OFICINA = OFI.ID_OFICINA")
                 .leftJoin("SVT_MTTO_VEHICULAR MV", "MV.ID_VEHICULO = VH.ID_VEHICULO")
                 .leftJoin("SVT_MTTO_SOLICITUD MS", "MV.ID_MTTOVEHICULAR = MS.ID_MTTOVEHICULAR")
+                .leftJoin("SVT_MTTO_VERIF_INICIO VI", "VI.ID_MTTOVEHICULAR = MV.ID_MTTOVEHICULAR")
+                .leftJoin("SVT_MTTO_REGISTRO REG", "REG.ID_MTTOVEHICULAR = MV.ID_MTTOVEHICULAR")
                 .leftJoin("SVC_MTTO_ESTADO ME", "ME.ID_MTTOESTADO = MV.ID_MTTOESTADO")
                 .leftJoin("SVC_MTTO_MODALIDAD TM", "TM.ID_MTTOMODALIDAD = MS.ID_MTTOMODALIDAD")
                 .leftJoin("SVC_MTTO_TIPO MT", "MT.ID_MTTO_TIPO = MS.ID_MTTO_TIPO")
+                .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
         if (buscarRequest.getNivelOficina() != null) {
@@ -77,14 +87,14 @@ public class Vehiculos {
             queryUtil.where("MS.ID_MTTO_TIPO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getTipoMtto());
         }
-        /*if (buscarRequest.getEstadoMtto() != null) {
-            queryUtil.where("VH.DES_TIPO = :tipoMtto")
+        if (buscarRequest.getEstadoMtto() != null) {
+            queryUtil.where("MV.ID_MTTOESTADO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getEstadoMtto());
-        }*/
-        if (buscarRequest.getPeriodo()!= null) {
+        }
+        /*if (buscarRequest.getPeriodo()!= null) {
             queryUtil.where("VH.DES_PERIDO = :periodo")
                     .setParameter("periodo", buscarRequest.getPeriodo());
-        }
+        }*/
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();

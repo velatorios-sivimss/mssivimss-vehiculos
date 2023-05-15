@@ -33,6 +33,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("ID_LIMPIEZAINTERIOR", request.getVerificacionInicio().getIdLimpiezaInterior().toString());
         q.agregarParametroValues("ID_LIMPIEZAEXTERIOR", request.getVerificacionInicio().getIdLimpiezaExterior().toString());
         q.agregarParametroValues("IND_ESTATUS", "1");
+        q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -55,6 +56,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("ID_LIMPIEZAINTERIOR", request.getVerificacionInicio().getIdLimpiezaInterior().toString());
         q.agregarParametroValues("ID_LIMPIEZAEXTERIOR", request.getVerificacionInicio().getIdLimpiezaExterior().toString());
         q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
+        q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
         q.addWhere("ID_MTTOVERIFINICIO =" + request.getVerificacionInicio().getIdMttoVerifInicio());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -104,6 +106,7 @@ public class MttoVerifiInicio {
                         "SV.DES_MARCA",
                         "SV.DES_MODELO",
                         "SV.DES_PLACAS",
+                        "SV.DES_SUBMARCA",
                         "SV.DES_NUMSERIE",
                         "SV.DES_NUMMOTOR",
                         "SUV.DES_USO",

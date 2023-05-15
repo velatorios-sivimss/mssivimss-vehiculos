@@ -20,7 +20,13 @@ public class MttoRegistroRequest {
     @JsonProperty
     private String  desNotas;
     @JsonProperty
-    private String  idProveedor;
+    private Integer  idProveedor;
     @JsonProperty
     private String desNumcontrato;
+    @JsonProperty
+    private Integer kilometraje;
+    @JsonProperty
+    private String desNombreTaller;
+    @JsonProperty
+    private Float costoMtto;
 }

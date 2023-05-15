@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,26 +54,48 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-        Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-        log.info(response.getCodigo());
-        if (response.getCodigo() == 200) {
-            log.info("Registro exitoso");
-
-            if(requestDto.getVerificacionInicio()!=null){
-                requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+        Response<?> existeMtto = llamarServicio(mttoVehicular.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+        List<Map<String, Object>> resultExiste= (List<Map<String, Object>>) existeMtto.getDatos();
+        Integer idMtto=null;
+        for (Map<String, Object> map : resultExiste) {
+            idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
+        }
+        if(idMtto==null) {
+            Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+            log.info(response.getCodigo());
+            if (response.getCodigo() == 200) {
+                log.info("Registro exitoso");
+                if (requestDto.getVerificacionInicio() != null) {
+                    requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                    llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
+                if (requestDto.getSolicitud() != null) {
+                    requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                    llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
+                if (requestDto.getRegistro() != null) {
+                    requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                    llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
+                return response;
+            } else {
+                throw new BadRequestException(HttpStatus.valueOf(response.getCodigo()), "Error al insertar registro");
+            }
+        } else {
+            log.info("Ya existe el mtto");
+            if (requestDto.getVerificacionInicio() != null) {
+                requestDto.getVerificacionInicio().setIdMttoVehicular(idMtto);
                 llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
-            if(requestDto.getSolicitud()!=null){
-                requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+            if (requestDto.getSolicitud() != null) {
+                requestDto.getSolicitud().setIdMttoVehicular(idMtto);
                 llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
-            if(requestDto.getRegistro()!=null){
-                requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+            if (requestDto.getRegistro() != null) {
+                requestDto.getRegistro().setIdMttoVehicular(idMtto);
                 llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
-            return response;
-        } else {
-            throw new BadRequestException(HttpStatus.valueOf(response.getCodigo()), "Error al insertar registro");
+            return existeMtto;
         }
     }
 
