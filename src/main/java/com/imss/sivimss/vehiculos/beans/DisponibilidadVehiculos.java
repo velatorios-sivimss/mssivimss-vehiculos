@@ -115,7 +115,7 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request, String formatoFecha) {
 		String where="";
 		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DESCRIPCION AS descripcion,  IFNULL(sdv.DISPONIBLE,1) AS disponible"
-				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" + formatoFecha+ "') AS fecha"
+				+ ", IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA) AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ FROM + TABLA_SVT_VEHICULO_SV 
 				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO"
