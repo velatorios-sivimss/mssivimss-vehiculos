@@ -54,7 +54,7 @@ public class DisponibilidadVehiculos {
 	private static final String TABLA_SVC_PERSONA_SP2 =" SVC_PERSONA sp2"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = " SVC_INFORMACION_SERVICIO sis"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV = " SVC_INFORMACION_SERVICIO_VELACION sisv";  
-	private static final String TABAL_SVT_DOMICILIO_SD = "SVT DOMICILIO sd ";
+	private static final String TABAL_SVT_DOMICILIO_SD = "SVT_DOMICILIO sd ";
 	private static final String TABLA_SVC_CP_SC2 = " SVC_CP sc2";
 	private static final String TABLA_SVC_VELATORIO_SV2 = " SVC_VELATORIO sv2";
 	
@@ -86,11 +86,11 @@ public class DisponibilidadVehiculos {
 		this.idDelegacion = vehiculoRequest.getIdDelegacion();
 	}
 
-	public DatosRequest consultarDisponibilidadVehiculos(DatosRequest request) {
+	public DatosRequest consultarDisponibilidadVehiculos(DatosRequest request, String formatoFecha, String formatoHora) {
 		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DESCRIPCION AS descripcion,  IFNULL(sdv.DISPONIBLE,1) AS disponible"
-				+ ", IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA) AS fecha"
+				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" + formatoFecha + "') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas"
-				+ ", IF(sdv.HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.HORA_ENTRADA),sdv.HORA_SALIDA,sdv.HORA_ENTRADA) AS hora  "
+				+ ", TIME_FORMAT(IF(sdv.HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.HORA_ENTRADA),sdv.HORA_SALIDA,sdv.HORA_ENTRADA), '" + formatoHora + "') AS hora  "
 				+ FROM + TABLA_SVT_VEHICULO_SV 
 				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO"
 				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO"
@@ -112,7 +112,7 @@ public class DisponibilidadVehiculos {
 
 		return request;
 	}
-	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request) {
+	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request, String formatoFecha) {
 		String where="";
 		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DESCRIPCION AS descripcion,  IFNULL(sdv.DISPONIBLE,1) AS disponible"
 				+ ", IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA) AS fecha"
@@ -171,14 +171,17 @@ public class DisponibilidadVehiculos {
 	}
 	
 	
-	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request) {
+	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request, String formatoFecha, String formatoHora) {
 		
 		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ ", sv.TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
-				+ ", sc2.DES_MNPIO AS nombreDestino, sdv.HORA_ENTRADA AS horaEntrada, sdv.HORA_SALIDA AS horaSalida, sdv.NIVEL_GASOLINA_INICIAL AS nivelGasIni "
-				+ ", sdv.NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.KM_INICIAL AS kmInicial, sdv.KM_FINAL AS kmFin, sdv.FEC_ENTRADA AS fechaEntrada, sdv.FEC_SALIDA AS fechaSalida, IFNULL(sdv.DISPONIBLE,1) AS disponible"
+				+ ", sc2.DES_MNPIO AS nombreDestino, TIME_FORMAT(sdv.HORA_ENTRADA, '" + formatoHora + "') AS horaEntrada"
+				+ ", TIME_FORMAT(sdv.HORA_SALIDA, '" + formatoHora + "') AS horaSalida, sdv.NIVEL_GASOLINA_INICIAL AS nivelGasIni "
+				+ ", sdv.NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.KM_INICIAL AS kmInicial, sdv.KM_FINAL AS kmFin"
+				+ ", DATE_FORMAT(sdv.FEC_ENTRADA,'" + formatoFecha + "') AS fechaEntrada, DATE_FORMAT(sdv.FEC_SALIDA,'" + formatoFecha + "') AS fechaSalida"
+				+ ", IFNULL(sdv.DISPONIBLE,1) AS disponible"
 				+ FROM + TABLA_SVT_VEHICULO_SV
 				+ LEFT_JOIN + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO "
 				+ JOIN + TABLA_SVC_ORDEN_SERVICIO_SOS + " ON sos.ID_ORDEN_SERVICIO = sdv.ID_ODS  "
