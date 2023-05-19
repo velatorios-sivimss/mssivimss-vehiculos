@@ -79,6 +79,10 @@ public class Vehiculos {
             queryUtil.where("VH.ID_OFICINA = :nivelOficina")
                     .setParameter("nivelOficina", buscarRequest.getNivelOficina());
         }
+        if (buscarRequest.getIdVehiculo() != null && buscarRequest.getIdVehiculo()>0) {
+            queryUtil.where("VH.ID_VEHICULO = :idVehiculo")
+                    .setParameter("idVehiculo", buscarRequest.getIdVehiculo());
+        }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {
             queryUtil.where("VH.DES_PLACAS = :placa")
                     .setParameter("placa", buscarRequest.getPlaca());
