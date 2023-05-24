@@ -30,7 +30,7 @@ import java.util.Map;
 public class MttoVehicularServiceImpl implements MttoVehicularService {
     private static Logger log = LogManager.getLogger(MttoVehicularServiceImpl.class);
 
-    @Value("${endpoints.dominio-consulta}")
+    @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
     private static final String PATH_CONSULTA="/generico/consulta";
