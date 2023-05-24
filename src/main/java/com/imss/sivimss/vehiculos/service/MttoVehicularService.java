@@ -10,4 +10,7 @@ public interface MttoVehicularService {
     Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException;
     Response<?> modificarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException;
     Response<?> modificarEstatusMttoVehicular(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?> detalleVerifInicio(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?> detalleSolicitudMtto(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?> detalleRegistroMtto(DatosRequest request, Authentication authentication) throws IOException;
 }

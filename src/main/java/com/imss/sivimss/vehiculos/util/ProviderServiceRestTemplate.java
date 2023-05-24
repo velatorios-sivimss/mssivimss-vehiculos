@@ -46,6 +46,7 @@ public class ProviderServiceRestTemplate {
 					Response.class);
 			return validarResponse(respuestaGenerado);
 		} catch (IOException exception) {
+			log.error("Error",exception);
 			log.error("Ha ocurrido un error al recuperar la informacion");
 			throw exception;
 		}

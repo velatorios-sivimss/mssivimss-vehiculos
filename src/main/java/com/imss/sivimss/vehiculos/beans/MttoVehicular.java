@@ -1,10 +1,14 @@
 package com.imss.sivimss.vehiculos.beans;
 
+import com.google.gson.Gson;
+import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.QueryHelper;
+import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
+
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,9 +32,8 @@ public class MttoVehicular {
         q.agregarParametroValues("ID_DELEGACION", request.getIdDelegacion().toString());
         q.agregarParametroValues("ID_VELATORIO", request.getIdVelatorio().toString());
         q.agregarParametroValues("FEC_ALTA", FECHAACTUAL);
-        q.agregarParametroValues("FEC_ACTUALIZACION", null);
-        q.agregarParametroValues("FEC_BAJA", null);
-        q.agregarParametroValues("IND_ESTATUS", "1");
+        q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
+        q.agregarParametroValues("IND_ACTIVO", "1");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -48,8 +51,7 @@ public class MttoVehicular {
         q.agregarParametroValues("ID_DELEGACION", request.getIdDelegacion().toString());
         q.agregarParametroValues("ID_VELATORIO", request.getIdVelatorio().toString());
         q.agregarParametroValues("FEC_ACTUALIZACION", FECHAACTUAL);
-        q.agregarParametroValues("FEC_BAJA", null);
-        q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
+        q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
         q.addWhere("ID_MTTOVEHICULAR =" + request.getIdMttoVehicular());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -62,7 +64,7 @@ public class MttoVehicular {
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
-        q.agregarParametroValues("IND_ESTATUS", String.valueOf(status));
+        q.agregarParametroValues("IND_ACTIVO", String.valueOf(status));
         if(status.equals(1)) {
             q.agregarParametroValues("FEC_ACTUALIZACION", FECHAACTUAL);
         } else if(status.equals(0)){
@@ -70,6 +72,24 @@ public class MttoVehicular {
         }
         q.addWhere("ID_MTTOVEHICULAR =" + idMttoVehicular);
         String query = q.obtenerQueryActualizar();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+    public DatosRequest existe(MttoVehicularRequest request) {
+        String query = "";
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("MT.ID_MTTOVEHICULAR","MT.ID_VEHICULO","MT.IND_ACTIVO")
+                .from("SVT_MTTO_VEHICULAR MT")
+                .where("MT.IND_ACTIVO = :idEstatus")
+                .setParameter("idEstatus", 1)
+                .where("MT.ID_VEHICULO = :idVehiculo")
+                .setParameter("idVehiculo", request.getIdVehiculo());
+        query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);

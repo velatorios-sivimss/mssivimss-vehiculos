@@ -10,6 +10,7 @@ import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.service.MttoVehicularService;
+import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.vehiculos.util.Response;
@@ -22,19 +23,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class MttoVehicularServiceImpl implements MttoVehicularService {
     private static Logger log = LogManager.getLogger(MttoVehicularServiceImpl.class);
 
-    @Value("${endpoints.dominio-consulta}")
+    @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
+    private static final String PATH_CONSULTA="/generico/consulta";
+    
     @Autowired
     private ProviderServiceRestTemplate providerRestTemplate;
-
-    private Gson json = new Gson();
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -49,33 +51,59 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/generico/crear";
-        String jsonResult = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request.getDatos());
-        MttoVehicularRequest requestDto = this.mapper.readValue(jsonResult, MttoVehicularRequest.class);
+        Gson json = new Gson();
+        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-        Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-        if (response.getCodigo() == 200) {
-            log.info("Registro exitoso");
-            if(requestDto.getVerificacionInicio()!=null){
-                requestDto.getVerificacionInicio().setIdMttoVehicular(null);
+        Response<?> existeMtto = llamarServicio(mttoVehicular.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+        List<Map<String, Object>> resultExiste= (List<Map<String, Object>>) existeMtto.getDatos();
+        Integer idMtto=null;
+        for (Map<String, Object> map : resultExiste) {
+            idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
+        }
+        if(idMtto==null) {
+            Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+            log.info(response.getCodigo());
+            if (response.getCodigo() == 200) {
+                log.info("Registro exitoso");
+                if (requestDto.getVerificacionInicio() != null) {
+                    requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                    llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
+                if (requestDto.getSolicitud() != null) {
+                    requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                    llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
+                if (requestDto.getRegistro() != null) {
+                    requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                    llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
+                return response;
+            } else {
+                throw new BadRequestException(HttpStatus.valueOf(response.getCodigo()), "Error al insertar registro");
+            }
+        } else {
+            log.info("Ya existe el mtto");
+            if (requestDto.getVerificacionInicio() != null) {
+                requestDto.getVerificacionInicio().setIdMttoVehicular(idMtto);
                 llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
-            if(requestDto.getSolicitud()!=null){
+            if (requestDto.getSolicitud() != null) {
+                requestDto.getSolicitud().setIdMttoVehicular(idMtto);
                 llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
-            if(requestDto.getRegistro()!=null){
+            if (requestDto.getRegistro() != null) {
+                requestDto.getRegistro().setIdMttoVehicular(idMtto);
                 llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             }
-            return response;
-        } else {
-            throw new BadRequestException(HttpStatus.valueOf(response.getCodigo()), "Error al insertar registro");
+            return existeMtto;
         }
     }
 
     @Override
     public Response<?> modificarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/generico/actualizar";
-        String jsonResult = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request.getDatos());
-        MttoVehicularRequest requestDto = this.mapper.readValue(jsonResult,MttoVehicularRequest.class);
+        Gson json = new Gson();
+        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = null;
         Response<?> response = llamarServicio(mttoVehicular.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
         if (response.getCodigo() == 200) {
@@ -98,8 +126,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> modificarEstatusMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/generico/actualizar";
-        String jsonResult = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request.getDatos());
-        MttoVehicularRequest requestDto = this.mapper.readValue(jsonResult,MttoVehicularRequest.class);
+        Gson json = new Gson();
+        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto=null;
         log.info("Nuevo estatus {}", requestDto.getIdEstatus());
         Response<?> response = llamarServicio(mttoVehicular.cambiarEstatus(requestDto.getIdMttoVehicular(), requestDto.getIdEstatus(), usuarioDto).getDatos(), path, authentication);
@@ -124,4 +152,25 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Response<?> response = providerRestTemplate.consumirServicio(dato,url,authentication);
         return response;
     }
+
+	@Override
+	public Response<?> detalleVerifInicio(DatosRequest request, Authentication authentication) throws IOException {
+		  log.info("Obtiene detalle de la verificacion al inicio de la jornada");
+	        return providerRestTemplate.consumirServicio(verifiInicio.detalleVerificacion(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
+	                authentication);
+	}
+
+	@Override
+	public Response<?> detalleSolicitudMtto(DatosRequest request, Authentication authentication) throws IOException {
+		  log.info("Obtiene detalle de la solicitud de mantenimiento");
+	        return providerRestTemplate.consumirServicio(solicitud.detalleSolicitud(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
+	                authentication);
+	}
+
+	@Override
+	public Response<?> detalleRegistroMtto(DatosRequest request, Authentication authentication) throws IOException {
+		log.info("Obtiene detalle del registro de mantenimiento");
+        return providerRestTemplate.consumirServicio(registro.detalleRegistro(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
+                authentication);
+	}
 }
