@@ -37,7 +37,7 @@ plantilla:
   pdf-DisponibilidadVehiculos: ${msit_REPORTE_CONSULTAD_DISP_VEHICULOS}
   
 url_reportes:
-   # ms-reportes: ${msit_REPORTES}
+   ms-reportes: ${msit_GENERICO_REPORTES}
   
  
 jwt:
