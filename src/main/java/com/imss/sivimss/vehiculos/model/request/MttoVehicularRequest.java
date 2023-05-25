@@ -27,4 +27,6 @@ public class MttoVehicularRequest {
     private MttoRegistroRequest registro;
     @JsonProperty
     private Integer idEstatus;
+    @JsonProperty
+    private Integer kilometraje;
 }

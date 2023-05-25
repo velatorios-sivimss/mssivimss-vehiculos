@@ -24,5 +24,9 @@ public class MttoSolicitudRequest {
     @JsonProperty
     private Integer idMttoModalidadDet;
     @JsonProperty
+    private String  desNotas;
+    @JsonProperty
     private Integer idEstatus;
+    @JsonProperty
+    private Integer kilometraje;
 }

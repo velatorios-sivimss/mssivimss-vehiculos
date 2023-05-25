@@ -13,6 +13,8 @@ public class BuscarVehiculosRequest {
     @JsonProperty
     private String placa;
     @JsonProperty
+    private Integer idVehiculo;
+    @JsonProperty
     private Integer tipoMtto;
     @JsonProperty
     private Integer periodo;

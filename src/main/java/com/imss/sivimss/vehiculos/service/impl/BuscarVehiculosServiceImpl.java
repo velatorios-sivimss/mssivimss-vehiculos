@@ -18,7 +18,7 @@ import java.io.IOException;
 public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     private static Logger log = LogManager.getLogger(BuscarVehiculosServiceImpl.class);
 
-    @Value("${endpoints.dominio-consulta}")
+    @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
     private static final String PATH_BUSQUEDA_PAG="/generico/paginado";

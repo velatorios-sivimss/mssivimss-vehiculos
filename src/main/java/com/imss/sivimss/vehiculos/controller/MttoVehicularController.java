@@ -68,7 +68,37 @@ public class MttoVehicularController {
         return CompletableFuture.supplyAsync(
                 () -> getResponseEntity(response)
         );
-    }
+        }
+        
+        @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+        @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+        @TimeLimiter(name = "msflujo")
+        @PostMapping("mttovehicular/detalle/verificacion-inicio")
+        public CompletableFuture<?> detalleVerificacionInicio(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+            log.info("Detalle verificar al inicio de la jornada");
+            Response<?> response = mttoVehicularService.detalleVerifInicio(request, authentication);
+            return CompletableFuture.supplyAsync(() -> getResponseEntity(response));
+        }
+        
+        @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+        @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+        @TimeLimiter(name = "msflujo")
+        @PostMapping("mttovehicular/detalle/solicitud-mtto")
+        public CompletableFuture<?> detalleSolicitudMantenimiento(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+            log.info("Detalle solicitud de mantenimiento");
+            Response<?> response = mttoVehicularService.detalleSolicitudMtto(request, authentication);
+            return CompletableFuture.supplyAsync(() -> getResponseEntity(response));
+        }
+        
+        @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+        @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+        @TimeLimiter(name = "msflujo")
+        @PostMapping("mttovehicular/detalle/registro-mtto")
+        public CompletableFuture<?> detalleRegistroMantenimiento(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+            log.info("Detalle registro de mantenimiento");
+            Response<?> response = mttoVehicularService.detalleRegistroMtto(request, authentication);
+            return CompletableFuture.supplyAsync(() -> getResponseEntity(response));
+        }
 
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
