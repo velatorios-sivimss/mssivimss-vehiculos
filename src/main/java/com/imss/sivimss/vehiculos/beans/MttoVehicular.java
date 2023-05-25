@@ -1,7 +1,5 @@
 package com.imss.sivimss.vehiculos.beans;
 
-import com.google.gson.Gson;
-import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
