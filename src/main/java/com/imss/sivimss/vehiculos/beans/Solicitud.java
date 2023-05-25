@@ -42,7 +42,7 @@ public class Solicitud {
         if(request.getSolicitud().getKilometraje()!=null) {
             q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
-        q.agregarParametroValues("IND_ESTATUS", "1");
+        q.agregarParametroValues("IND_ACTIVO", "1");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -70,7 +70,7 @@ public class Solicitud {
         if(request.getSolicitud().getKilometraje()!=null) {
             q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
-        q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
+        q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -83,7 +83,7 @@ public class Solicitud {
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_SOLICITUD");
-        q.agregarParametroValues("IND_ESTATUS", String.valueOf(status));
+        q.agregarParametroValues("IND_ACTIVO", String.valueOf(status));
         q.addWhere("ID_MTTO_SOLICITUD =" + idMttoSolicitud);
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -100,7 +100,7 @@ public class Solicitud {
                         "SOLI.FEC_REGISTRO",
                         "SOLI.DES_MTTO_CORRECTIVO",
                         "SOLI.ID_MTTOMODALIDAD_DET",
-                        "SOLI.IND_ESTATUS",
+                        "SOLI.IND_ACTIVO",
                         "SOLI.DES_NOTAS",
                         "SOLI.KILOMETRAJE",
                         "MTTO_VEH.ID_MTTOESTADO",

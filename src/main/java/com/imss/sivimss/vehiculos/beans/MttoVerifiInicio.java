@@ -32,7 +32,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("ID_CODIGOFALLO", request.getVerificacionInicio().getIdCodigoFallo().toString());
         q.agregarParametroValues("ID_LIMPIEZAINTERIOR", request.getVerificacionInicio().getIdLimpiezaInterior().toString());
         q.agregarParametroValues("ID_LIMPIEZAEXTERIOR", request.getVerificacionInicio().getIdLimpiezaExterior().toString());
-        q.agregarParametroValues("IND_ESTATUS", "1");
+        q.agregarParametroValues("CVE_ESTATUS", "1");
         q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
@@ -55,7 +55,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("ID_CODIGOFALLO", request.getVerificacionInicio().getIdCodigoFallo().toString());
         q.agregarParametroValues("ID_LIMPIEZAINTERIOR", request.getVerificacionInicio().getIdLimpiezaInterior().toString());
         q.agregarParametroValues("ID_LIMPIEZAEXTERIOR", request.getVerificacionInicio().getIdLimpiezaExterior().toString());
-        q.agregarParametroValues("IND_ESTATUS", request.getIdEstatus().toString());
+        q.agregarParametroValues("CVE_ESTATUS", request.getIdEstatus().toString());
         q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
         q.addWhere("ID_MTTOVERIFINICIO =" + request.getVerificacionInicio().getIdMttoVerifInicio());
         String query = q.obtenerQueryActualizar();
@@ -69,7 +69,7 @@ public class MttoVerifiInicio {
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VERIF_INICIO");
-        q.agregarParametroValues("IND_ESTATUS", String.valueOf(status));
+        q.agregarParametroValues("CVE_ESTATUS", String.valueOf(status));
         q.addWhere("ID_MTTOVERIFINICIO =" + idMmttoVerifInicio);
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -92,7 +92,7 @@ public class MttoVerifiInicio {
                         "VERI_IN.ID_CODIGOFALLO",
                         "VERI_IN.ID_LIMPIEZAINTERIOR",
                         "VERI_IN.ID_LIMPIEZAEXTERIOR",
-                        "VERI_IN.IND_ESTATUS",
+                        "VERI_IN.CVE_ESTATUS",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
