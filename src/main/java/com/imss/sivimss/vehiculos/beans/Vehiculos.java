@@ -104,6 +104,7 @@ public class Vehiculos {
         parametro.put("tamanio",buscarRequest.getTamanio());
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
+        logger.info(query);
         return dr;
     }
 }
