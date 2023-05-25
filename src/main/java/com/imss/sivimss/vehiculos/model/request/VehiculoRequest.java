@@ -30,5 +30,4 @@ public class VehiculoRequest {
 	private String fecIniRepo;
 	private String fecFinRepo;
 	private String fecDia;
-	private Integer idDelegacion;
 }

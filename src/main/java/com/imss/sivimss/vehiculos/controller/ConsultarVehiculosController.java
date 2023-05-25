@@ -40,28 +40,17 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  consultarVehiculos(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response = disponibilidadVehiculosService.consultaVehiculos(request,authentication);
+		Response<?> response = disponibilidadVehiculosService.consultaVehiculos(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
-	@PostMapping("vehiculosDisponiblesCalendario")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object>  consultarVehiculosCalendario(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-	
-		Response<Object> response = disponibilidadVehiculosService.consultaVehiculosCalendario(request,authentication);
-		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-	}
-	
-	
 	@PostMapping("vehiculo-disponible")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  consultarVehiculoDisponible(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response = disponibilidadVehiculosService.consultaVehiculoDisponible(request,authentication);
+		Response<?> response = disponibilidadVehiculosService.consultaVehiculoDisponible(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
@@ -71,7 +60,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  consultarVehiculoDetalleDia(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response = disponibilidadVehiculosService.consultaVehiculoDetallexDia(request,authentication);
+		Response<?> response = disponibilidadVehiculosService.consultaVehiculoDetallexDia(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	@PostMapping("consulta-ods")
@@ -80,7 +69,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  consultarODS(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response = disponibilidadVehiculosService.consultaODS(request,authentication);
+		Response<?> response = disponibilidadVehiculosService.consultaODS(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
@@ -90,7 +79,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  consultarOperador(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response = disponibilidadVehiculosService.consultaOperador(request,authentication);
+		Response<?> response = disponibilidadVehiculosService.consultaOperador(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
@@ -100,7 +89,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  registraVehiculoSalida(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response =  disponibilidadVehiculosService.registraSalidaVehiculo(request,authentication);
+		Response<?> response =  disponibilidadVehiculosService.registraSalidaVehiculo(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
       
 	}
@@ -111,7 +100,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  registraVehiculoEntrada(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response = disponibilidadVehiculosService.registraEntradaVehiculo(request,authentication);
+		Response<?> response = disponibilidadVehiculosService.registraEntradaVehiculo(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 
@@ -121,7 +110,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  consultaVelatorios(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response =  disponibilidadVehiculosService.consultarVelatorio(request,authentication);
+		Response<?> response =  disponibilidadVehiculosService.consultarVelatorio(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
       
 	}
@@ -132,7 +121,7 @@ public class ConsultarVehiculosController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object>  generarDocumento(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 	
-		Response<Object> response =  disponibilidadVehiculosService.generarDocumento(request,authentication);
+		Response<?> response =  disponibilidadVehiculosService.generarDocumento(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
       
 	}

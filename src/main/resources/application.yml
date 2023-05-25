@@ -1,5 +1,5 @@
 server:
-  port: 9091
+  port: 8080
   servlet:
     contextPath: /mssivimss-vehiculos/v1
 spring:
@@ -26,19 +26,16 @@ logos:
   msit_logo_sistema: ${msit_LOGO_SISTEMA}
 
 endpoints:
-   dominio: ${msit_GENERICO_DOMINIO}   
+   dominio: ${msit_GENERICO_DOMINIO}
    dominio-consulta: ${msit_GENERICO_CONSULTA}
    dominio-consulta-paginado: ${msit_GENERICO_PAGINADO}
    dominio-crear: ${msit_GENERICO_CREAR}
-   dominio-actualizar: ${msit_GENERICO_ACTUALIZAR} 
-   mod-catalogos: ${msit_CATALOGOS}
-plantilla:
+   dominio-actualizar: ${msit_GENERICO_ACTUALIZAR}
+   ms-reportes: ${msit_GENERICO_REPORTES}
+
+url_reportes: 
   pdf-DisponibilidadVehiculos: reportes/generales/DiponibilidadVehiculos.jrxml
   
-url_reportes:
-  ms-reportes: ${msit_REPORTES}
-
-
  
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
@@ -62,7 +59,7 @@ resilience4j.circuitbreaker:
         event-consumer-buffer-size: '10'
         registerHealthIndicator: 'true'
         waitDurationInOpenState: ${msit_TIEMPO_DURACION}
-        permittedNumberOfCallsInHalfOpenState: ${msit_NUMERO_INTENTOS}
+        permittedNumberOfCallsInHalfOpenState: '3'
         slidingWindowSize: '5'
 resilience4j.retry:
     retryAspectOrder: 2
@@ -74,7 +71,7 @@ resilience4j.timelimiter:
     timeLimiterAspectOrder: 3
     instances:
       msflujo:
-        timeout-duration: ${msit_TIEMPO_DURACION}
+        timeout-duration: 3s
         
         
 formato_fecha: ${msit_FORMATO_FECHA}
