@@ -22,15 +22,15 @@ logging:
     org.hibernate: error
 
 logos:
-  msit_logo_imss: /sivimss_data/LOGOS/logoImss.png
-  msit_logo_sistema: /sivimss_data/LOGOS/logoSistema.png
+  msit_logo_imss: ${msit_LOGO_IMSS}
+  msit_logo_sistema: ${msit_LOGO_SISTEMA}
 
 endpoints:
-   dominio: ${msit_GENERICO_DOMINIO}
-   dominio-consulta: http://localhost:8094/mssivimss-mod-catalogos/generico/consulta
-   dominio-consulta-paginado: http://localhost:8094/mssivimss-mod-catalogos/generico/paginado
-   dominio-crear: http://localhost:8094/mssivimss-mod-catalogos/generico/crear
-   dominio-actualizar: http://localhost:8094/mssivimss-mod-catalogos/generico/actualizar
+   dominio: ${msit_GENERICO_DOMINIO}   
+   dominio-consulta: ${msit_GENERICO_CONSULTA}
+   dominio-consulta-paginado: ${msit_GENERICO_PAGINADO}
+   dominio-crear: ${msit_GENERICO_CREAR}
+   dominio-actualizar: ${msit_GENERICO_ACTUALIZAR} 
    mod-catalogos: ${msit_CATALOGOS}
 plantilla:
   pdf-DisponibilidadVehiculos: reportes/generales/DiponibilidadVehiculos.jrxml

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.security.jwt.JwtTokenProvider;
 
-
 @Service
 public class ProviderServiceRestTemplate {
 
