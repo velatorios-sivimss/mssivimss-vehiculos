@@ -17,7 +17,7 @@ import java.io.IOException;
 public class MttoCatalogosServiceImpl implements MttoCatalogosService {
     private static Logger log = LogManager.getLogger(MttoVehicularServiceImpl.class);
 
-    @Value("${endpoints.dominio-consulta}")
+    @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
     private static final String PATH_BUSQUEDA="/generico/consulta";
