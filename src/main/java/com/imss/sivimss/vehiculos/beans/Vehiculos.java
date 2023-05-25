@@ -60,7 +60,7 @@ public class Vehiculos {
                         "REG.ID_MTTO_REGISTRO",
                         "MV.ID_DELEGACION",
                         "DL.DES_DELEGACION",
-                        "(select case count(mvt.ID_VEHICULO) when 0 then 'false' else 'true' end as verificacion from svt_mtto_verif_inicio vit left join svt_mtto_vehicular mvt on (vit.ID_MTTOVEHICULAR=mvt.ID_MTTOVEHICULAR) where mvt.ID_VEHICULO =VH.ID_VEHICULO and vit.FEC_REGISTRO =CURRENT_DATE()) as verificacionDia")
+                        "(select case count(mvt.ID_VEHICULO) when 0 then 'false' else 'true' end as verificacion from SVT_MTTO_VERIF_INICIO vit left join SVT_MTTO_VEHICULAR mvt on (vit.ID_MTTOVEHICULAR=mvt.ID_MTTOVEHICULAR) where mvt.ID_VEHICULO =VH.ID_VEHICULO and vit.FEC_REGISTRO =CURRENT_DATE()) as verificacionDia")
                 .from("SVT_VEHICULOS VH")
                 .join("SVC_USO_VEHICULO UV", "VH.ID_USOVEHICULO = UV.ID_USOVEHICULO")
                 .join("SVC_VELATORIO VE", "VH.ID_VELATORIO = VE.ID_VELATORIO")
@@ -95,10 +95,6 @@ public class Vehiculos {
             queryUtil.where("MV.ID_MTTOESTADO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getEstadoMtto());
         }
-        /*if (buscarRequest.getPeriodo()!= null) {
-            queryUtil.where("VH.DES_PERIDO = :periodo")
-                    .setParameter("periodo", buscarRequest.getPeriodo());
-        }*/
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();

@@ -23,9 +23,9 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_USOVEHICULO",
                         "DES_USO",
-                        "IND_ESTATUS")
+                        "IND_ACTIVO")
                 .from("SVC_USO_VEHICULO UV")
-                .where("UV.IND_ESTATUS = :idEstatus")
+                .where("UV.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
@@ -40,9 +40,9 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_MTTOMODALIDAD",
                         "DES_MODALIDAD",
-                        "IND_ESTATUS")
+                        "IND_ACTIVO")
                 .from("SVC_MTTO_MODALIDAD MM")
-                .where("MM.IND_ESTATUS = :idEstatus")
+                .where("MM.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
@@ -71,9 +71,9 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_MTTO_TIPO",
                         "DES_MTTO_TIPO",
-                        "IND_ESTATUS")
+                        "IND_ACTIVO")
                 .from("SVC_MTTO_TIPO MT")
-                .where("MT.IND_ESTATUS = :idEstatus")
+                .where("MT.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
@@ -88,9 +88,9 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_MTTOESTADO",
                         "DES_MTTOESTADO",
-                        "IND_ESTATUS")
+                        "IND_ACTIVO")
                 .from("SVC_MTTO_ESTADO ME")
-                .where("ME.IND_ESTATUS = :idEstatus")
+                .where("ME.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
@@ -124,10 +124,10 @@ public class MttoCatalogos {
                         "DES_CORREOE",
                         "DES_REGIMEN",
                         "DES_REPRESENTANTE_LEGAL",
-                        "CVE_ESTATUS",
+                        "IND_ACTIVO",
                         "ID_USUARIO_ALTA")
                 .from("SVT_PROVEEDOR PV")
-                .where("PV.CVE_ESTATUS = :idEstatus")
+                .where("PV.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
@@ -142,9 +142,9 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_MTTONIVEL",
                         "DES_NIVEL",
-                        "IND_ESTATUS")
+                        "IND_ACTIVO")
                 .from("SVC_MTTO_NIVEL MN")
-                .where("MN.IND_ESTATUS = :idEstatus")
+                .where("MN.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
