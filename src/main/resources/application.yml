@@ -31,10 +31,13 @@ endpoints:
    dominio-consulta-paginado: ${msit_GENERICO_PAGINADO}
    dominio-crear: ${msit_GENERICO_CREAR}
    dominio-actualizar: ${msit_GENERICO_ACTUALIZAR}
-   ms-reportes: ${msit_GENERICO_REPORTES}
+   mod-catalogos: ${msit_CATALOGOS}
 
-url_reportes: 
-  pdf-DisponibilidadVehiculos: reportes/generales/DiponibilidadVehiculos.jrxml
+plantilla: 
+  pdf-DisponibilidadVehiculos: ${msit_REPORTE_CONSULTAD_DISP_VEHICULOS}
+  
+url_reportes:
+   # ms-reportes: ${msit_REPORTES}
   
  
 jwt:
