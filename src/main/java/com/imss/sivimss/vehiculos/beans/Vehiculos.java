@@ -41,7 +41,7 @@ public class Vehiculos {
                         "VH.DES_PLACAS",
                         "VH.DES_NUMSERIE",
                         "VH.DES_NUMMOTOR",
-                        "VH.DESCRIPCION",
+                        "VH.DES_VEHICULO",
                         "VH.FEC_ADQUISICION",
                         "VH.TOTAL",
                         "VH.IMPORTE_PRIMA",

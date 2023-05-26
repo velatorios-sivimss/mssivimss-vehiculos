@@ -40,7 +40,7 @@ public class Solicitud {
             q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
         }
         if(request.getSolicitud().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", "1");
         String query = q.obtenerQueryInsertar();
@@ -68,7 +68,7 @@ public class Solicitud {
             q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
         }
         if(request.getSolicitud().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
@@ -102,7 +102,7 @@ public class Solicitud {
                         "SOLI.ID_MTTOMODALIDAD_DET",
                         "SOLI.IND_ACTIVO",
                         "SOLI.DES_NOTAS",
-                        "SOLI.KILOMETRAJE",
+                        "SOLI.NUM_KILOMETRAJE",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
