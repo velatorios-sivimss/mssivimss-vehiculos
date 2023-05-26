@@ -49,7 +49,7 @@ public class Registro {
             q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
         }
         if(request.getRegistro().getCostoMtto()!=null) {
-            q.agregarParametroValues("COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+            q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
@@ -89,7 +89,7 @@ public class Registro {
             q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
         }
         if(request.getRegistro().getCostoMtto()!=null) {
-            q.agregarParametroValues("COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+            q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
@@ -126,7 +126,7 @@ public class Registro {
                         "REG.FEC_ALTA",
                         "REG.NUM_KILOMETRAJE",
                         "REG.DES_NOMBRE_TALLER",
-                        "REG.COSTO_MTTO",
+                        "REG.MON_COSTO_MTTO",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
