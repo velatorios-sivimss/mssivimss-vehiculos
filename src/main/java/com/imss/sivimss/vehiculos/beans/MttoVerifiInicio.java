@@ -111,7 +111,7 @@ public class MttoVerifiInicio {
                         "SV.DES_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
-                        "SVEL.NOM_VELATORIO",
+                        "SVEL.DES_VELATORIO",
                         "SMN_ACEITE.DES_NIVEL as DES_NIVEL_ACEITE",
                         "SMN_AGUA.DES_NIVEL as DES_NIVEL_AGUA",
                         "SMN_NETRA.DES_NIVEL as DES_NIVEL_NEUMATRASE",
