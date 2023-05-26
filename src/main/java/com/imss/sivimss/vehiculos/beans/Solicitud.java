@@ -121,7 +121,7 @@ public class Solicitud {
                         "SV.DES_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
-                        "SVEL.NOM_VELATORIO",
+                        "SVEL.DES_VELATORIO",
                         "SMT.DES_MTTO_TIPO",
                         "SMM.DES_MODALIDAD")
                 .from("SVT_MTTO_SOLICITUD SOLI")

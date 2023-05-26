@@ -145,7 +145,7 @@ public class Registro {
                         "SV.DES_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
-                        "SVEL.NOM_VELATORIO",
+                        "SVEL.DES_VELATORIO",
                         "SMM.DES_MODALIDAD",
                         "SP.NOM_PROVEEDOR",
                         "SP.ID_TIPO_PROVEEDOR",

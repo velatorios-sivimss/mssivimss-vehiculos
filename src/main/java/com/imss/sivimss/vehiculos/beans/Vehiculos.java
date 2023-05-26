@@ -48,7 +48,7 @@ public class Vehiculos {
                         "VH.IND_ACTIVO",
                         "VH.ID_OFICINA",
                         "OFI.DES_NIVELOFICINA",
-                        "VE.NOM_VELATORIO",
+                        "VE.DES_VELATORIO",
                         "VE.NOM_RESPO_SANITARIO",
                         "VE.CVE_ASIGNACION",
                         "ME.DES_MTTOESTADO",
