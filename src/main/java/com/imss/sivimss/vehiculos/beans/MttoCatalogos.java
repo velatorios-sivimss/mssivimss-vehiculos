@@ -105,7 +105,7 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_PROVEEDOR",
                         "NOM_PROVEEDOR",
-                        "NOM_BANCO",
+                        "DES_BANCO",
                         "CVE_BANCARIA",
                         "ID_TIPO_PROVEEDOR",
                         "DES_RFC",
