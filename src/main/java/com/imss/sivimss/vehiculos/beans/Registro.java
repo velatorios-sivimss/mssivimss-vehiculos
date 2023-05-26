@@ -43,7 +43,7 @@ public class Registro {
         q.agregarParametroValues("IND_ACTIVO", "1");
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
         if(request.getRegistro().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         }
         if(request.getRegistro().getDesNombreTaller()!=null) {
             q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
@@ -83,7 +83,7 @@ public class Registro {
         q.agregarParametroValues("IND_ACTIVO", "1");
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
         if(request.getRegistro().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         }
         if(request.getRegistro().getDesNombreTaller()!=null) {
             q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
@@ -124,7 +124,7 @@ public class Registro {
                         "REG.IND_ACTIVO",
                         "REG.ID_USUARIO_ALTA",
                         "REG.FEC_ALTA",
-                        "REG.KILOMETRAJE",
+                        "REG.NUM_KILOMETRAJE",
                         "REG.DES_NOMBRE_TALLER",
                         "REG.COSTO_MTTO",
                         "MTTO_VEH.ID_MTTOESTADO",
