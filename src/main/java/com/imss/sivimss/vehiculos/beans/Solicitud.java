@@ -145,4 +145,19 @@ public class Solicitud {
 		logger.info(query);
 		return request;
 	}
+
+    public DatosRequest existe(MttoVehicularRequest request) {
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT SOL.ID_MTTO_SOLICITUD, SOL.ID_MTTOVEHICULAR FROM SVT_MTTO_SOLICITUD SOL WHERE SOL.FEC_REGISTRO=CURRENT_DATE()");
+        sql.append(" AND SOL.IND_ACTIVO=1").append(" AND SOL.ID_MTTOVEHICULAR="+request.getSolicitud().getIdMttoVehicular()).append(";");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
 }

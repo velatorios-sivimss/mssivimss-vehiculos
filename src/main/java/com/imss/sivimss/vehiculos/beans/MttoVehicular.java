@@ -54,6 +54,7 @@ public class MttoVehicular {
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
         parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
         dr.setDatos(parametro);
         return dr;
     }
@@ -73,23 +74,20 @@ public class MttoVehicular {
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
+        logger.info(query);
         return dr;
     }
 
     public DatosRequest existe(MttoVehicularRequest request) {
-        String query = "";
-        SelectQueryUtil queryUtil = new SelectQueryUtil();
-        queryUtil.select("MT.ID_MTTOVEHICULAR","MT.ID_VEHICULO","MT.IND_ACTIVO")
-                .from("SVT_MTTO_VEHICULAR MT")
-                .where("MT.IND_ACTIVO = :idEstatus")
-                .setParameter("idEstatus", 1)
-                .where("MT.ID_VEHICULO = :idVehiculo")
-                .setParameter("idVehiculo", request.getIdVehiculo());
-        query = queryUtil.build();
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.ID_VEHICULO, MT.IND_ACTIVO FROM SVT_MTTO_VEHICULAR MT WHERE MT.FEC_REGISTRO=CURRENT_DATE()");
+        sql.append(" AND MT.IND_ACTIVO=1").append(" AND MT.ID_VEHICULO="+request.getIdVehiculo()).append(";");
+        query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
         parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
         dr.setDatos(parametro);
         return dr;
     }

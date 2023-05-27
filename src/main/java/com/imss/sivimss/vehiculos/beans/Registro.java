@@ -172,4 +172,18 @@ public class Registro {
 		logger.info(query);
 		return request;
 	}
+
+    public DatosRequest existe(MttoVehicularRequest request) {
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT REG.ID_MTTO_REGISTRO, REG.ID_MTTOVEHICULAR FROM SVT_MTTO_REGISTRO REG WHERE REG.FEC_REGISTRO=CURRENT_DATE()");
+        sql.append(" AND REG.IND_ACTIVO=1").append(" AND REG.ID_MTTOVEHICULAR="+request.getRegistro().getIdMttoVehicular()).append(";");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
 }

@@ -85,15 +85,48 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             log.info("Ya existe el mtto");
             if (requestDto.getVerificacionInicio() != null) {
                 requestDto.getVerificacionInicio().setIdMttoVehicular(idMtto);
-                llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                Response<?> existeMttoVI = llamarServicio(verifiInicio.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+                List<Map<String, Object>> resultExisteVI= (List<Map<String, Object>>) existeMttoVI.getDatos();
+                Integer idMttoVI=null;
+                for (Map<String, Object> map : resultExisteVI) {
+                    idMttoVI=(Integer) map.get("ID_MTTOVERIFINICIO");
+                }
+                if(idMttoVI==null) {
+                    llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                } else {
+                    requestDto.getVerificacionInicio().setIdMttoVerifInicio(idMttoVI);
+                    llamarServicio(verifiInicio.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
+                }
             }
             if (requestDto.getSolicitud() != null) {
                 requestDto.getSolicitud().setIdMttoVehicular(idMtto);
-                llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                Response<?> existeMttoSol = llamarServicio(solicitud.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+                List<Map<String, Object>> resultExisteSol= (List<Map<String, Object>>) existeMttoSol.getDatos();
+                Integer idMttoSol=null;
+                for (Map<String, Object> map : resultExisteSol) {
+                    idMttoSol=(Integer) map.get("ID_MTTO_SOLICITUD");
+                }
+                if(idMttoSol==null) {
+                    llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }else {
+                    requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
+                    llamarServicio(solicitud.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
+                }
             }
             if (requestDto.getRegistro() != null) {
                 requestDto.getRegistro().setIdMttoVehicular(idMtto);
-                llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                Response<?> existeMttoReg = llamarServicio(registro.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+                List<Map<String, Object>> resultExisteReg= (List<Map<String, Object>>) existeMttoReg.getDatos();
+                Integer idMttoReg=null;
+                for (Map<String, Object> map : resultExisteReg) {
+                    idMttoReg=(Integer) map.get("ID_MTTO_REGISTRO");
+                }
+                if(idMttoReg==null) {
+                    llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                } else {
+                    requestDto.getRegistro().setIdMttoRegistro(idMttoReg);
+                    llamarServicio(registro.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
+                }
             }
             return existeMtto;
         }
