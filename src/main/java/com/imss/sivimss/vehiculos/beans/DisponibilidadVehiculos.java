@@ -153,7 +153,7 @@ public class DisponibilidadVehiculos {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
 				.select("sv.ID_VEHICULO AS idVehiculo","sv.DES_MARCA AS marca","sv.DES_MODELO AS modelo"
-						,"sv.DES_PLACAS AS placas","sv.TARJETA_CIRCULACION AS   tarjetaCirculacion"
+						,"sv.DES_PLACAS AS placas","sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
 						,"sos.CVE_FOLIO AS folioODS","CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
 						,"CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 						,"sc2.DES_MNPIO AS nombreDestino, " + CAMPO_SOS_ID_ORDEN_SERVICIO + " AS idODS","IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible")
@@ -181,7 +181,7 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request, String formatoFecha, String formatoHora) {
 		
 		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
-				+ ", sv.TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
+				+ ", sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
 				+ ", sc2.DES_MNPIO AS nombreDestino, TIME_FORMAT(sdv.TIM_HORA_ENTRADA, '" + formatoHora + "') AS horaEntrada"
