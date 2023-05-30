@@ -56,8 +56,16 @@ public class DisponibilidadVehiculos {
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_SIS = " SVC_INFORMACION_SERVICIO sis"; 
 	private static final String TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV = " SVC_INFORMACION_SERVICIO_VELACION sisv";  
 	private static final String TABAL_SVT_DOMICILIO_SD = "SVT_DOMICILIO sd ";
+	private static final String TABAL_SVT_DOMICILIO_SD2 = "SVT_DOMICILIO sd2 ";
+	private static final String TABAL_SVT_DOMICILIO_SD3 = "SVT_DOMICILIO sd3 ";
 	private static final String TABLA_SVC_CP_SC2 = " SVC_CP sc2";
+	private static final String TABLA_SVC_CP_SC3 = " SVC_CP sc3";
+	private static final String TABLA_SVC_CP_SC4 = " SVC_CP sc4";
+	private static final String TABLA_SVT_PANTEON_SP3 = " SVT_PANTEON sp3";
 	private static final String TABLA_SVC_VELATORIO_SV2 = " SVC_VELATORIO sv2";
+	private static final String TABLA_SVC_SALA_SS = " SVC_SALA ss";
+	private static final String TABALA_SVT_OPERADORES_SO = " SVT_OPERADORES so";
+	private static final String TABLA_SVT_USUARIOS_SU = " SVT_USUARIOS su";
 
 	private static final String CAMPO_SOS_ID_ORDEN_SERVICIO = "sos.ID_ORDEN_SERVICIO";
 	private static final String CAMPO_SIS_ID_ORDEN_SERVICIO = "sis.ID_ORDEN_SERVICIO";
@@ -214,40 +222,40 @@ public class DisponibilidadVehiculos {
 		queryUno.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				,"concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 				,"sc2.DES_MNPIO AS nombreOrigen"," sc4.DES_MNPIO AS nombreDestino")
-				.from("SVC_ORDEN_SERVICIO sos")
-				.join("SVC_CONTRATANTE sc", "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
-				.join("SVC_PERSONA sp","sc.ID_PERSONA = sp.ID_PERSONA")
-				.leftJoin("SVC_FINADO sf", CAMPO_SOS_ID_ORDEN_SERVICIO + " = sf.ID_ORDEN_SERVICIO")
-				.leftJoin("SVC_PERSONA sp2","sp2.ID_PERSONA = sf.ID_PERSONA")
-				.join("SVC_INFORMACION_SERVICIO sis",CAMPO_SIS_ID_ORDEN_SERVICIO + " = " + CAMPO_SOS_ID_ORDEN_SERVICIO )
-				.join("SVC_INFORMACION_SERVICIO_VELACION sisv","sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
-				.join("svt_domicilio sd ",CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO + "")
-				.join("SVC_CP sc2",CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP + "")
-				.join("svt_domicilio sd2 ","sd2.ID_DOMICILIO = " + CAMPO_SISV_ID_DOMICILIO + "")
-				.join("SVC_CP sc3","sc3.ID_CODIGO_POSTAL = sd2.DES_CP")
-				.leftJoin("svc_sala ss ","ss.ID_SALA  = sis.ID_SALA")
-				.join("svc_velatorio sv","sv.ID_VELATORIO = ss.ID_VELATORIO")
-				.join("svt_domicilio sd3","sd3.ID_DOMICILIO = sv.ID_DOMICILIO") 
-				.join("svc_cp sc4","sc4.ID_CODIGO_POSTAL = sd3.DES_CP")
+				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
+				.join(TABLA_SVC_CONTRATANTE_SC, "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
+				.join(TABLA_SVC_PERSONA_SP,"sc.ID_PERSONA = sp.ID_PERSONA")
+				.leftJoin(TABLA_SVC_FINADO_SF, CAMPO_SOS_ID_ORDEN_SERVICIO + " = sf.ID_ORDEN_SERVICIO")
+				.leftJoin(TABLA_SVC_PERSONA_SP2,"sp2.ID_PERSONA = sf.ID_PERSONA")
+				.join(TABLA_SVC_INFORMACION_SERVICIO_SIS,CAMPO_SIS_ID_ORDEN_SERVICIO + " = " + CAMPO_SOS_ID_ORDEN_SERVICIO )
+				.join(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV,"sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
+				.join(TABAL_SVT_DOMICILIO_SD,CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO + "")
+				.join(TABLA_SVC_CP_SC2,CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP + "")
+				.join(TABAL_SVT_DOMICILIO_SD2,"sd2.ID_DOMICILIO = " + CAMPO_SISV_ID_DOMICILIO + "")
+				.join(TABLA_SVC_CP_SC3,"sc3.ID_CODIGO_POSTAL = sd2.DES_CP")
+				.leftJoin(TABLA_SVC_SALA_SS,"ss.ID_SALA  = sis.ID_SALA")
+				.join(TABLA_SVC_VELATORIO_SV,"sv.ID_VELATORIO = ss.ID_VELATORIO")
+				.join(TABAL_SVT_DOMICILIO_SD3,"sd3.ID_DOMICILIO = sv.ID_DOMICILIO") 
+				.join(TABLA_SVC_CP_SC4,"sc4.ID_CODIGO_POSTAL = sd3.DES_CP")
 				.where("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
 		queryDos.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				, "concat(sp2.NOM_PERSONA, ' '  , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 				, "sc2.DES_MNPIO AS nombreOrigen","sc4.DES_MNPIO AS nombreDestino")
-				.from("SVC_ORDEN_SERVICIO sos")
-				.join("SVC_CONTRATANTE sc","sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
-				.join("SVC_PERSONA sp","sc.ID_PERSONA = sp.ID_PERSONA")
-				.leftJoin("SVC_FINADO sf",CAMPO_SOS_ID_ORDEN_SERVICIO + " = sf.ID_ORDEN_SERVICIO")
-				.leftJoin("SVC_PERSONA sp2","sp2.ID_PERSONA = sf.ID_PERSONA")
-				.join("SVC_INFORMACION_SERVICIO sis",CAMPO_SIS_ID_ORDEN_SERVICIO + " = " + CAMPO_SOS_ID_ORDEN_SERVICIO )
-				.join("SVC_INFORMACION_SERVICIO_VELACION sisv","sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
-				.join("svt_domicilio sd ",CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO + "")
-				.join("SVC_CP sc2", CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP + "")
-				.join("svt_domicilio sd2 ","sd2.ID_DOMICILIO = " + CAMPO_SISV_ID_DOMICILIO + "")
-				.join("SVC_CP sc3","sc3.ID_CODIGO_POSTAL = sd2.DES_CP")
-				.leftJoin("svt_panteon sp3","sp3.ID_PANTEON = sis.ID_PANTEON")
-				.join("svt_domicilio sd3","sd3.ID_DOMICILIO = sp3.ID_DOMICILIO") 
-				.join("svc_cp sc4","sc4.ID_CODIGO_POSTAL = sd3.DES_CP")
+				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
+				.join(TABLA_SVC_CONTRATANTE_SC,"sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
+				.join(TABLA_SVC_PERSONA_SP,"sc.ID_PERSONA = sp.ID_PERSONA")
+				.leftJoin(TABLA_SVC_FINADO_SF,CAMPO_SOS_ID_ORDEN_SERVICIO + " = sf.ID_ORDEN_SERVICIO")
+				.leftJoin(TABLA_SVC_PERSONA_SP2,"sp2.ID_PERSONA = sf.ID_PERSONA")
+				.join(TABLA_SVC_INFORMACION_SERVICIO_SIS,CAMPO_SIS_ID_ORDEN_SERVICIO + " = " + CAMPO_SOS_ID_ORDEN_SERVICIO )
+				.join(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV,"sisv.ID_INFORMACION_SERVICIO = sis.ID_INFORMACION_SERVICIO")
+				.join(TABAL_SVT_DOMICILIO_SD,CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO + "")
+				.join(TABLA_SVC_CP_SC2, CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP + "")
+				.join(TABAL_SVT_DOMICILIO_SD2,"sd2.ID_DOMICILIO = " + CAMPO_SISV_ID_DOMICILIO + "")
+				.join(TABLA_SVC_CP_SC3,"sc3.ID_CODIGO_POSTAL = sd2.DES_CP")
+				.leftJoin(TABLA_SVT_PANTEON_SP3,"sp3.ID_PANTEON = sis.ID_PANTEON")
+				.join(TABAL_SVT_DOMICILIO_SD3,"sd3.ID_DOMICILIO = sp3.ID_DOMICILIO") 
+				.join(TABLA_SVC_CP_SC4,"sc4.ID_CODIGO_POSTAL = sd3.DES_CP")
 				.where("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
 		final String query = queryUno.union(queryDos);
@@ -261,8 +269,8 @@ public class DisponibilidadVehiculos {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil
 				.select("so.ID_OPERADOR AS idResponsable"," CONCAT(su.NOM_USUARIO ,' ', su.NOM_APELLIDO_PATERNO ,' ', su.NOM_APELLIDO_MATERNO ) AS nombreResponsable")
-				.from("svt_operadores so")
-				.innerJoin("SVT_USUARIOS su", "su.ID_USUARIO  = so.ID_USUARIO")
+				.from(TABALA_SVT_OPERADORES_SO)
+				.innerJoin(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO  = so.ID_USUARIO")
 				.where("so.ID_VEHICULO = :idVehi")
 				.setParameter(PARAM_IDVEHICULO, this.idVehiculo);
 		final String query = queryUtil.build();
@@ -282,7 +290,7 @@ public class DisponibilidadVehiculos {
 
 	public DatosRequest registrarVehiculoSalida(DatosRequest request) {
 
-		final QueryHelper q = new QueryHelper("INSERT INTO svt_disponibilidad_vehiculo");
+		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DISPONIBILIDAD_VEHICULO");
 		q.agregarParametroValues("ID_VEHICULO", "'" + this.idVehiculo + "'");
 		q.agregarParametroValues("ID_ODS", "'" + this.idODS + "'");
 		q.agregarParametroValues("FEC_SALIDA", "'" + this.fecSalida + "'");
@@ -330,7 +338,7 @@ public class DisponibilidadVehiculos {
 	  }
 	public DatosRequest registrarVehiculoEntrada(DatosRequest request) {
 
-		final QueryHelper q = new QueryHelper("INSERT INTO svt_disponibilidad_vehiculo");
+		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DISPONIBILIDAD_VEHICULO");
 		q.agregarParametroValues("ID_VEHICULO", "'" + this.idVehiculo + "'");
 		q.agregarParametroValues("ID_ODS", "'" + this.idODS + "'");
 		q.agregarParametroValues("FEC_ENTRADA", "'" + this.fecEntrada + "'");
