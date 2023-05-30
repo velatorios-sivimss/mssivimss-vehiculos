@@ -291,14 +291,14 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		Map<String, Object> envioDatos = vehiculo.generarReportePDF(reporteDto,nombrePdfReportes);
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
+			log.info(CU060_NAME + envioDatos.get("condicion").toString());
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".generarDocumento", this.getClass().getPackage().toString(), "generarDocumento", GENERA_DOCUMENTO, authentication, null);
 			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
-			String consulta = vehiculo.generarReportePDF(reporteDto, nombrePdfReportes).get("condicion").toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
+			String consulta = envioDatos.get("condicion").toString();
+			
+			log.error(CU060_NAME + ERROR_QUERY + consulta);
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + consulta, GENERA_DOCUMENTO,
 					authentication, null);
 			throw new IOException("52", e.getCause());
