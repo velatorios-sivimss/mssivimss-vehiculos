@@ -43,6 +43,7 @@ public class Solicitud {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", "1");
+        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -71,6 +72,7 @@ public class Solicitud {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
+        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -148,7 +150,7 @@ public class Solicitud {
 
     public DatosRequest existe(MttoVehicularRequest request) {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT SOL.ID_MTTO_SOLICITUD, SOL.ID_MTTOVEHICULAR FROM SVT_MTTO_SOLICITUD SOL WHERE SOL.FEC_REGISTRO=CURRENT_DATE()");
+        StringBuilder sql=new StringBuilder("SELECT SOL.ID_MTTO_SOLICITUD, SOL.ID_MTTOVEHICULAR FROM SVT_MTTO_SOLICITUD SOL WHERE SOL.FEC_SOLICTUD=CURRENT_DATE()");
         sql.append(" AND SOL.IND_ACTIVO=1").append(" AND SOL.ID_MTTOVEHICULAR="+request.getSolicitud().getIdMttoVehicular()).append(";");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
