@@ -14,7 +14,7 @@ spring:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
-            
+
 logging:
   level:
     root: info
@@ -22,62 +22,62 @@ logging:
     org.hibernate: error
 
 logos:
-  msit_logo_imss: ${msit_LOGO_IMSS}
-  msit_logo_sistema: ${msit_LOGO_SISTEMA}
+  msit_logo_imss: /sivimss_data/LOGOS/logoImss.png
+  msit_logo_sistema: /sivimss_data/LOGOS/logoSistema.png
 
 endpoints:
-   dominio: ${msit_GENERICO_DOMINIO}
-   dominio-consulta: ${msit_GENERICO_CONSULTA}
-   dominio-consulta-paginado: ${msit_GENERICO_PAGINADO}
-   dominio-crear: ${msit_GENERICO_CREAR}
-   dominio-actualizar: ${msit_GENERICO_ACTUALIZAR}
-   mod-catalogos: ${msit_CATALOGOS}
+  dominio: http://localhost:8082/mssivimss-mod-catalogos/v1
+  dominio-consulta: http://localhost:81/mssivimss-mod-catalogos/generico/consulta
+  dominio-consulta-paginado: http://localhost:8081/mssivimss-mod-catalogos/generico/paginado
+  dominio-crear: http://localhost:8081/mssivimss-mod-catalogos/generico/crear
+  dominio-actualizar: http://localhost:8081/mssivimss-mod-catalogos/generico/actualizar
+  ms-reportes: http://localhost:8088/mssivimss-reportes-jpr/v1/generales/generar-reporte
+  mod-catalogos: http://localhost:8081/mssivimss-mod-catalogos/v1
 
-plantilla: 
-  pdf-DisponibilidadVehiculos: ${msit_REPORTE_CONSULTAD_DISP_VEHICULOS}
-  
+plantilla:
+  pdf-DisponibilidadVehiculos: reportes/generales/DiponibilidadVehiculos.jrxml
 url_reportes:
-   ms-reportes: ${msit_GENERICO_REPORTES}
-  
- 
+  ms-reportes: http://localhost:1080/mssivimss-reportes-jasp/v1/generales/generar-reporte
+
+
 jwt:
-  secretkey-flujo: ${msit_SECRET_KEY}
-  secretkey-dominios: ${msit_SECRET_KEY_DOMINIO}
-  expiration-milliseconds: ${msit_SECRET_KEY_EXPIRATION}
-  
+  secretkey-flujo: funcionamuybien
+  secretkey-dominios: funcionamuybiendominio
+  expiration-milliseconds: 360
+
 management:
-      endpoints:
-          web:
-            exposure:
-                include:
-                    health,info,metrics
+  endpoints:
+    web:
+      exposure:
+        include:
+          health,info,metrics
 
 resilience4j.circuitbreaker:
-    circuitBreakerAspectOrder: 1
-    instances:
-      msflujo:
-        automaticTransitionFromOpenToHalfOpenEnabled: 'true'
-        failureRateThreshold: ${msit_HILOS}
-        slidingWindowType: COUNT_BASED
-        event-consumer-buffer-size: '10'
-        registerHealthIndicator: 'true'
-        waitDurationInOpenState: ${msit_TIEMPO_DURACION}
-        permittedNumberOfCallsInHalfOpenState: '3'
-        slidingWindowSize: '5'
+  circuitBreakerAspectOrder: 1
+  instances:
+    msflujo:
+      automaticTransitionFromOpenToHalfOpenEnabled: 'true'
+      failureRateThreshold: '50'
+      slidingWindowType: COUNT_BASED
+      event-consumer-buffer-size: '10'
+      registerHealthIndicator: 'true'
+      waitDurationInOpenState: 5s
+      permittedNumberOfCallsInHalfOpenState: '3'
+      slidingWindowSize: '5'
 resilience4j.retry:
-    retryAspectOrder: 2
-    instances:
-        msflujo:
-           maxAttempts: ${msit_NUMERO_INTENTOS}
-           waitDuration: ${msit_TIEMPO_DURACION}
+  retryAspectOrder: 2
+  instances:
+    msflujo:
+      maxAttempts: 3
+      waitDuration: 5s
 resilience4j.timelimiter:
-    timeLimiterAspectOrder: 3
-    instances:
-      msflujo:
-        timeout-duration: 3s
-        
-        
-formato_fecha: ${msit_FORMATO_FECHA}
+  timeLimiterAspectOrder: 3
+  instances:
+    msflujo:
+      timeout-duration: 3s
 
 
-ruta-log: ${msit_RUTA_LOG}
+formato_fecha: '%d/%m/%Y'
+
+
+ruta-log: 'C:\Users\dfernandez\Documents\logs'
