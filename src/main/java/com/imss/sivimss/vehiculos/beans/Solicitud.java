@@ -105,6 +105,7 @@ public class Solicitud {
                         "SOLI.IND_ACTIVO",
                         "SOLI.DES_NOTAS",
                         "SOLI.NUM_KILOMETRAJE",
+                        "SOLI.NUM_KILOMETRAJE",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
