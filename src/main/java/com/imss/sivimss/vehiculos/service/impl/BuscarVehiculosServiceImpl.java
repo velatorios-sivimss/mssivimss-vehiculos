@@ -1,5 +1,6 @@
 package com.imss.sivimss.vehiculos.service.impl;
 
+import com.imss.sivimss.vehiculos.beans.MttoReporte;
 import com.imss.sivimss.vehiculos.beans.Vehiculos;
 import com.imss.sivimss.vehiculos.service.BuscarVehiculosService;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
@@ -25,6 +26,8 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 
     private Vehiculos vehiculos=new Vehiculos();
 
+    private MttoReporte mttoReporte=new MttoReporte();
+
     @Autowired
     private ProviderServiceRestTemplate providerRestTemplate;
 
@@ -32,6 +35,20 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     public Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException {
         log.info("Obtiene lista de vehiculos");
         return providerRestTemplate.consumirServicio(vehiculos.buscarVehiculos(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene reporte encargado");
+        return providerRestTemplate.consumirServicio(mttoReporte.reporteEncargado(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene reporte predictivo");
+        return providerRestTemplate.consumirServicio(mttoReporte.reportePredictivo(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);
     }
 }

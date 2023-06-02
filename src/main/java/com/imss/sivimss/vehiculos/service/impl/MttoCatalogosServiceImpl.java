@@ -75,4 +75,11 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
         return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoNivel().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
+
+    @Override
+    public Response<?> getCatMttoReporteTipo(Authentication authentication) throws IOException {
+        log.info("Obtiene lista tipo de reporte");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoReporteTipo().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
 }

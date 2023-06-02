@@ -55,11 +55,32 @@ public class Vehiculos {
                         "TM.DES_MODALIDAD",
                         "MT.DES_MTTO_TIPO",
                         "MV.ID_MTTOVEHICULAR",
-                        "MS.ID_MTTO_SOLICITUD",
-                        "VI.ID_MTTOVERIFINICIO",
-                        "REG.ID_MTTO_REGISTRO",
                         "MV.ID_DELEGACION",
                         "DL.DES_DELEGACION",
+                        "VI.ID_MTTOVERIFINICIO",
+                        "VI.ID_NIVELACEITE",
+                        "VI.ID_NIVELAGUA",
+                        "VI.ID_CALNEUTRASEROS",
+                        "VI.ID_CALNEUDELANTEROS",
+                        "VI.ID_NIVELCOMBUSTIBLE",
+                        "VI.ID_NIVELBATERIA",
+                        "VI.ID_CODIGOFALLO",
+                        "VI.ID_LIMPIEZAINTERIOR",
+                        "VI.ID_LIMPIEZAEXTERIOR",
+                        "VI.FEC_REGISTRO AS FECHA_REGISTRO_VERI_INICIO",
+                        "MS.ID_MTTO_SOLICITUD",
+                        "MS.FEC_SOLICTUD",
+                        "MS.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_SOL",
+                        "MS.KILOMETRAJE AS KILOMETRAJE_SOL",
+                        "MS.DES_NOTAS AS DES_NOTAS_SOL",
+                        "REG.ID_MTTO_REGISTRO",
+                        "REG.ID_PROVEEDOR",
+                        "REG.DES_NUMCONTRATO",
+                        "REG.MON_COSTO_MTTO",
+                        "REG.DES_NOMBRE_TALLER",
+                        "REG.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_REG",
+                        "REG.COSTO_MTTO AS COSTO_MTTO_REG",
+                        "REG.FEC_REGISTRO AS FEC_REGISTRO_REG",
                         "(select case count(mvt.ID_VEHICULO) when 0 then 'false' else 'true' end as verificacion from SVT_MTTO_VERIF_INICIO vit left join SVT_MTTO_VEHICULAR mvt on (vit.ID_MTTOVEHICULAR=mvt.ID_MTTOVEHICULAR) where mvt.ID_VEHICULO =VH.ID_VEHICULO and vit.FEC_REGISTRO =CURRENT_DATE()) as verificacionDia")
                 .from("SVT_VEHICULOS VH")
                 .join("SVC_USO_VEHICULO UV", "VH.ID_USOVEHICULO = UV.ID_USOVEHICULO")
@@ -75,6 +96,10 @@ public class Vehiculos {
                 .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
+        if (buscarRequest.getVelatorio() != null) {
+            queryUtil.where("MV.ID_VELATORIO = :velatorio")
+                    .setParameter("velatorio", buscarRequest.getVelatorio());
+        }
         if (buscarRequest.getNivelOficina() != null) {
             queryUtil.where("VH.ID_OFICINA = :nivelOficina")
                     .setParameter("nivelOficina", buscarRequest.getNivelOficina());

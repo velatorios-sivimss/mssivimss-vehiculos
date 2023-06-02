@@ -120,6 +120,18 @@ public class MttoCatalogosController {
         );
     }
 
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catMttoReporteTipo")
+    public CompletableFuture<?> getCatMttoReporteTipo(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista tipo de reporte");
+        Response<?> response= mttoCatalogosService.getCatMttoReporteTipo(authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *
