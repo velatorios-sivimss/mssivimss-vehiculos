@@ -43,6 +43,7 @@ public class DisponibilidadVehiculos {
 	private String fecDia;
 	private String gasolinaFinal;
 	private Integer idDelegacion;
+	private Integer idDispVehiculo;
 	
 	
 	private static final String TABLA_SVC_VELATORIO_SV = " SVC_VELATORIO sv";
@@ -78,9 +79,12 @@ public class DisponibilidadVehiculos {
 	private static final String JOIN = " JOIN ";
 	private static final String LEFT_JOIN = " LEFT JOIN ";
 	private static final String FROM = " FROM ";
+	private static final String ON = " ON ";
 	
 	private static final String PARAM_IDVEHICULO = "idVehi";
 	private static final String FECHA_ENTRADA_MAX = " AND DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') <= '";
+	
+	private static final String VALIDACION_CAMPOS_VEHICULOS = " sdv.ID_VEHICULO  = sv.ID_VEHICULO ";
 
 	
 	public DisponibilidadVehiculos(VehiculoRequest vehiculoRequest) {
@@ -100,16 +104,17 @@ public class DisponibilidadVehiculos {
 		this.fecFinRepo = vehiculoRequest.getFecFinRepo();
 		this.fecDia = vehiculoRequest.getFecDia();
 		this.idDelegacion = vehiculoRequest.getIdDelegacion();
+		this.idDispVehiculo = vehiculoRequest.getIdDispVehiculo();
 	}
 
 	public DatosRequest consultarDisponibilidadVehiculos(DatosRequest request, String formatoFecha, String formatoHora) {
-		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+		String query = "SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" +  formatoFecha + "') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas"
 				+ ", TIME_FORMAT(IF(sdv.TIM_HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.TIM_HORA_ENTRADA),sdv.TIM_HORA_SALIDA,sdv.TIM_HORA_ENTRADA), '" + formatoHora + "') AS hora "
-				+ ", IF(sv.ID_USOVEHICULO=1,0,1) AS ods"
+				
 				+ FROM + TABLA_SVT_VEHICULO_SV 
-				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO"
+				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON + VALIDACION_CAMPOS_VEHICULOS
 				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO"
 				+ " WHERE sdv.IND_ACTIVO = 1 ";
 		if(this.idDelegacion != null) {
@@ -128,13 +133,13 @@ public class DisponibilidadVehiculos {
 
 		return request;
 	}
-	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request, String formatoFecha) {
+	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request) {
 		String where="";
-		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+		String query = "SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'%Y-%m-%d') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ FROM + TABLA_SVT_VEHICULO_SV 
-				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO"
+				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON + VALIDACION_CAMPOS_VEHICULOS
 				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO";
 		if(this.idDelegacion != null) {
 			query = query + " AND sv2.ID_DELEGACION = " + this.idDelegacion;
@@ -159,27 +164,26 @@ public class DisponibilidadVehiculos {
 	
 
 	public DatosRequest consultaDetalleVehiculo(DatosRequest request) {
-		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil
-				.select("sv.ID_VEHICULO AS idVehiculo","sv.DES_MARCA AS marca","sv.DES_MODELO AS modelo"
-						,"sv.DES_PLACAS AS placas","sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
-						,"sos.CVE_FOLIO AS folioODS","CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
-						,"CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
-						,"sc2.DES_MNPIO AS nombreDestino, " + CAMPO_SOS_ID_ORDEN_SERVICIO + " AS idODS","IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible")
-				.from(TABLA_SVT_VEHICULO_SV)
-				.leftJoin(TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV, "sdv.ID_VEHICULO  = sv.ID_VEHICULO")
-				.join(TABLA_SVC_ORDEN_SERVICIO_SOS, CAMPO_SOS_ID_ORDEN_SERVICIO + " = sdv.ID_ODS")
-				.join(TABLA_SVC_CONTRATANTE_SC, "sc.ID_CONTRATANTE = sos.ID_CONTRATANTE")
-				.join(TABLA_SVC_PERSONA_SP, "sp.ID_PERSONA = sc.ID_PERSONA")
-				.leftJoin(TABLA_SVC_FINADO_SF, "sf.ID_ORDEN_SERVICIO = " + CAMPO_SOS_ID_ORDEN_SERVICIO )
-				.leftJoin(TABLA_SVC_PERSONA_SP2," sp2.ID_PERSONA = sf.ID_PERSONA")
-				.join(TABLA_SVC_INFORMACION_SERVICIO_SIS, CAMPO_SIS_ID_ORDEN_SERVICIO + " = " + CAMPO_SOS_ID_ORDEN_SERVICIO )
-				.join(TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV, "sisv.ID_INFORMACION_SERVICIO  = sis.ID_INFORMACION_SERVICIO")
-				.join(TABAL_SVT_DOMICILIO_SD, CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO + "")
-				.join(TABLA_SVC_CP_SC2,CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP + "")
-				.where("sv.ID_VEHICULO = :" + PARAM_IDVEHICULO)
-				.setParameter(PARAM_IDVEHICULO, this.idVehiculo);
-		final String query = queryUtil.build();
+		final String  query =" SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo"
+						+ ", sv.DES_PLACAS AS placas, sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
+						+ ", sos.CVE_FOLIO AS folioODS, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
+						+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
+						+ ", sc2.DES_MNPIO AS nombreDestino, " + CAMPO_SOS_ID_ORDEN_SERVICIO + " AS idODS, IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+						+ ", IF(sv.ID_USOVEHICULO=1,0,1) AS ods"
+						+ FROM + TABLA_SVT_VEHICULO_SV
+						+ LEFT_JOIN + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON + VALIDACION_CAMPOS_VEHICULOS
+				+ JOIN + TABLA_SVC_ORDEN_SERVICIO_SOS + " ON " + CAMPO_SOS_ID_ORDEN_SERVICIO + " = sdv.ID_ODS"
+				+ JOIN + TABLA_SVC_CONTRATANTE_SC + " ON sc.ID_CONTRATANTE = sos.ID_CONTRATANTE"
+				+ JOIN + TABLA_SVC_PERSONA_SP + " ON sp.ID_PERSONA = sc.ID_PERSONA"
+				+ LEFT_JOIN  + TABLA_SVC_FINADO_SF + " ON sf.ID_ORDEN_SERVICIO = " + CAMPO_SOS_ID_ORDEN_SERVICIO 
+				+ LEFT_JOIN  + TABLA_SVC_PERSONA_SP2 + " ON sp2.ID_PERSONA = sf.ID_PERSONA"
+				+ JOIN + TABLA_SVC_INFORMACION_SERVICIO_SIS + " ON " +CAMPO_SIS_ID_ORDEN_SERVICIO + " = " + CAMPO_SOS_ID_ORDEN_SERVICIO 
+				+ JOIN + TABLA_SVC_INFORMACION_SERVICIO_VELACION_SISV + " ON sisv.ID_INFORMACION_SERVICIO  = sis.ID_INFORMACION_SERVICIO"
+				+ JOIN + TABAL_SVT_DOMICILIO_SD + " ON " + CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO
+				+ JOIN + TABLA_SVC_CP_SC2 + " ON " + CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP
+				+ " WHERE sv.ID_VEHICULO = " + this.idVehiculo
+				+ " ORDER BY sdv.FEC_ALTA DESC "
+				+ " Limit 1";
 
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
 
@@ -189,7 +193,7 @@ public class DisponibilidadVehiculos {
 	
 	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request, String formatoFecha, String formatoHora) {
 		
-		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
+		String query = "SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ ", sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
@@ -198,6 +202,7 @@ public class DisponibilidadVehiculos {
 				+ ", sdv.DES_NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.NUM_KM_INICIAL AS kmInicial, sdv.NUM_KM_FINAL AS kmFin"
 				+ ", DATE_FORMAT(sdv.FEC_ENTRADA,'" + formatoFecha + "') AS fechaEntrada, DATE_FORMAT(sdv.FEC_SALIDA,'" + formatoFecha + "') AS fechaSalida"
 				+ ", IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+				+ ", IF(sv.ID_USOVEHICULO=1,0,1) AS ods"
 				+ FROM + TABLA_SVT_VEHICULO_SV
 				+ LEFT_JOIN + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO "
 				+ JOIN + TABLA_SVC_ORDEN_SERVICIO_SOS + " ON " + CAMPO_SOS_ID_ORDEN_SERVICIO + " = sdv.ID_ODS  "
@@ -210,7 +215,7 @@ public class DisponibilidadVehiculos {
 				+ JOIN + TABAL_SVT_DOMICILIO_SD + " ON " + CAMPO_SD_ID_DOMICILIO + " = " + CAMPO_SISV_ID_DOMICILIO + " "
 				+ JOIN + TABLA_SVC_CP_SC2 + " ON " + CAMPO_SC2_ID_CODIG_POSTAL + " = " + CAMPO_SD_ID_CP + " "
 				+ " WHERE (sdv.FEC_ENTRADA = '" + this.fecDia + "' OR sdv.FEC_SALIDA = '" + this.fecDia + "') AND sv.ID_VEHICULO = " + this.idVehiculo 
-				+ " ORDER BY sdv.NUM_DISPONIBLE DESC";
+				+ " ORDER BY sdv.ID_DISPONIBILIDAD_VEHICULO DESC";
 
 
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
@@ -330,9 +335,11 @@ public class DisponibilidadVehiculos {
 	public DatosRequest actualizaVehiculosEntrada(DatosRequest request) {
 
 		String query = "UPDATE SVT_DISPONIBILIDAD_VEHICULO sdv SET "
-		 + " sdv.IND_ACTIVO = 0 "
-		 + " WHERE sdv.ID_VEHICULO = " + this.idVehiculo
-	     + " AND DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') = '" + this.fecEntrada + "'";
+		 + " sdv.IND_ACTIVO = 1 "
+		 + ", FEC_ENTRADA = '" + this.fecEntrada + "'"
+		 + ", TIM_HORA_ENTRADA = '" + this.horaEntrada + "'"
+		 + ", NUM_DISPONIBLE = 1 "
+		 + " WHERE sdv.ID_DISPONIBILIDAD_VEHICULO = " + this.idDispVehiculo;
 		
 		  String encoded =DatatypeConverter.printBase64Binary(query.getBytes());
 		  request.getDatos().put(AppConstantes.QUERY, encoded);
