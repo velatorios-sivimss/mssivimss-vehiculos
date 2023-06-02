@@ -113,7 +113,7 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		Map<String, Object> envioDatos = vehiculo.consultarDisponibilidadVehiculosCalendario(request, formatoFecha).getDatos();
+		Map<String, Object> envioDatos = vehiculo.consultarDisponibilidadVehiculosCalendario(request).getDatos();
 		try {
 			log.info( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_CALE + queryDecoded(envioDatos));
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_CALE + this.getClass().getSimpleName(),
@@ -231,12 +231,13 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
 		Map<String, Object> envioDatos = vehiculo.actualizaVehiculosParaSalir(request).getDatos();
 		try {
-			log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication);
-			response = providerRestTemplate.consumirServicio(envioDatos,
-					urlModCatalogos + ACTUALIZAR, authentication);
+			
+			  log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos)); 
+			  logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
+			  this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication); 
+			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + ACTUALIZAR, authentication);
 			envioDatos = vehiculo.registrarVehiculoSalida(request).getDatos();
+			
 			log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos));
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication);
@@ -260,20 +261,15 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo  = new DisponibilidadVehiculos (vehiculoRequest);
 		UsuarioDto usuarioDto = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
-		Map<String, Object> envioDatos = vehiculo.actualizaVehiculosEntrada(request).getDatos();
 		try {
-			log.info( CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(), "registraEntradaVehiculo", ALTA, authentication);
-			response = providerRestTemplate.consumirServicio(envioDatos,
-					urlModCatalogos + ACTUALIZAR, authentication);
-			envioDatos = vehiculo.registrarVehiculoEntrada(request).getDatos();
+				Map<String, Object> envioDatos = vehiculo.actualizaVehiculosEntrada(request).getDatos();
 			log.info( CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + queryDecoded(envioDatos));
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "registraEntradaVehiculo", ALTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos, 	urlModCatalogos + CONSULTAR, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, REGISTRO_ENTRADA);
 		} catch (Exception e) {
+			Map<String, Object> envioDatos = vehiculo.actualizaVehiculosEntrada(request).getDatos();
 			log.error( CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + ERROR_QUERY + queryDecoded(envioDatos));
 			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), ALTA, authentication);

@@ -368,9 +368,9 @@ public class SelectQueryUtil {
         agregarFrom(stringBuilder);
         agregarJoins(stringBuilder);
         agregarWhere(stringBuilder);
-        agregarLimit(stringBuilder);
         addOrderBy(stringBuilder);
         addGroupBy(stringBuilder);
+        agregarLimit(stringBuilder);
 
         return stringBuilder.toString();
     }
