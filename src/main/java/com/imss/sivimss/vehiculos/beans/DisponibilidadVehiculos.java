@@ -107,6 +107,7 @@ public class DisponibilidadVehiculos {
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" +  formatoFecha + "') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas"
 				+ ", TIME_FORMAT(IF(sdv.TIM_HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.TIM_HORA_ENTRADA),sdv.TIM_HORA_SALIDA,sdv.TIM_HORA_ENTRADA), '" + formatoHora + "') AS hora "
+				+ ", IF(sv.ID_USOVEHICULO=1,0,1) AS ods"
 				+ FROM + TABLA_SVT_VEHICULO_SV 
 				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO"
 				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO"
@@ -130,7 +131,7 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request, String formatoFecha) {
 		String where="";
 		String query = "SELECT sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
-				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" + formatoFecha + "') AS fecha"
+				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'%Y-%m-%d') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ FROM + TABLA_SVT_VEHICULO_SV 
 				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + " ON sdv.ID_VEHICULO  = sv.ID_VEHICULO"
@@ -237,7 +238,8 @@ public class DisponibilidadVehiculos {
 				.join(TABLA_SVC_VELATORIO_SV,"sv.ID_VELATORIO = ss.ID_VELATORIO")
 				.join(TABAL_SVT_DOMICILIO_SD3,"sd3.ID_DOMICILIO = sv.ID_DOMICILIO") 
 				.join(TABLA_SVC_CP_SC4,"sc4.ID_CODIGO_POSTAL = sd3.DES_CP")
-				.where("sos.CVE_FOLIO = :idODS" )
+				.where("sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2)")
+				.and("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
 		queryDos.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				, "concat(sp2.NOM_PERSONA, ' '  , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
@@ -256,7 +258,8 @@ public class DisponibilidadVehiculos {
 				.leftJoin(TABLA_SVT_PANTEON_SP3,"sp3.ID_PANTEON = sis.ID_PANTEON")
 				.join(TABAL_SVT_DOMICILIO_SD3,"sd3.ID_DOMICILIO = sp3.ID_DOMICILIO") 
 				.join(TABLA_SVC_CP_SC4,"sc4.ID_CODIGO_POSTAL = sd3.DES_CP")
-				.where("sos.CVE_FOLIO = :idODS" )
+				.where("sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2)")
+				.and("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
 		final String query = queryUno.union(queryDos);
 
