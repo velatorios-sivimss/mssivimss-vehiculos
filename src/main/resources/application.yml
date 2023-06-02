@@ -1,15 +1,19 @@
 server:
   port: 8080
   servlet:
-    contextPath: /mssivimss-vehiculos/v1
+    contextPath: /mssivimss-arquetipo
 spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+      
 
+      
   main:
     allow-circular-references: true
-
+    
+  
+        
   servlet:
     multipart:
       max-file-size: 30MB
@@ -22,28 +26,19 @@ logging:
     org.hibernate: error
 
 logos:
-  msit_logo_imss: ${msit_LOGO_IMSS}
-  msit_logo_sistema: ${msit_LOGO_SISTEMA}
+  msit_logo_imss: /sivimss_data/LOGOS/logoImss.png
+  msit_logo_sistema: /sivimss_data/LOGOS/logoSistema.png
 
 endpoints:
-   dominio: ${msit_GENERICO_DOMINIO}
-   dominio-consulta: ${msit_GENERICO_CONSULTA}
-   dominio-consulta-paginado: ${msit_GENERICO_PAGINADO}
-   dominio-crear: ${msit_GENERICO_CREAR}
-   dominio-actualizar: ${msit_GENERICO_ACTUALIZAR}
-   mod-catalogos: ${msit_CATALOGOS}
+   dominio-consulta: http://localhost:8090/mssivimss-mod-catalogos/generico/consulta
+   dominio-consulta-paginado: http://localhost:8090/mssivimss-mod-catalogos/generico/paginado
+   dominio-crear: http://localhost:8090/mssivimss-mod-catalogos/generico/crear
+   dominio-actualizar: http://localhost:8090/mssivimss-mod-catalogos/generico/actualizar
 
-plantilla: 
-  pdf-DisponibilidadVehiculos: ${msit_REPORTE_CONSULTAD_DISP_VEHICULOS}
-  
-url_reportes:
-   # ms-reportes: ${msit_REPORTES}
-  
- 
 jwt:
-  secretkey-flujo: ${msit_SECRET_KEY}
-  secretkey-dominios: ${msit_SECRET_KEY_DOMINIO}
-  expiration-milliseconds: ${msit_SECRET_KEY_EXPIRATION}
+  secretkey-flujo: funcionamuybien
+  secretkey-dominios: funcionamuybiendominio
+  expiration-milliseconds: 360
   
 management:
       endpoints:
@@ -57,19 +52,19 @@ resilience4j.circuitbreaker:
     instances:
       msflujo:
         automaticTransitionFromOpenToHalfOpenEnabled: 'true'
-        failureRateThreshold: ${msit_HILOS}
+        failureRateThreshold: '50'
         slidingWindowType: COUNT_BASED
         event-consumer-buffer-size: '10'
         registerHealthIndicator: 'true'
-        waitDurationInOpenState: ${msit_TIEMPO_DURACION}
+        waitDurationInOpenState: 5s
         permittedNumberOfCallsInHalfOpenState: '3'
         slidingWindowSize: '5'
 resilience4j.retry:
     retryAspectOrder: 2
     instances:
         msflujo:
-           maxAttempts: ${msit_NUMERO_INTENTOS}
-           waitDuration: ${msit_TIEMPO_DURACION}
+           maxAttempts: 3
+           waitDuration: 5s
 resilience4j.timelimiter:
     timeLimiterAspectOrder: 3
     instances:
@@ -77,7 +72,4 @@ resilience4j.timelimiter:
         timeout-duration: 3s
         
         
-formato_fecha: ${msit_FORMATO_FECHA}
-
-
-ruta-log: ${msit_RUTA_LOG}
+formato_fecha: '%d/%m/%Y'
