@@ -114,20 +114,15 @@ public class DisponibilidadVehiculos {
 				+ ", TIME_FORMAT(IF(sdv.TIM_HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.TIM_HORA_ENTRADA),sdv.TIM_HORA_SALIDA,sdv.TIM_HORA_ENTRADA), '" + formatoHora + "') AS hora "
 				
 				+ FROM + TABLA_SVT_VEHICULO_SV 
-				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON + VALIDACION_CAMPOS_VEHICULOS
-				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO"
-				+ " WHERE sdv.IND_ACTIVO = 1 ";
+				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON + VALIDACION_CAMPOS_VEHICULOS + " AND sdv.IND_ACTIVO = 1 "
+				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO";
 		if(this.idDelegacion != null) {
-			query = query + " AND sv2.ID_DELEGACION = " + this.idDelegacion;
-		}
-		if(this.fecIniRepo != null || this.fecFinRepo != null){
-			query = query + " AND ((DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= '" + this.fecIniRepo +"'"
-					+ FECHA_ENTRADA_MAX + this.fecFinRepo + "')"
-					+ " OR (DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') >= '" + this.fecIniRepo + "'"
-					+ " AND DATE_FORMAT(sdv.FEC_SALIDA,'%Y-%m-%d') <= '" + this.fecFinRepo +"'))";
-		}
-		if(this.idVelatorio != null) {
-			query = query + " AND sv.ID_VELATORIO = " + this.idVelatorio;
+			query = query + " WHERE sv2.ID_DELEGACION = " + this.idDelegacion;
+			 if(this.idVelatorio != null) {
+					query = query + " AND sv.ID_VELATORIO = " + this.idVelatorio;
+				}
+		}else if(this.idVelatorio != null) {
+			query = query + " WHERE sv.ID_VELATORIO = " + this.idVelatorio;
 		}
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
 
