@@ -62,7 +62,7 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 
 	private static final String NO_SE_ENCONTRO_INFORMACION = "45"; // No se encontró información relacionada a tu
 																	// búsqueda.
-	private static final String NUMERO_FOLIO_NO_EXISTE = "45";//El número de folio no existe.Verifica tu información.
+	private static final String NUMERO_FOLIO_NO_EXISTE = "85";//El número de folio no existe.Verifica tu información.
 	private static final String ERROR_AL_DESCARGAR_DOCUMENTO = "64"; // Error en la descarga del documento.Intenta nuevamente.
 	private static final String REGISTRO_SALIDA = "83"; // Has registrado la salida/término del servicio correctamente. 
 	private static final String REGISTRO_ENTRADA = "84"; // Has registrado la entrada/inicio del servicio correctamente.
