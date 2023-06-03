@@ -217,7 +217,7 @@ public class DisponibilidadVehiculos {
 	public DatosRequest consultaDetalleODS(DatosRequest request) {
 		SelectQueryUtil queryUno = new SelectQueryUtil();
 		SelectQueryUtil queryDos = new SelectQueryUtil();
-		queryUno.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
+		queryUno.select("sos.ID_ORDEN_SERVICIO AS idOds","concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				,"concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 				,"sc2.DES_MNPIO AS nombreOrigen"," sc4.DES_MNPIO AS nombreDestino")
 				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
@@ -238,7 +238,7 @@ public class DisponibilidadVehiculos {
 				.where("sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2)")
 				.and("sos.CVE_FOLIO = :idODS" )
 				.setParameter("idODS", this.idODS);
-		queryDos.select("concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
+		queryDos.select("sos.ID_ORDEN_SERVICIO AS idOds","concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				, "concat(sp2.NOM_PERSONA, ' '  , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 				, "sc2.DES_MNPIO AS nombreOrigen","sc4.DES_MNPIO AS nombreDestino")
 				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
@@ -292,7 +292,7 @@ public class DisponibilidadVehiculos {
 
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DISPONIBILIDAD_VEHICULO");
 		q.agregarParametroValues("ID_VEHICULO", "'" + this.idVehiculo + "'");
-		q.agregarParametroValues("ID_ODS", "'" + this.idODS + "'");
+		q.agregarParametroValues("ID_ODS", "" + this.idODS + "");
 		q.agregarParametroValues("FEC_SALIDA", "'" + this.fecSalida + "'");
 		q.agregarParametroValues("TIM_HORA_SALIDA", "'" + this.horaSalida + "'");
 		q.agregarParametroValues("DES_NIVEL_GASOLINA_INICIAL", "'" + this.gasolinaInicial + "'");
@@ -342,7 +342,7 @@ public class DisponibilidadVehiculos {
 
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DISPONIBILIDAD_VEHICULO");
 		q.agregarParametroValues("ID_VEHICULO", "'" + this.idVehiculo + "'");
-		q.agregarParametroValues("ID_ODS", "'" + this.idODS + "'");
+		q.agregarParametroValues("ID_ODS", "" + this.idODS + "");
 		q.agregarParametroValues("FEC_ENTRADA", "'" + this.fecEntrada + "'");
 		q.agregarParametroValues("TIM_HORA_ENTRADA", "'" + this.horaEntrada + "'");
 		q.agregarParametroValues("DES_NIVEL_GASOLINA_FINAL", "'" + this.gasolinaFinal + "'");
