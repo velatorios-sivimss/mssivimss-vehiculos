@@ -331,6 +331,10 @@ public class DisponibilidadVehiculos {
 		 + ", FEC_ENTRADA = '" + this.fecEntrada + "'"
 		 + ", TIM_HORA_ENTRADA = '" + this.horaEntrada + "'"
 		 + ", NUM_DISPONIBLE = 1 "
+		 + ", DES_NIVEL_GASOLINA_FINAL = '" + this.gasolinaFinal + "'"
+		 + ", NUM_KM_FINAL = '" + this.kmFinal + "'"
+		 + ", ID_USUARIO_MODIFICA = '" + this.idUsuarioAlta + "'"
+		 + ", FEC_ACTUALIZACION =" + NOW 
 		 + " WHERE sdv.ID_DISPONIBILIDAD_VEHICULO = " + this.idDispVehiculo;
 		
 		  String encoded =DatatypeConverter.printBase64Binary(query.getBytes());
