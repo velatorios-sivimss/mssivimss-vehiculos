@@ -62,11 +62,22 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 
 	private static final String NO_SE_ENCONTRO_INFORMACION = "45"; // No se encontró información relacionada a tu
 																	// búsqueda.
+	private static final String NUMERO_FOLIO_NO_EXISTE = "85";//El número de folio no existe.Verifica tu información.
 	private static final String ERROR_AL_DESCARGAR_DOCUMENTO = "64"; // Error en la descarga del documento.Intenta nuevamente.
-	private static final String AGREGADO_CORRECTAMENTE = "30"; // Agregado correctamente.
+	private static final String REGISTRO_SALIDA = "83"; // Has registrado la salida/término del servicio correctamente. 
+	private static final String REGISTRO_ENTRADA = "84"; // Has registrado la entrada/inicio del servicio correctamente.
 	private static final String ERROR_QUERY = "Error al ejecutar el query ";
-	private static final String FALLO_EJECUTAR_QUERY = "Fallo al ejecutar el query: ";
-	private static final String CU060_NAME= "Disponibilida De Vehiculos: ";
+	private static final String CU060_NOMBRE= "Disponibilida De Vehiculos: ";
+	private static final String CONSULTA_VEHICULO_DISP = "disp-vehiculos: ";
+	private static final String CONSULTA_VEHICULO_DISP_CALE = "VehiculosDisponibles-Calendario: ";
+	private static final String CONSULTA_VEHICULO_DISP_ID = "vehiculo-disponible: " ;
+	private static final String CONSULTA_VEHICULO_DISP_ID_DIA = "detalle-vehiculo-dia: " ;
+	private static final String CONSULTA_ODS = "consulta-ods: " ;
+	private static final String CONSULTA_VEHICULO_OPERADOR = "consulta-operador: " ;
+	private static final String REGISTRA_ENTRADA_VEHICULO = "entrada-vehiculos: " ;
+	private static final String REGISTRA_SALIDA_VEHICULO = "salida-vehiculos: " ;
+	private static final String GENERAR_DOCUMENTO = "gen-doc-vehiculos: " ;
+	
 	
 	private String formatoHora = "%H:%i";
 	
@@ -81,16 +92,15 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		Map<String, Object> envioDatos = vehiculo.consultarDisponibilidadVehiculos(request, formatoFecha, formatoHora).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculos", this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication, null);
+			log.info( CU060_NOMBRE + CONSULTA_VEHICULO_DISP + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultaVehiculos", CONSULTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos,	urlModCatalogos + CONSULTAR_PAGINADO, authentication);
 			return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultarDisponibilidadVehiculos(request, formatoFecha, formatoHora).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error( ERROR_QUERY+ decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, CONSULTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + CONSULTA_VEHICULO_DISP + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), CONSULTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -103,18 +113,17 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		Map<String, Object> envioDatos = vehiculo.consultarDisponibilidadVehiculosCalendario(request, formatoFecha).getDatos();
+		Map<String, Object> envioDatos = vehiculo.consultarDisponibilidadVehiculosCalendario(request).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculosCalendario", this.getClass().getPackage().toString(), "consultaVehiculosCalendario", CONSULTA, authentication, null);
-				response = providerRestTemplate.consumirServicio(envioDatos,	urlModCatalogos + CONSULTAR, authentication);
+			log.info( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_CALE + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_CALE + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultaVehiculosCalendario", CONSULTA, authentication);
+			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + CONSULTAR, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultarDisponibilidadVehiculosCalendario(request, formatoFecha).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error( ERROR_QUERY+ decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, CONSULTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_CALE + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_CALE + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), CONSULTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -128,16 +137,15 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		Map<String, Object> envioDatos = vehiculo.consultaDetalleVehiculo(request).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculoDisponible", this.getClass().getPackage().toString(), "consultaVehiculoDisponible", CONSULTA, authentication, null);
+			log.info( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultaVehiculoDisponible", CONSULTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + CONSULTAR, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultaDetalleVehiculo(request).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, CONSULTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), CONSULTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -152,16 +160,15 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		Map<String, Object> envioDatos = vehiculo.consultaDetalleVehiculoxDia(request, formatoFecha, formatoHora).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaVehiculoDetalleDia", this.getClass().getPackage().toString(), "consultaVehiculoDetalleDia", CONSULTA, authentication, null);
+			log.info( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID_DIA + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID_DIA + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultaVehiculoDetallexDia", CONSULTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + CONSULTAR, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultaDetalleVehiculoxDia(request, formatoFecha, formatoHora).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, CONSULTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID_DIA + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_DISP_ID_DIA + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), CONSULTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -176,17 +183,16 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		Map<String, Object> envioDatos = vehiculo.consultaDetalleODS(request).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaODS", this.getClass().getPackage().toString(), "consultaODS", CONSULTA, authentication, null);
+			log.info( CU060_NOMBRE + CONSULTA_ODS + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_ODS + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultaODS", CONSULTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos,
 					urlModCatalogos + CONSULTAR_PAGINADO, authentication);
-		return MensajeResponseUtil.mensajeConsultaResponse( response, NO_SE_ENCONTRO_INFORMACION);
+		return MensajeResponseUtil.mensajeConsultaResponse( response, NUMERO_FOLIO_NO_EXISTE);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultaDetalleODS(request).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, CONSULTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + CONSULTA_ODS + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + CONSULTA_ODS + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), CONSULTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -200,29 +206,18 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		Map<String, Object> envioDatos = vehiculo.consultaOperador(request).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".consultaOperador", this.getClass().getPackage().toString(), "consultaOperador", CONSULTA, authentication, null);
+			log.info( CU060_NOMBRE + CONSULTA_VEHICULO_OPERADOR + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_OPERADOR + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "consultaOperador", CONSULTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + CONSULTAR_PAGINADO, authentication);
-		return MensajeResponseUtil.mensajeConsultaResponse( response, NO_SE_ENCONTRO_INFORMACION);
+			
+			return MensajeResponseUtil.mensajeConsultaResponse( response, NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			String consulta = vehiculo.consultaDetalleODS(request).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, CONSULTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + CONSULTA_VEHICULO_OPERADOR + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + CONSULTA_VEHICULO_OPERADOR + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), CONSULTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
-	}
-	@Override
-	public Response<Object> consultarVelatorio(DatosRequest request, Authentication authentication)
-			throws IOException {
-		vehiculo = new DisponibilidadVehiculos ();
-		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consultaVlatorios", this.getClass().getPackage().toString(), "Resilencia", CONSULTA, authentication, null);
-		
-		return MensajeResponseUtil.mensajeConsultaResponse(
-		providerRestTemplate.consumirServicio(vehiculo.obtenerVelatorio(request).getDatos(),
-				urlModCatalogos + CONSULTAR, authentication),
-		NO_SE_ENCONTRO_INFORMACION);
 	}
 
 	@Override
@@ -236,20 +231,23 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
 		Map<String, Object> envioDatos = vehiculo.actualizaVehiculosParaSalir(request).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".registraSalidaVehiculo", this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication, null);
-			response = providerRestTemplate.consumirServicio(envioDatos,
-					urlModCatalogos + ACTUALIZAR, authentication);
+			
+			  log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos)); 
+			  logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
+			  this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication); 
+			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + ACTUALIZAR, authentication);
 			envioDatos = vehiculo.registrarVehiculoSalida(request).getDatos();
+			
+			log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos,
 					urlModCatalogos + CONSULTAR, authentication);
-		return MensajeResponseUtil.mensajeConsultaResponse(response, AGREGADO_CORRECTAMENTE);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, REGISTRO_SALIDA);
 		} catch (Exception e) {
-			String consulta = vehiculo.registrarVehiculoSalida(request).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, ALTA,
-					authentication, null);
+			log.error( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), ALTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -263,21 +261,18 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo  = new DisponibilidadVehiculos (vehiculoRequest);
 		UsuarioDto usuarioDto = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
-		Map<String, Object> envioDatos = vehiculo.actualizaVehiculosEntrada(request).getDatos();
 		try {
-			log.info(CU060_NAME + queryDecoded(envioDatos));
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".registraEntradaVehiculo", this.getClass().getPackage().toString(), "registraEntradaVehiculo", ALTA, authentication, null);
-			response = providerRestTemplate.consumirServicio(envioDatos,
-					urlModCatalogos + ACTUALIZAR, authentication);
-			envioDatos = vehiculo.registrarVehiculoEntrada(request).getDatos();
+				Map<String, Object> envioDatos = vehiculo.actualizaVehiculosEntrada(request).getDatos();
+			log.info( CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "registraEntradaVehiculo", ALTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos, 	urlModCatalogos + CONSULTAR, authentication);
-		return MensajeResponseUtil.mensajeConsultaResponse(response, AGREGADO_CORRECTAMENTE);
+		return MensajeResponseUtil.mensajeConsultaResponse(response, REGISTRO_ENTRADA);
 		} catch (Exception e) {
-			String consulta = vehiculo.registrarVehiculoSalida(request).getDatos().get(AppConstantes.QUERY).toString();
-			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
-			log.error(ERROR_QUERY + decoded);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + decoded, ALTA,
-					authentication, null);
+			Map<String, Object> envioDatos = vehiculo.actualizaVehiculosEntrada(request).getDatos();
+			log.error( CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + ERROR_QUERY + queryDecoded(envioDatos));
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + REGISTRA_ENTRADA_VEHICULO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded(envioDatos), ALTA, authentication);
 			throw new IOException("52", e.getCause());
 		}
 	}
@@ -290,17 +285,18 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		Map<String, Object> envioDatos = vehiculo.generarReportePDF(reporteDto,nombrePdfReportes);
+		String queryDecoded = envioDatos.get("condicion").toString();
 		try {
-			log.info(CU060_NAME + envioDatos.get("condicion").toString());
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName()+ ".generarDocumento", this.getClass().getPackage().toString(), "generarDocumento", GENERA_DOCUMENTO, authentication, null);
+			log.info( CU060_NOMBRE + GENERAR_DOCUMENTO + queryDecoded);
+			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), "generarDocumento", GENERA_DOCUMENTO, authentication);
 			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
-			String consulta = envioDatos.get("condicion").toString();
-			
-			log.error(CU060_NAME + ERROR_QUERY + consulta);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), FALLO_EJECUTAR_QUERY + consulta, GENERA_DOCUMENTO,
-					authentication, null);
+			log.error( CU060_NOMBRE + GENERAR_DOCUMENTO + ERROR_QUERY + queryDecoded);
+			logUtil.crearArchivoLog(Level.WARNING.toString(), CU060_NOMBRE + GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(), ERROR_QUERY + queryDecoded, GENERA_DOCUMENTO,
+					authentication);
 			throw new IOException("52", e.getCause());
 		}	
 	}

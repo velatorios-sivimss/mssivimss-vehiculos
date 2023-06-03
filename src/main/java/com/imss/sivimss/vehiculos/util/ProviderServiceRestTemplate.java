@@ -43,7 +43,7 @@ public class ProviderServiceRestTemplate {
 	public Response<Object> consumirServicioReportes(Map<String, Object> dato,
 			String url, Authentication authentication) throws IOException {
 		try {
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consumirServicioReportes", this.getClass().getPackage().toString(), "Resilencia", GENERA_DOCUMENTO, authentication, null);
+			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName() + ".consumirServicioReportes", this.getClass().getPackage().toString(), "Resilencia", GENERA_DOCUMENTO, authentication);
 		
 			Response<Object> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,
 					new DatosReporteDTO(dato),

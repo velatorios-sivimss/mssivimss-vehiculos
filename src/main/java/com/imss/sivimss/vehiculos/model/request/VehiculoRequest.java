@@ -14,7 +14,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreType(value = true)
-public class VehiculoRequest {	
+public class VehiculoRequest {
+	private Integer idDispVehiculo;
 	private Integer idVelatorio;
 	private Integer idVehiculo;
 	private String idODS;
