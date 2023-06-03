@@ -292,7 +292,7 @@ public class DisponibilidadVehiculos {
 
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DISPONIBILIDAD_VEHICULO");
 		q.agregarParametroValues("ID_VEHICULO", "'" + this.idVehiculo + "'");
-		q.agregarParametroValues("ID_ODS", "'" + this.idODS + "'");
+		q.agregarParametroValues("ID_ODS", "" + this.idODS + "");
 		q.agregarParametroValues("FEC_SALIDA", "'" + this.fecSalida + "'");
 		q.agregarParametroValues("TIM_HORA_SALIDA", "'" + this.horaSalida + "'");
 		q.agregarParametroValues("DES_NIVEL_GASOLINA_INICIAL", "'" + this.gasolinaInicial + "'");
@@ -342,7 +342,7 @@ public class DisponibilidadVehiculos {
 
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DISPONIBILIDAD_VEHICULO");
 		q.agregarParametroValues("ID_VEHICULO", "'" + this.idVehiculo + "'");
-		q.agregarParametroValues("ID_ODS", "'" + this.idODS + "'");
+		q.agregarParametroValues("ID_ODS", "" + this.idODS + "");
 		q.agregarParametroValues("FEC_ENTRADA", "'" + this.fecEntrada + "'");
 		q.agregarParametroValues("TIM_HORA_ENTRADA", "'" + this.horaEntrada + "'");
 		q.agregarParametroValues("DES_NIVEL_GASOLINA_FINAL", "'" + this.gasolinaFinal + "'");

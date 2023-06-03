@@ -74,8 +74,8 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 	private static final String CONSULTA_VEHICULO_DISP_ID_DIA = "detalle-vehiculo-dia: " ;
 	private static final String CONSULTA_ODS = "consulta-ods: " ;
 	private static final String CONSULTA_VEHICULO_OPERADOR = "consulta-operador: " ;
-	private static final String REGISTRA_ENTRADA_VEHICULO = "salida-vehiculos: " ;
-	private static final String REGISTRA_SALIDA_VEHICULO = "entrada-vehiculos: " ;
+	private static final String REGISTRA_ENTRADA_VEHICULO = "entrada-vehiculos: " ;
+	private static final String REGISTRA_SALIDA_VEHICULO = "salida-vehiculos: " ;
 	private static final String GENERAR_DOCUMENTO = "gen-doc-vehiculos: " ;
 	
 	
