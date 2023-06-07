@@ -3,6 +3,8 @@ server:
   servlet:
     contextPath: /mssivimss-vehiculos/v1
 spring:
+  application:
+    name: mssivimss-vehiculos
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
