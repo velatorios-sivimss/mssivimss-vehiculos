@@ -43,13 +43,13 @@ public class Registro {
         q.agregarParametroValues("IND_ACTIVO", "1");
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
         if(request.getRegistro().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         }
         if(request.getRegistro().getDesNombreTaller()!=null) {
             q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
         }
         if(request.getRegistro().getCostoMtto()!=null) {
-            q.agregarParametroValues("COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+            q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
@@ -83,13 +83,13 @@ public class Registro {
         q.agregarParametroValues("IND_ACTIVO", "1");
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
         if(request.getRegistro().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         }
         if(request.getRegistro().getDesNombreTaller()!=null) {
             q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
         }
         if(request.getRegistro().getCostoMtto()!=null) {
-            q.agregarParametroValues("COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+            q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
@@ -124,9 +124,9 @@ public class Registro {
                         "REG.IND_ACTIVO",
                         "REG.ID_USUARIO_ALTA",
                         "REG.FEC_ALTA",
-                        "REG.KILOMETRAJE",
+                        "REG.NUM_KILOMETRAJE",
                         "REG.DES_NOMBRE_TALLER",
-                        "REG.COSTO_MTTO",
+                        "REG.MON_COSTO_MTTO",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -145,7 +145,7 @@ public class Registro {
                         "SV.DES_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
-                        "SVEL.NOM_VELATORIO",
+                        "SVEL.DES_VELATORIO",
                         "SMM.DES_MODALIDAD",
                         "SP.NOM_PROVEEDOR",
                         "SP.ID_TIPO_PROVEEDOR",
@@ -172,4 +172,18 @@ public class Registro {
 		logger.info(query);
 		return request;
 	}
+
+    public DatosRequest existe(MttoVehicularRequest request) {
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT REG.ID_MTTO_REGISTRO, REG.ID_MTTOVEHICULAR FROM SVT_MTTO_REGISTRO REG WHERE REG.FEC_REGISTRO=CURRENT_DATE()");
+        sql.append(" AND REG.IND_ACTIVO=1").append(" AND REG.ID_MTTOVEHICULAR="+request.getRegistro().getIdMttoVehicular()).append(";");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
 }

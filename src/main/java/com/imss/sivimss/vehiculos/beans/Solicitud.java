@@ -40,9 +40,10 @@ public class Solicitud {
             q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
         }
         if(request.getSolicitud().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", "1");
+        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -68,9 +69,10 @@ public class Solicitud {
             q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
         }
         if(request.getSolicitud().getKilometraje()!=null) {
-            q.agregarParametroValues("KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
+            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
+        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -102,7 +104,8 @@ public class Solicitud {
                         "SOLI.ID_MTTOMODALIDAD_DET",
                         "SOLI.IND_ACTIVO",
                         "SOLI.DES_NOTAS",
-                        "SOLI.KILOMETRAJE",
+                        "SOLI.NUM_KILOMETRAJE",
+                        "SOLI.NUM_KILOMETRAJE",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -121,7 +124,7 @@ public class Solicitud {
                         "SV.DES_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
-                        "SVEL.NOM_VELATORIO",
+                        "SVEL.DES_VELATORIO",
                         "SMT.DES_MTTO_TIPO",
                         "SMM.DES_MODALIDAD")
                 .from("SVT_MTTO_SOLICITUD SOLI")
@@ -145,4 +148,19 @@ public class Solicitud {
 		logger.info(query);
 		return request;
 	}
+
+    public DatosRequest existe(MttoVehicularRequest request) {
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT SOL.ID_MTTO_SOLICITUD, SOL.ID_MTTOVEHICULAR FROM SVT_MTTO_SOLICITUD SOL WHERE SOL.FEC_SOLICTUD=CURRENT_DATE()");
+        sql.append(" AND SOL.IND_ACTIVO=1").append(" AND SOL.ID_MTTOVEHICULAR="+request.getSolicitud().getIdMttoVehicular()).append(";");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
 }

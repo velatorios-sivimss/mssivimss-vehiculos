@@ -8,4 +8,6 @@ import java.io.IOException;
 
 public interface BuscarVehiculosService {
     Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException;
+    Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException;
+    Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException;
 }

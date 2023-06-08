@@ -105,7 +105,7 @@ public class MttoCatalogos {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_PROVEEDOR",
                         "NOM_PROVEEDOR",
-                        "NOM_BANCO",
+                        "DES_BANCO",
                         "CVE_BANCARIA",
                         "ID_TIPO_PROVEEDOR",
                         "DES_RFC",
@@ -145,6 +145,23 @@ public class MttoCatalogos {
                         "IND_ACTIVO")
                 .from("SVC_MTTO_NIVEL MN")
                 .where("MN.IND_ACTIVO = :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+    public DatosRequest getCatMttoReporteTipo() throws IOException {
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("TR.ID_MTTO_REPORTE_TIPO",
+                        "TR.DES_MTTO_REPORTE_TIPO",
+                        "TR.IND_ACTIVO")
+                .from("SVC_MTTO_REPORTE_TIPO TR")
+                .where("TR.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();

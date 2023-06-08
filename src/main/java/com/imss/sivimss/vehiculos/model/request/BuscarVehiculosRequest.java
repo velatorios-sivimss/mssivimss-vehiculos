@@ -9,6 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 public class BuscarVehiculosRequest {
     @JsonProperty
+    private Integer velatorio;
+    @JsonProperty
     private Integer nivelOficina;
     @JsonProperty
     private String placa;
