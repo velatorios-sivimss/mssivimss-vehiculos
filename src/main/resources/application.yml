@@ -28,11 +28,11 @@ logos:
   msit_logo_sistema: ${msit_LOGO_SISTEMA}
 
 endpoints:
-  dominio: ${msit_GENERICO_DOMINIO}
-  dominio-consulta: ${msit_GENERICO_CONSULTA}
-  dominio-consulta-paginado: ${msit_GENERICO_PAGINADO}
-  dominio-crear: ${msit_GENERICO_CREAR}
-  dominio-actualizar: ${msit_GENERICO_ACTUALIZAR}
+  dominio: ${msit_CATALOGOS}
+  dominio-consulta: ${msit_CATALOGOS}
+  dominio-consulta-paginado: ${msit_CATALOGOS}
+  dominio-crear: ${msit_CATALOGOS}
+  dominio-actualizar: ${msit_CATALOGOS}
   mod-catalogos: ${msit_CATALOGOS}
 
 plantilla:

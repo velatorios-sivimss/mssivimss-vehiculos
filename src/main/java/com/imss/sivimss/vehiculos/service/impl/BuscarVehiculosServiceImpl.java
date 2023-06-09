@@ -22,7 +22,7 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
-    private static final String PATH_BUSQUEDA_PAG="/generico/paginado";
+    private static final String PATH_BUSQUEDA_PAG="/paginado";
 
     private Vehiculos vehiculos=new Vehiculos();
 
