@@ -33,7 +33,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
-    private static final String PATH_CONSULTA="/generico/consulta";
+    private static final String PATH_CONSULTA="/consulta";
     
     @Autowired
     private ProviderServiceRestTemplate providerRestTemplate;
@@ -50,7 +50,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
-        String path=urlDominioConsulta + "/generico/crear";
+        String path=urlDominioConsulta + "/crear";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
@@ -134,7 +134,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     @Override
     public Response<?> modificarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
-        String path=urlDominioConsulta + "/generico/actualizar";
+        String path=urlDominioConsulta + "/actualizar";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = null;
@@ -158,7 +158,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     @Override
     public Response<?> modificarEstatusMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
-        String path=urlDominioConsulta + "/generico/actualizar";
+        String path=urlDominioConsulta + "/actualizar";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto=null;

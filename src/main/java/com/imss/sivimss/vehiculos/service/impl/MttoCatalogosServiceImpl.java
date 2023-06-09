@@ -20,7 +20,7 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
     @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
-    private static final String PATH_BUSQUEDA="/generico/consulta";
+    private static final String PATH_BUSQUEDA="/consulta";
 
     private MttoCatalogos mttoCatalogos=new MttoCatalogos();
 
