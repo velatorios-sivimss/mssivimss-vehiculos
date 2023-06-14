@@ -96,6 +96,10 @@ public class Vehiculos {
                 .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
+        if (buscarRequest.getDelegacion() != null) {
+            queryUtil.where("VE.ID_DELEGACION = :delegacion")
+                    .setParameter("delegacion", buscarRequest.getDelegacion());
+        }
         if (buscarRequest.getVelatorio() != null) {
             queryUtil.where("MV.ID_VELATORIO = :velatorio")
                     .setParameter("velatorio", buscarRequest.getVelatorio());
