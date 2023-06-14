@@ -132,6 +132,18 @@ public class MttoCatalogosController {
         );
     }
 
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catMttoPeriodo")
+    public CompletableFuture<?> getCatMttoPeriodo(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de periodos");
+        Response<?> response= mttoCatalogosService.getCatMttoPeriodo(authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *

@@ -172,4 +172,21 @@ public class MttoCatalogos {
         return dr;
     }
 
+    public DatosRequest getCatMttoPeriodo() throws IOException {
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("PE.ID_MTTO_PERIODO",
+                        "PE.DES_PERIODO",
+                        "PE.IND_ACTIVO")
+                .from("SVC_MTTO_PERIODO PE")
+                .where("PE.IND_ACTIVO = :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
 }
