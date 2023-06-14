@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,6 +128,10 @@ public class Vehiculos {
             queryUtil.where("MV.ID_MTTOESTADO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getEstadoMtto());
         }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = simpleDateFormat.format(new Date());
+        queryUtil.where("MV.FEC_REGISTRO >= :fechaHoy")
+                .setParameter("fechaHoy", date);
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
@@ -136,7 +142,6 @@ public class Vehiculos {
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
         logger.info(query);
-        System.out.println(query);
         return dr;
     }
 }
