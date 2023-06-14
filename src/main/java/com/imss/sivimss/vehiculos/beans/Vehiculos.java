@@ -95,7 +95,9 @@ public class Vehiculos {
                 .leftJoin("SVC_MTTO_TIPO MT", "MT.ID_MTTO_TIPO = MS.ID_MTTO_TIPO")
                 .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
-                .setParameter("idEstatus", 1);
+                .setParameter("idEstatus", 1)
+                .where("MV.IND_ACTIVO = :idMttoEstatus")
+                .setParameter("idMttoEstatus", 1);
         if (buscarRequest.getDelegacion() != null) {
             queryUtil.where("VE.ID_DELEGACION = :delegacion")
                     .setParameter("delegacion", buscarRequest.getDelegacion());
@@ -134,6 +136,7 @@ public class Vehiculos {
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
         logger.info(query);
+        System.out.println(query);
         return dr;
     }
 }

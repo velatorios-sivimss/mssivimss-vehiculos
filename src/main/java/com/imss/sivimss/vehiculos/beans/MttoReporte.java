@@ -94,6 +94,7 @@ public class MttoReporte {
                 "COUNT(MV.ID_VEHICULO) AS TOTAL_VEHICULOS\n" +
                 "FROM SVT_VEHICULOS VH\n" +
                 "INNER JOIN SVC_USO_VEHICULO UV ON VH.ID_USOVEHICULO = UV.ID_USOVEHICULO\n" +
+                "INNER JOIN SVC_VELATORIO VE ON VH.ID_VELATORIO = VE.ID_VELATORIO\n" +
                 "LEFT JOIN SVT_MTTO_VEHICULAR MV ON MV.ID_VEHICULO = VH.ID_VEHICULO\n" +
                 "LEFT JOIN SVT_MTTO_VERIF_INICIO VI ON VI.ID_MTTOVEHICULAR = MV.ID_MTTOVEHICULAR\n" +
                 "LEFT JOIN SVC_MTTO_NIVEL SMN_ACEITE ON SMN_ACEITE.ID_MTTONIVEL=VI.ID_NIVELACEITE\n" +
@@ -113,7 +114,7 @@ public class MttoReporte {
             query.append(" AND MV.ID_VELATORIO = ").append(reporteRequest.getVelatorio());
         }
         if (reporteRequest.getDelegacion() !=null) {
-            query.append(" AND MV.ID_DELEGACION = ").append(reporteRequest.getDelegacion());
+            query.append(" AND VE.ID_DELEGACION = ").append(reporteRequest.getDelegacion());
         }
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
             query.append(" AND VH.DES_PLACAS = ").append("'" + reporteRequest.getPlaca() + "'");
