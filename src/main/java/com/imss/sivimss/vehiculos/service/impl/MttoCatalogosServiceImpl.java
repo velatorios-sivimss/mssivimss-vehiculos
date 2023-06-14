@@ -82,4 +82,11 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
         return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoReporteTipo().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
+
+    @Override
+    public Response<?> getCatMttoPeriodo(Authentication authentication) throws IOException {
+        log.info("Obtiene lista periodos");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoPeriodo().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
 }
