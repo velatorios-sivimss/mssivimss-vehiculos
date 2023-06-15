@@ -51,6 +51,9 @@ public class Registro {
         if(request.getRegistro().getCostoMtto()!=null) {
             q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
+        if(request.getRegistro().getDesNombreProveedor()!=null) {
+            q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -91,6 +94,9 @@ public class Registro {
         if(request.getRegistro().getCostoMtto()!=null) {
             q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
+        if(request.getRegistro().getDesNombreProveedor()!=null) {
+            q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
+        }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
@@ -127,6 +133,7 @@ public class Registro {
                         "REG.NUM_KILOMETRAJE",
                         "REG.DES_NOMBRE_TALLER",
                         "REG.MON_COSTO_MTTO",
+                        "REG.DES_NOMBRE_PROVEEDOR",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -150,7 +157,9 @@ public class Registro {
                         "SP.NOM_PROVEEDOR",
                         "SP.ID_TIPO_PROVEEDOR",
                         "SP.DES_TIPO_CONTRATO",
-                        "SP.DES_REGIMEN")
+                        "SP.DES_REGIMEN",
+                        "MTPC.DES_MTTO_TIPO",
+                        "REG.FEC_REGISTRO")
                 .from("SVT_MTTO_REGISTRO REG")
                 .leftJoin("SVT_MTTO_VEHICULAR MTTO_VEH", "MTTO_VEH.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR")
                 .leftJoin("SVC_MTTO_ESTADO SME","MTTO_VEH.ID_MTTOESTADO=SME.ID_MTTOESTADO")
@@ -159,7 +168,8 @@ public class Registro {
                 .leftJoin("SVC_DELEGACION SD","MTTO_VEH.ID_DELEGACION=SD.ID_DELEGACION")
                 .leftJoin("SVC_VELATORIO SVEL","MTTO_VEH.ID_VELATORIO=SVEL.ID_VELATORIO")
                 .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =REG.ID_MTTOMODALIDAD")
-                .leftJoin("SVT_PROVEEDOR SP","REG.ID_PROVEEDOR=SP.ID_PROVEEDOR");
+                .leftJoin("SVT_PROVEEDOR SP","REG.ID_PROVEEDOR=SP.ID_PROVEEDOR")
+                .leftJoin("SVC_MTTO_TIPO MTPC","REG.ID_MANTENIMIENTO=MTPC.ID_MTTO_TIPO");
         if(palabra!=null && palabra.trim().length()>0) {
             queryUtil.where("REG.ID_MTTO_REGISTRO = :idRegistro")
                     .setParameter("idRegistro", Integer.parseInt(palabra));
