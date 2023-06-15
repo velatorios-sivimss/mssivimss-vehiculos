@@ -57,6 +57,17 @@ public class ReportesMttoVechicularController {
                 () -> getResponseEntity(response)
         );
     }
+    
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+  	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+  	@TimeLimiter(name = "msflujo")
+  	@PostMapping("reporte/mtto/vehicular")
+  	public CompletableFuture<?> descargarReporteProgramarMttoVehicular(@RequestBody DatosRequest request,Authentication authentication) throws IOException{
+  		Response<?> response = buscarVehiculosService.reporteProgramarMttoVehicular(request,authentication);
+  		return CompletableFuture
+  				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+  	}
+
 
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.

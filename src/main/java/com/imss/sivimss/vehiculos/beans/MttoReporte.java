@@ -1,6 +1,7 @@
 package com.imss.sivimss.vehiculos.beans;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.vehiculos.model.request.ReporteDto;
 import com.imss.sivimss.vehiculos.model.request.ReporteEncargadoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
@@ -159,4 +160,16 @@ public class MttoReporte {
         logger.info(query.toString());
         return dr;
     }
-}
+
+
+	public Map<String, Object> reporteProgramarMttoVehicular(ReporteDto reporte) {
+		Map<String, Object> envioDatos = new HashMap<>();
+		envioDatos.put("condition", " AND MV.ID_VELATORIO= "+reporte.getIdVelatorio()+"  AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");	
+		envioDatos.put("rutaNombreReporte", reporte.getRutaNombreReporte());
+		envioDatos.put("tipoReporte", reporte.getTipoReporte());
+		if(reporte.getTipoReporte().equals("xls")) {
+			envioDatos.put("IS_IGNORE_PAGINATION", true);
+		}
+		return envioDatos;
+	}
+	}
