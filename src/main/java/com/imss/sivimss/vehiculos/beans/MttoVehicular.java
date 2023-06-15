@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class MttoVehicular {
         q.agregarParametroValues("IND_ACTIVO", "1");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         return dr;
@@ -52,7 +53,7 @@ public class MttoVehicular {
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
         q.addWhere("ID_MTTOVEHICULAR =" + request.getIdMttoVehicular());
         String query = q.obtenerQueryActualizar();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         logger.info(query);
         dr.setDatos(parametro);
@@ -71,7 +72,7 @@ public class MttoVehicular {
         }
         q.addWhere("ID_MTTOVEHICULAR =" + idMttoVehicular);
         String query = q.obtenerQueryActualizar();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         logger.info(query);
