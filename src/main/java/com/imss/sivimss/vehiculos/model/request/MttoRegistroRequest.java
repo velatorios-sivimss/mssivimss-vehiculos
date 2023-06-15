@@ -33,4 +33,6 @@ public class MttoRegistroRequest {
     private String desNombreProveedor;
     @JsonProperty
     private String  desMttoCorrectivo;
+    @JsonProperty
+    private String  fecRegistro;
 }
