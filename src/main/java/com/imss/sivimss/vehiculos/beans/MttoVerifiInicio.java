@@ -145,7 +145,7 @@ public class MttoVerifiInicio {
             queryUtil.orderBy("VERI_IN.ID_MTTOVERIFINICIO");
         }
         String query = queryUtil.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 		logger.info(query);
 		return request;
@@ -158,7 +158,7 @@ public class MttoVerifiInicio {
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         logger.info(query);
         dr.setDatos(parametro);

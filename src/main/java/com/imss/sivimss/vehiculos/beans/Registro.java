@@ -55,6 +55,9 @@ public class Registro {
         if(request.getRegistro().getDesNombreProveedor()!=null) {
             q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
         }
+        if(request.getRegistro().getDesMttoCorrectivo()!=null) {
+            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -98,6 +101,9 @@ public class Registro {
         if(request.getRegistro().getDesNombreProveedor()!=null) {
             q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
         }
+        if(request.getRegistro().getDesMttoCorrectivo()!=null) {
+            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
+        }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -135,6 +141,7 @@ public class Registro {
                         "REG.DES_NOMBRE_TALLER",
                         "REG.MON_COSTO_MTTO",
                         "REG.DES_NOMBRE_PROVEEDOR",
+                        "REG.DES_MTTO_CORRECTIVO",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -178,7 +185,7 @@ public class Registro {
             queryUtil.orderBy("REG.ID_MTTO_REGISTRO");
         }
         String query = queryUtil.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 		logger.info(query);
 		return request;
@@ -191,7 +198,7 @@ public class Registro {
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         logger.info(query);
         dr.setDatos(parametro);
