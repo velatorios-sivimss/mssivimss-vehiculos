@@ -12,14 +12,19 @@ import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
 public class MttoReporte {
     private static final Logger logger = LogManager.getLogger(MttoReporte.class);
+    private static SimpleDateFormat formatoRequest = new SimpleDateFormat("dd/MM/yyyy");
+    private static SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
 
-    public DatosRequest reporteEncargado(DatosRequest request) throws IOException {
+    public DatosRequest reporteEncargado(DatosRequest request) throws IOException, ParseException {
         Gson json = new Gson();
         ReporteEncargadoRequest reporteRequest=new ReporteEncargadoRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
@@ -54,10 +59,12 @@ public class MttoReporte {
             query.append(" AND VH.DES_PLACAS =").append("'").append(reporteRequest.getPlaca()).append("'");
         }
         if (reporteRequest.getFechaInicio() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaInicio()).append("' AS DATE)");
+            Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
+            query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
         }
         if (reporteRequest.getFechaFinal() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaFinal()).append("' AS DATE)");
+            Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
+            query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
         query. append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
@@ -73,7 +80,7 @@ public class MttoReporte {
     }
 
 
-    public DatosRequest reportePredictivo(DatosRequest request) throws IOException {
+    public DatosRequest reportePredictivo(DatosRequest request) throws IOException, ParseException {
         Gson json = new Gson();
         ReportePredictivoRequest reporteRequest=new ReportePredictivoRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
@@ -142,10 +149,12 @@ public class MttoReporte {
 
         }
         if (reporteRequest.getFechaInicio() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaInicio()).append("' AS DATE)");
+            Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
+            query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
         }
         if (reporteRequest.getFechaFinal() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaFinal()).append("' AS DATE)");
+            Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
+            query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
         query.append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
