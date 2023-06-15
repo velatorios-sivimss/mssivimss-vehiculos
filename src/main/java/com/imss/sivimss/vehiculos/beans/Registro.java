@@ -58,6 +58,9 @@ public class Registro {
         if(request.getRegistro().getDesMttoCorrectivo()!=null) {
             q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
         }
+        if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
+            q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -103,6 +106,9 @@ public class Registro {
         }
         if(request.getRegistro().getDesMttoCorrectivo()!=null) {
             q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
+        }
+        if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
+            q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
         }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
@@ -167,7 +173,7 @@ public class Registro {
                         "SP.DES_TIPO_CONTRATO",
                         "SP.DES_REGIMEN",
                         "MTPC.DES_MTTO_TIPO",
-                        "REG.FEC_REGISTRO")
+                        "REG.FEC_REGISTRO_REG AS FEC_REGISTRO")
                 .from("SVT_MTTO_REGISTRO REG")
                 .leftJoin("SVT_MTTO_VEHICULAR MTTO_VEH", "MTTO_VEH.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR")
                 .leftJoin("SVC_MTTO_ESTADO SME","MTTO_VEH.ID_MTTOESTADO=SME.ID_MTTOESTADO")
