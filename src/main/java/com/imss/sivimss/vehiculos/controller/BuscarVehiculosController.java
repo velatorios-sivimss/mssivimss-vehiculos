@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 @RestController
 @RequestMapping("/")
@@ -44,7 +45,7 @@ public class BuscarVehiculosController {
                 () -> getResponseEntity(response)
         );
     }
-
+    
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *
