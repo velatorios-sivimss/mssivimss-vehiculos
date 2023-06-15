@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -49,14 +50,14 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     }
 
     @Override
-    public Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException {
+    public Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene reporte encargado");
         return providerRestTemplate.consumirServicio(mttoReporte.reporteEncargado(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);
     }
 
     @Override
-    public Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException {
+    public Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene reporte predictivo");
         return providerRestTemplate.consumirServicio(mttoReporte.reportePredictivo(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);

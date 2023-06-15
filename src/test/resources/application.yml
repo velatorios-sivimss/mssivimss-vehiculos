@@ -2,6 +2,8 @@ server:
   servlet:
     contextPath: /mssivimss-arquetipo
 spring:
+  application:
+    name: mssivimss-vehiculos
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -31,6 +33,7 @@ endpoints:
    dominio-crear: http://localhost:1080/mssivimss-mod-catalogos/v1/generico/crear
    dominio-actualizar: http://localhost:1080/mssivimss-mod-catalogos/v1/generico/actualizar
    ms-reportes: http://localhost:1080/mssivimss-reportes-jasp/v1/generales/generar-reporte
+   mod-catalogos: http://localhost:1080/mssivimss-mod-catalogos/v1
 
 plantilla:
   pdf-DisponibilidadVehiculos: reportes/generales/DiponibilidadVehiculos.jrxml
