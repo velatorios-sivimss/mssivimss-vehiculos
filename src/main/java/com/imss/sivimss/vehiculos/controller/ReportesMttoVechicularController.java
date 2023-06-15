@@ -39,7 +39,7 @@ public class ReportesMttoVechicularController {
     @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
     @TimeLimiter(name = "msflujo")
     @PostMapping("reporte/mtto/encargado")
-    public CompletableFuture<?> getReporteEncargado(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+    public CompletableFuture<?> getReporteEncargado(@RequestBody DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene reporte de encargado");
         Response<?> response =  buscarVehiculosService.getReporteEncargado(request, authentication);
         return CompletableFuture.supplyAsync(
@@ -51,7 +51,7 @@ public class ReportesMttoVechicularController {
     @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
     @TimeLimiter(name = "msflujo")
     @PostMapping("reporte/mtto/predictivo")
-    public CompletableFuture<?> getReportePredictivo(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+    public CompletableFuture<?> getReportePredictivo(@RequestBody DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene reporte predictivo");
         Response<?> response =  buscarVehiculosService.getReportePredictivo(request, authentication);
         return CompletableFuture.supplyAsync(

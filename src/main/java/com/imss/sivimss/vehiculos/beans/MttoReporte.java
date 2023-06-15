@@ -24,8 +24,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class MttoReporte {
     private static final Logger logger = LogManager.getLogger(MttoReporte.class);
+    private static SimpleDateFormat formatoRequest = new SimpleDateFormat("dd/MM/yyyy");
+    private static SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
 
-    public DatosRequest reporteEncargado(DatosRequest request) throws IOException {
+    public DatosRequest reporteEncargado(DatosRequest request) throws IOException, ParseException {
         Gson json = new Gson();
         ReporteEncargadoRequest reporteRequest=new ReporteEncargadoRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
@@ -60,10 +62,12 @@ public class MttoReporte {
             query.append(" AND VH.DES_PLACAS =").append("'").append(reporteRequest.getPlaca()).append("'");
         }
         if (reporteRequest.getFechaInicio() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaInicio()).append("' AS DATE)");
+            Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
+            query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
         }
         if (reporteRequest.getFechaFinal() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaFinal()).append("' AS DATE)");
+            Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
+            query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
         query. append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
@@ -79,7 +83,7 @@ public class MttoReporte {
     }
 
 
-    public DatosRequest reportePredictivo(DatosRequest request) throws IOException {
+    public DatosRequest reportePredictivo(DatosRequest request) throws IOException, ParseException {
         Gson json = new Gson();
         ReportePredictivoRequest reporteRequest=new ReportePredictivoRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
@@ -148,10 +152,12 @@ public class MttoReporte {
 
         }
         if (reporteRequest.getFechaInicio() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaInicio()).append("' AS DATE)");
+            Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
+            query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
         }
         if (reporteRequest.getFechaFinal() != null) {
-            query.append(" AND MV.FEC_REGISTRO >= CAST('").append(reporteRequest.getFechaFinal()).append("' AS DATE)");
+            Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
+            query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
         query.append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
@@ -183,14 +189,12 @@ public class MttoReporte {
 		Map<String, Object> envioDatos = new HashMap<>();
 		Date dateI = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaInicio());
 		Date dateF = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaFin());
-		DateFormat fecFormat = new SimpleDateFormat("yyyy-MM-dd");
-	    String fecInicial=fecFormat.format(dateI);
-	    String fecFinal=fecFormat.format(dateF);
-		//AND VH.DES_PLACAS ='JOL555' AND MV.FEC_REGISTRO >= '01/06/2023' AND MV.FEC_REGISTRO >= '30/06/2023' GROUP BY MV.ID_VEHICULO
+	    String fecInicial=formatoConsulta.format(dateI);
+	    String fecFinal=formatoConsulta.format(dateF);
+	
 		envioDatos.put("condition", " AND VH.DES_PLACAS= '"+reporte.getPlacas()+"' AND MV.FEC_REGISTRO >= '"+fecInicial+"' AND MV.FEC_REGISTRO <= '"+fecFinal+"' GROUP BY MV.ID_VEHICULO;");	
 		envioDatos.put("fecInicial", reporte.getFechaInicio());
 		envioDatos.put("fecFinal", reporte.getFechaFin());
-		logger.info("--> : " +envioDatos.toString());
 		if(reporte.getNumReporte()==2) {
 			envioDatos.put("rutaNombreReporte", "reportes/generales/ReporteEncargado_VerifDiaria.jrxml");	
 		}else {
