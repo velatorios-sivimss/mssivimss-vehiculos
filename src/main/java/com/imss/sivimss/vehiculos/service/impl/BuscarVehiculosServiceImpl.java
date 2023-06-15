@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -72,6 +73,16 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
         	throw new BadRequestException(HttpStatus.BAD_REQUEST, "Informacion incompleta ");
         }
 		Map<String, Object> envioDatos = new MttoReporte().reporteProgramarMttoVehicular(reporte);
+		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
+				authentication);
+	}
+
+	@Override
+	public Response<?> reporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
+		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
 	}
