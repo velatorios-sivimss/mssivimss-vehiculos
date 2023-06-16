@@ -69,7 +69,7 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		Gson gson = new Gson();
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
-        if(reporte.getIdVelatorio()==null || reporte.getPlacas()==null) {
+        if(reporte.getIdVelatorio()==null && reporte.getPlacas()==null && reporte.getIdDelegacion()==null && reporte.getIdNivelOficina()==null) {
         	throw new BadRequestException(HttpStatus.BAD_REQUEST, "Informacion incompleta ");
         }
 		Map<String, Object> envioDatos = new MttoReporte().reporteProgramarMttoVehicular(reporte);
