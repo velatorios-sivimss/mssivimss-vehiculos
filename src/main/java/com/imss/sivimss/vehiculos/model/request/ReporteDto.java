@@ -11,6 +11,8 @@ import lombok.Setter;
 public class ReporteDto {
 
 	private Integer numReporte;
+	private Integer idDelegacion;
+	private Integer idNivelOficina;
 	private Integer idVelatorio;
 	private String placas;
 	private String fechaInicio;

@@ -153,7 +153,21 @@ public class MttoReporte {
 
 	public Map<String, Object> reporteProgramarMttoVehicular(ReporteDto reporte) {
 		Map<String, Object> envioDatos = new HashMap<>();
-		envioDatos.put("condition", " AND MV.ID_VELATORIO= "+reporte.getIdVelatorio()+"  AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");	
+		StringBuilder condition= new StringBuilder();
+		if(reporte.getIdDelegacion()!=null) {
+			condition.append(" AND DL.ID_DELEGACION="+reporte.getIdDelegacion()+"");
+		}
+		if(reporte.getIdVelatorio()!=null) {
+			condition.append(" AND MV.ID_VELATORIO="+reporte.getIdVelatorio()+"");
+		}
+		if(reporte.getIdNivelOficina()!=null) {
+			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
+		}
+		if(reporte.getPlacas()!=null) {
+			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
+		}
+		logger.info("-> " +condition.toString());
+		envioDatos.put("condition", condition.toString());	
 		envioDatos.put("rutaNombreReporte", reporte.getRutaNombreReporte());
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
 		if(reporte.getTipoReporte().equals("xls")) {
