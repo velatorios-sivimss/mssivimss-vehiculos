@@ -103,11 +103,11 @@ public class Vehiculos {
             queryUtil.where("VE.ID_DELEGACION = :delegacion")
                     .setParameter("delegacion", buscarRequest.getDelegacion());
         }
-        if (buscarRequest.getVelatorio() != null) {
+        if (buscarRequest.getVelatorio() != null && buscarRequest.getVelatorio() >0) {
             queryUtil.where("MV.ID_VELATORIO = :velatorio")
                     .setParameter("velatorio", buscarRequest.getVelatorio());
         }
-        if (buscarRequest.getNivelOficina() != null) {
+        if (buscarRequest.getNivelOficina() != null && buscarRequest.getNivelOficina()>0) {
             queryUtil.where("VH.ID_OFICINA = :nivelOficina")
                     .setParameter("nivelOficina", buscarRequest.getNivelOficina());
         }
@@ -119,11 +119,11 @@ public class Vehiculos {
             queryUtil.where("VH.DES_PLACAS = :placa")
                     .setParameter("placa", buscarRequest.getPlaca());
         }
-        if (buscarRequest.getTipoMtto() != null) {
+        if (buscarRequest.getTipoMtto() != null && buscarRequest.getTipoMtto()>0) {
             queryUtil.where("MS.ID_MTTO_TIPO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getTipoMtto());
         }
-        if (buscarRequest.getEstadoMtto() != null) {
+        if (buscarRequest.getEstadoMtto() != null && buscarRequest.getEstadoMtto()>0) {
             queryUtil.where("MV.ID_MTTOESTADO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getEstadoMtto());
         }
