@@ -45,7 +45,7 @@ public class Vehiculos {
                         "VH.DES_NUMSERIE",
                         "VH.DES_NUMMOTOR",
                         "VH.DES_VEHICULO",
-                        "VH.FEC_ADQUISICION",
+                        "DATE_FORMAT(VH.FEC_ADQUISICION, '%m/%d/%Y') AS FEC_ADQUISICION",
                         "VH.NUM_TOTAL",
                         "VH.IMP_PRIMA",
                         "VH.IND_ACTIVO",
@@ -70,9 +70,9 @@ public class Vehiculos {
                         "VI.ID_CODIGOFALLO",
                         "VI.ID_LIMPIEZAINTERIOR",
                         "VI.ID_LIMPIEZAEXTERIOR",
-                        "VI.FEC_REGISTRO AS FECHA_REGISTRO_VERI_INICIO",
+                        "DATE_FORMAT(VI.FEC_REGISTRO,'%m/%d/%Y') AS FECHA_REGISTRO_VERI_INICIO",
                         "MS.ID_MTTO_SOLICITUD",
-                        "MS.FEC_SOLICTUD",
+                        "DATE_FORMAT(MS.FEC_SOLICTUD, '%m/%d/%Y') AS FEC_SOLICTUD",
                         "MS.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_SOL",
                         "MS.KILOMETRAJE AS KILOMETRAJE_SOL",
                         "MS.DES_NOTAS AS DES_NOTAS_SOL",
@@ -83,7 +83,7 @@ public class Vehiculos {
                         "REG.DES_NOMBRE_TALLER",
                         "REG.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_REG",
                         "REG.COSTO_MTTO AS COSTO_MTTO_REG",
-                        "REG.FEC_REGISTRO AS FEC_REGISTRO_REG",
+                        "DATE_FORMAT(REG.FEC_REGISTRO,'%m/%d/%Y') AS FEC_REGISTRO_REG",
                         "(select case count(mvt.ID_VEHICULO) when 0 then 'false' else 'true' end as verificacion from SVT_MTTO_VERIF_INICIO vit left join SVT_MTTO_VEHICULAR mvt on (vit.ID_MTTOVEHICULAR=mvt.ID_MTTOVEHICULAR) where mvt.ID_VEHICULO =VH.ID_VEHICULO and vit.FEC_REGISTRO =CURRENT_DATE()) as verificacionDia")
                 .from("SVT_VEHICULOS VH")
                 .join("SVC_USO_VEHICULO UV", "VH.ID_USOVEHICULO = UV.ID_USOVEHICULO")
