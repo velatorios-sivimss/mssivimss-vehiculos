@@ -155,9 +155,9 @@ public class Registro {
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
                         "MTTO_VEH.ID_VELATORIO",
-                        "DATE_FORMAT(MTTO_VEH.FEC_ALTA,'%m/%d/%Y') AS FEC_ALTA",
-                        "DATE_FORMAT(MTTO_VEH.FEC_ACTUALIZACION,'%m/%d/%Y') AS FEC_ACTUALIZACION",
-                        "DATE_FORMAT(MTTO_VEH.FEC_BAJA,'%m/%d/%Y') AS FEC_BAJA",
+                        "DATE_FORMAT(MTTO_VEH.FEC_ALTA,'%d-%m-%Y') AS FEC_ALTA",
+                        "DATE_FORMAT(MTTO_VEH.FEC_ACTUALIZACION,'%d-%m-%Y') AS FEC_ACTUALIZACION",
+                        "DATE_FORMAT(MTTO_VEH.FEC_BAJA,'%d-%m-%Y') AS FEC_BAJA",
                         "MTTO_VEH.IND_ACTIVO",
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
@@ -176,7 +176,7 @@ public class Registro {
                         "SP.DES_TIPO_CONTRATO",
                         "SP.DES_REGIMEN",
                         "MTPC.DES_MTTO_TIPO",
-                        "DATE_FORMAT(REG.FEC_REGISTRO_REG,'%m/%d/%Y') AS FEC_REGISTRO")
+                        "DATE_FORMAT(REG.FEC_REGISTRO_REG,'%d-%m-%Y') AS FEC_REGISTRO")
                 .from("SVT_MTTO_REGISTRO REG")
                 .leftJoin("SVT_MTTO_VEHICULAR MTTO_VEH", "MTTO_VEH.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR")
                 .leftJoin("SVC_MTTO_ESTADO SME","MTTO_VEH.ID_MTTOESTADO=SME.ID_MTTOESTADO")
