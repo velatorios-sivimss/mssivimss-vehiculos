@@ -129,28 +129,6 @@ public class MttoReporte {
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
             query.append(" AND VH.DES_PLACAS = ").append("'" + reporteRequest.getPlaca() + "'");
         }
-        if (reporteRequest.getTipoMtto() != null) {
-            if(reporteRequest.getTipoMtto().equals(1)){
-                query.append(" AND SMN_ACEITE.ID_MTTONIVEL =").append(reporteRequest.getTipoMtto());
-            }
-            if(reporteRequest.getTipoMtto().equals(2)){
-                query.append(" AND SMN_AGUA.ID_MTTONIVEL =").append(reporteRequest.getTipoMtto());
-            }
-            if(reporteRequest.getTipoMtto().equals(3)){
-                query.append(" AND (SMN_NETRA.ID_MTTONIVEL =").append(reporteRequest.getTipoMtto());
-                query.append(" OR SMN_NEDEL.ID_MTTONIVEL =").append(reporteRequest.getTipoMtto()+ ")");
-            }
-            if(reporteRequest.getTipoMtto().equals(4)){
-                query.append(" AND SMN_COMB.ID_MTTONIVEL =").append(reporteRequest.getTipoMtto());
-            }
-            if(reporteRequest.getTipoMtto().equals(5)){
-                query.append(" AND SMN_CODIGO.ID_MTTONIVEL =").append(reporteRequest.getTipoMtto());
-            }
-            if(reporteRequest.getTipoMtto().equals(6)){
-                query.append(" AND SMN_BATERIA.ID_MTTONIVE =").append(reporteRequest.getTipoMtto());
-            }
-
-        }
         if (reporteRequest.getFechaInicio() != null) {
             Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
             query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
