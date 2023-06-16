@@ -76,4 +76,14 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
 	}
+
+	@Override
+	public Response<?> reporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
+		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte);
+		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
+				authentication);
+	}
 }

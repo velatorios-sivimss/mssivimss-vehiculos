@@ -12,4 +12,5 @@ public interface BuscarVehiculosService {
     Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException;
     Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException, ParseException;
 	Response<?> reporteProgramarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException;
+	Response<?> reporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException;
 }
