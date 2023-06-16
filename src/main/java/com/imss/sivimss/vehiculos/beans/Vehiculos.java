@@ -129,7 +129,7 @@ public class Vehiculos {
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = simpleDateFormat.format(new Date());
-        queryUtil.or("MV.FEC_REGISTRO >= :fechaHoy")
+        queryUtil.where("MV.FEC_REGISTRO >= :fechaHoy")
                 .setParameter("fechaHoy", date);
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
