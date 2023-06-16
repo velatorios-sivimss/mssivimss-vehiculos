@@ -10,6 +10,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReporteDto {
 
+	private Integer numReporte;
 	private Integer idVelatorio;
 	private String placas;
 	private String fechaInicio;

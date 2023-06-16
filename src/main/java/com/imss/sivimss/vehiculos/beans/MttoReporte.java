@@ -13,10 +13,12 @@ import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -175,6 +177,29 @@ public class MttoReporte {
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("condition", " AND MV.ID_VELATORIO= "+reporte.getIdVelatorio()+"  AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");	
 		envioDatos.put("rutaNombreReporte", reporte.getRutaNombreReporte());
+		envioDatos.put("tipoReporte", reporte.getTipoReporte());
+		if(reporte.getTipoReporte().equals("xls")) {
+			envioDatos.put("IS_IGNORE_PAGINATION", true);
+		}
+		return envioDatos;
+	}
+
+
+	public Map<String, Object> reporteEncargado(ReporteDto reporte) throws ParseException {
+		Map<String, Object> envioDatos = new HashMap<>();
+		Date dateI = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaInicio());
+		Date dateF = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaFin());
+	    String fecInicial=formatoConsulta.format(dateI);
+	    String fecFinal=formatoConsulta.format(dateF);
+	
+		envioDatos.put("condition", " AND VH.DES_PLACAS= '"+reporte.getPlacas()+"' AND MV.FEC_REGISTRO >= '"+fecInicial+"' AND MV.FEC_REGISTRO <= '"+fecFinal+"' GROUP BY MV.ID_VEHICULO;");	
+		envioDatos.put("fecInicial", reporte.getFechaInicio());
+		envioDatos.put("fecFinal", reporte.getFechaFin());
+		if(reporte.getNumReporte()==2) {
+			envioDatos.put("rutaNombreReporte", "reportes/generales/ReporteEncargado_VerifDiaria.jrxml");	
+		}else {
+			envioDatos.put("rutaNombreReporte", "reportes/generales/ReporteEncargado_ProgramasMtto.jrxml");	
+		}
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
 		if(reporte.getTipoReporte().equals("xls")) {
 			envioDatos.put("IS_IGNORE_PAGINATION", true);
