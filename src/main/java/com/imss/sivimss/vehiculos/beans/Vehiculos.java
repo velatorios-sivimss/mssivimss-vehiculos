@@ -99,7 +99,7 @@ public class Vehiculos {
                 .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
-        if (buscarRequest.getDelegacion() != null) {
+        if (buscarRequest.getDelegacion() != null && buscarRequest.getDelegacion()>0) {
             queryUtil.where("VE.ID_DELEGACION = :delegacion")
                     .setParameter("delegacion", buscarRequest.getDelegacion());
         }
@@ -127,8 +127,6 @@ public class Vehiculos {
             queryUtil.where("MV.ID_MTTOESTADO = :tipoMtto")
                     .setParameter("tipoMtto", buscarRequest.getEstadoMtto());
         }
-        queryUtil.or("MV.IND_ACTIVO = :idMttoEstatus")
-                .setParameter("idMttoEstatus", 1);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = simpleDateFormat.format(new Date());
         queryUtil.or("MV.FEC_REGISTRO >= :fechaHoy")
