@@ -117,9 +117,6 @@ public class MttoReporte {
                 "LEFT JOIN SVC_MTTO_NIVEL SMN_LIMPINT ON SMN_LIMPINT.ID_MTTONIVEL=VI.ID_LIMPIEZAINTERIOR\n" +
                 "LEFT JOIN SVC_MTTO_NIVEL SMN_LIMPEXT ON SMN_LIMPEXT.ID_MTTONIVEL=VI.ID_LIMPIEZAEXTERIOR\n" +
                 "WHERE VH.IND_ACTIVO = 1");
-        if (reporteRequest.getNivelOficina() != null) {
-            query.append(" AND VH.ID_OFICINA = ").append(reporteRequest.getNivelOficina());
-        }
         if (reporteRequest.getVelatorio()!=null) {
             query.append(" AND MV.ID_VELATORIO = ").append(reporteRequest.getVelatorio());
         }
