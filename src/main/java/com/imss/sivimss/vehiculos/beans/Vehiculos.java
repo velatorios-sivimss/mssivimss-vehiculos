@@ -98,22 +98,21 @@ public class Vehiculos {
                 .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
+        if (buscarRequest.getDelegacion() != null && buscarRequest.getDelegacion()>0) {
+            queryUtil.where("VE.ID_DELEGACION = :delegacion")
+                    .setParameter("delegacion", buscarRequest.getDelegacion());
+        }
+        if (buscarRequest.getVelatorio() != null && buscarRequest.getVelatorio() >0) {
+            queryUtil.where("MV.ID_VELATORIO = :velatorio")
+                    .setParameter("velatorio", buscarRequest.getVelatorio());
+        }
+        if (buscarRequest.getIdVehiculo() != null && buscarRequest.getIdVehiculo()>0) {
+            queryUtil.where("VH.ID_VEHICULO = :idVehiculo")
+                    .setParameter("idVehiculo", buscarRequest.getIdVehiculo());
+        }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {
             queryUtil.where("VH.DES_PLACAS = :placa")
                     .setParameter("placa", buscarRequest.getPlaca());
-        } else {
-            if (buscarRequest.getDelegacion() != null && buscarRequest.getDelegacion()>0) {
-                queryUtil.where("VE.ID_DELEGACION = :delegacion")
-                        .setParameter("delegacion", buscarRequest.getDelegacion());
-            }
-            if (buscarRequest.getVelatorio() != null && buscarRequest.getVelatorio() >0) {
-                queryUtil.where("MV.ID_VELATORIO = :velatorio")
-                        .setParameter("velatorio", buscarRequest.getVelatorio());
-            }
-            if (buscarRequest.getIdVehiculo() != null && buscarRequest.getIdVehiculo()>0) {
-                queryUtil.where("VH.ID_VEHICULO = :idVehiculo")
-                        .setParameter("idVehiculo", buscarRequest.getIdVehiculo());
-            }
         }
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();

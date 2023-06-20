@@ -55,6 +55,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     private Registro registro=new Registro();
 
+    SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
+
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         String path=urlDominioConsulta + "/crear";
@@ -64,8 +66,10 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Response<?> existeMtto = llamarServicio(mttoVehicular.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
         List<Map<String, Object>> resultExiste= (List<Map<String, Object>>) existeMtto.getDatos();
         Integer idMtto=null;
+        Date fechaRegistro=null;
         for (Map<String, Object> map : resultExiste) {
             idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
+            fechaRegistro=formatoConsulta.parse((String) map.get("FEC_REGISTRO"));
         }
         if(idMtto==null) {
             Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
@@ -79,14 +83,12 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                 if (requestDto.getSolicitud() != null) {
                     requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                     llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    Date fechaMtto = simpleDateFormat.parse(requestDto.getSolicitud().getFecRegistro());
-                    estatusMttoService.validarEstatusMtto(authentication,fechaMtto);
+                    this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
                 }
                 if (requestDto.getRegistro() != null) {
                     requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                     llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                    this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
                 }
                 return response;
             } else {
@@ -123,9 +125,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
                     llamarServicio(solicitud.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
                 }
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date fechaMtto = simpleDateFormat.parse(requestDto.getSolicitud().getFecRegistro());
-                estatusMttoService.validarEstatusMtto(authentication,fechaMtto);
+                this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
             }
             if (requestDto.getRegistro() != null) {
                 requestDto.getRegistro().setIdMttoVehicular(idMtto);
@@ -141,6 +141,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     requestDto.getRegistro().setIdMttoRegistro(idMttoReg);
                     llamarServicio(registro.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
                 }
+                this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
             }
             return existeMtto;
         }
@@ -220,4 +221,14 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         return providerRestTemplate.consumirServicio(registro.detalleRegistro(request).getDatos(), urlDominioConsulta + PATH_CONSULTA,
                 authentication);
 	}
+
+    private void validarEstatus(Date fechaRegistro, Integer idMttoVehicular, Date fechaMantenimiento, Authentication authentication) throws IOException {
+        estatusMttoService.validarEstatusbyIdMtto(fechaRegistro, idMttoVehicular, fechaMantenimiento, authentication);
+    }
+
+    private void validaFechas(Date fechaRegistro, Integer idMttoVehicular, String fechaMantenimiento, Authentication authentication) throws ParseException, IOException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaMtto = simpleDateFormat.parse(fechaMantenimiento);
+        this.validarEstatus(fechaRegistro,idMttoVehicular,fechaMtto,authentication);
+    }
 }

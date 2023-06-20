@@ -29,6 +29,23 @@ public class EstatusMttoServiceImpl implements EstatusMttoService {
 
     private MttoVehicular mttoVehicular=new MttoVehicular();
 
+    public void validarEstatusbyIdMtto(Date fechaRegistro, Integer idMttoVehicular, Date fechaMantenimiento, Authentication authentication) throws IOException {
+        String path=urlDominioConsulta + "/actualizar";
+        Long dias = ChronoUnit.DAYS.between(fechaRegistro.toInstant(), fechaMantenimiento.toInstant());
+        log.info("Total de dias {}",dias);
+        if(dias.intValue()< 0) {
+            llamarServicio(mttoVehicular.modificarEstatusMtto(idMttoVehicular,3).getDatos(), path, authentication);
+        } else if(dias.intValue()==0){
+            llamarServicio(mttoVehicular.modificarEstatusMtto(idMttoVehicular,2).getDatos(), path, authentication);
+        } else if(dias.intValue()<=15){
+            llamarServicio(mttoVehicular.modificarEstatusMtto(idMttoVehicular,4).getDatos(), path, authentication);
+        } else if(dias.intValue()>15){
+            llamarServicio(mttoVehicular.modificarEstatusMtto(idMttoVehicular,1).getDatos(), path, authentication);
+        } else {
+            log.info("No se identifica el numero de dias");
+        }
+    }
+
     @Override
     public void validarEstatusMtto(Authentication authentication, Date fechaMtto) throws IOException{
         String path=urlDominioConsulta + "/consulta";
@@ -46,25 +63,31 @@ public class EstatusMttoServiceImpl implements EstatusMttoService {
         for (Map<String, Object> map : result) {
             Integer idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
             Date fechaRegistro=(Date) map.get("FEC_REGISTRO");
-            int comparacion = fechaRegistro.compareTo(fechaMtto);
+
+
+            //validamos los numeros de dias
+            Long dias = ChronoUnit.DAYS.between(fechaRegistro.toInstant(), fechaMtto.toInstant());
+            log.info("Total de dias {}",dias);
+            if(dias.intValue()<=15){
+                llamarServicio(mttoVehicular.modificarEstatusMtto(idMtto,4).getDatos(), path, authentication);
+            } else if(dias.intValue()>15){
+                llamarServicio(mttoVehicular.modificarEstatusMtto(idMtto,1).getDatos(), path, authentication);
+            } else {
+                log.info("No se identifica el numero de dias");
+            }
+
+
+            /*int comparacion = fechaRegistro.compareTo(fechaMtto);
             log.info("Comparación de fecha: {}", comparacion);
             if(comparacion==0){
                 llamarServicio(mttoVehicular.modificarEstatusMtto(idMtto,2).getDatos(), path, authentication);
             } else if(comparacion>0){
                 llamarServicio(mttoVehicular.modificarEstatusMtto(idMtto,3).getDatos(), path, authentication);
             } else if(comparacion<0){
-                //validamos los numeros de dias
-                Long dias = ChronoUnit.DAYS.between(fechaRegistro.toInstant(), fechaMtto.toInstant());
-                if(dias.intValue()<=15){
-                    llamarServicio(mttoVehicular.modificarEstatusMtto(idMtto,4).getDatos(), path, authentication);
-                } else if(dias.intValue()>15){
-                    llamarServicio(mttoVehicular.modificarEstatusMtto(idMtto,1).getDatos(), path, authentication);
-                } else {
-                    log.info("No se identifica el numero de dias");
-                }
+
             } else {
                 log.info("No se identifica la fecha");
-            }
+            }*/
         }
     }
 }

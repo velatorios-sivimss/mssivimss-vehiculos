@@ -81,7 +81,7 @@ public class MttoVehicular {
 
     public DatosRequest existe(MttoVehicularRequest request) {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.ID_VEHICULO, MT.IND_ACTIVO FROM SVT_MTTO_VEHICULAR MT WHERE MT.FEC_REGISTRO=CURRENT_DATE()");
+        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.ID_VEHICULO, MT.IND_ACTIVO, MT.FEC_REGISTRO FROM SVT_MTTO_VEHICULAR MT WHERE MT.FEC_REGISTRO=CURRENT_DATE()");
         sql.append(" AND MT.IND_ACTIVO=1").append(" AND MT.ID_VEHICULO="+request.getIdVehiculo()).append(";");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
