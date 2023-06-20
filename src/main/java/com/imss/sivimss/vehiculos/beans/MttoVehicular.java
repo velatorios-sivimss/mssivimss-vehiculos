@@ -109,7 +109,11 @@ public class MttoVehicular {
 
     public DatosRequest validaEstatusMtto() {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.FEC_REGISTRO, MT.IND_ACTIVO FROM SVT_MTTO_VEHICULAR MT WHERE MT.IND_ACTIVO=1 ORDER BY MT.ID_MTTOVEHICULAR ASC");
+        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.FEC_REGISTRO, MT.IND_ACTIVO, SOL.FEC_SOLICTUD,REG.FEC_REGISTRO_REG ");
+        sql.append("FROM SVT_MTTO_VEHICULAR MT ");
+        sql.append("LEFT JOIN SVT_MTTO_SOLICITUD SOL ON (SOL.ID_MTTOVEHICULAR=MT.ID_MTTOVEHICULAR) ");
+        sql.append("LEFT JOIN SVT_MTTO_REGISTRO REG ON (REG.ID_MTTOVEHICULAR=MT.ID_MTTOVEHICULAR) ");
+        sql.append("WHERE MT.IND_ACTIVO=1 AND MT.ID_MTTOESTADO!=3  ORDER BY MT.ID_MTTOVEHICULAR ASC");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
