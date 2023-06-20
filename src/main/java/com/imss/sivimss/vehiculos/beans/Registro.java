@@ -79,34 +79,18 @@ public class Registro {
         if(request.getRegistro().getIdMantenimiento()!=null) {
             q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
         }
-        if(request.getRegistro().getDesNotas()!=null) {
-            q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
-        }
-        if(request.getRegistro().getIdProveedor()!=null) {
-            q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
-        }
-        if(request.getRegistro().getDesNumcontrato()!=null) {
-            q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
-        }
+        q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
+        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
+        q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
         q.agregarParametroValues("ID_USUARIO_ALTA", request.getIdEstatus().toString());
         q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
         q.agregarParametroValues("IND_ACTIVO", "1");
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
-        if(request.getRegistro().getKilometraje()!=null) {
-            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
-        }
-        if(request.getRegistro().getDesNombreTaller()!=null) {
-            q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
-        }
-        if(request.getRegistro().getCostoMtto()!=null) {
-            q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
-        }
-        if(request.getRegistro().getDesNombreProveedor()!=null) {
-            q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
-        }
-        if(request.getRegistro().getDesMttoCorrectivo()!=null) {
-            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
-        }
+        q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
+        q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
+        q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+        q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
+        q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
         if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
             q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
         }
