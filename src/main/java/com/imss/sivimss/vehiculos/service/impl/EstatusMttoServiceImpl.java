@@ -73,20 +73,14 @@ public class EstatusMttoServiceImpl implements EstatusMttoService {
         String path=urlDominioConsulta + "/actualizar";
         String nevaFecha=formatoConsulta.format(new Date());
         Date fechaRegistro=formatoConsulta.parse(nevaFecha);
-        Date fechaSol=null;
         Date fechaReg=null;
         for (Map<String, Object> map : result) {
             Integer idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
             try {
-                fechaSol = formatoConsulta.parse((String) map.get("FEC_SOLICTUD"));
                 fechaReg = formatoConsulta.parse((String) map.get("FEC_REGISTRO_REG"));
             } catch (Exception e){
-                fechaSol=null;
                 fechaReg=null;
                 log.error("Error al convertir fecha {}", e);
-            }
-            if(fechaSol!=null) {
-                this.validarEstatusbyIdMtto(fechaRegistro, idMtto, fechaSol, authentication);
             }
             if(fechaReg!=null) {
                 this.validarEstatusbyIdMtto(fechaRegistro, idMtto, fechaReg, authentication);
