@@ -60,15 +60,14 @@ public class MttoReporte {
 
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
             query.append(" AND VH.DES_PLACAS =").append("'").append(reporteRequest.getPlaca()).append("'");
-        } else {
-            if (reporteRequest.getFechaInicio() != null) {
-                Date fechaFIRequest = formatoRequest.parse(reporteRequest.getFechaInicio());
-                query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
-            }
-            if (reporteRequest.getFechaFinal() != null) {
-                Date fechaFFRequest = formatoRequest.parse(reporteRequest.getFechaFinal());
-                query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
-            }
+        }
+        if (reporteRequest.getFechaInicio() != null) {
+            Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
+            query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
+        }
+        if (reporteRequest.getFechaFinal() != null) {
+            Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
+            query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
         query. append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
@@ -118,24 +117,22 @@ public class MttoReporte {
                 "LEFT JOIN SVC_MTTO_NIVEL SMN_LIMPINT ON SMN_LIMPINT.ID_MTTONIVEL=VI.ID_LIMPIEZAINTERIOR\n" +
                 "LEFT JOIN SVC_MTTO_NIVEL SMN_LIMPEXT ON SMN_LIMPEXT.ID_MTTONIVEL=VI.ID_LIMPIEZAEXTERIOR\n" +
                 "WHERE VH.IND_ACTIVO = 1");
-
+        if (reporteRequest.getVelatorio()!=null) {
+            query.append(" AND MV.ID_VELATORIO = ").append(reporteRequest.getVelatorio());
+        }
+        if (reporteRequest.getDelegacion() !=null) {
+            query.append(" AND VE.ID_DELEGACION = ").append(reporteRequest.getDelegacion());
+        }
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
             query.append(" AND VH.DES_PLACAS = ").append("'" + reporteRequest.getPlaca() + "'");
-        } else {
-            if (reporteRequest.getVelatorio()!=null) {
-                query.append(" AND MV.ID_VELATORIO = ").append(reporteRequest.getVelatorio());
-            }
-            if (reporteRequest.getDelegacion() !=null) {
-                query.append(" AND VE.ID_DELEGACION = ").append(reporteRequest.getDelegacion());
-            }
-            if (reporteRequest.getFechaInicio() != null) {
-                Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
-                query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
-            }
-            if (reporteRequest.getFechaFinal() != null) {
-                Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
-                query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
-            }
+        }
+        if (reporteRequest.getFechaInicio() != null) {
+            Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
+            query.append(" AND MV.FEC_REGISTRO >= '").append(formatoConsulta.format(fechaFIRequest)).append("'");
+        }
+        if (reporteRequest.getFechaFinal() != null) {
+            Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
+            query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
         query.append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
