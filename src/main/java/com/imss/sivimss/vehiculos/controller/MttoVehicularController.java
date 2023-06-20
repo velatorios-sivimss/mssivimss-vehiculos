@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -37,7 +38,7 @@ public class MttoVehicularController {
     @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
     @TimeLimiter(name = "msflujo")
     @PostMapping("mttovehicular/agregar")
-    public CompletableFuture<?> mttovehicularAgregar(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+    public CompletableFuture<?> mttovehicularAgregar(@RequestBody DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Se agrega un nuevo mtto vehicular");
         Response<?> response =   mttoVehicularService.insertarMttoVehicular(request, authentication);
         return CompletableFuture.supplyAsync(

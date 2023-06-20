@@ -92,4 +92,31 @@ public class MttoVehicular {
         dr.setDatos(parametro);
         return dr;
     }
+
+    public DatosRequest modificarEstatusMtto(Integer idMttoVehicular, Integer idMttoestado) {
+        final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        q.agregarParametroValues("ID_MTTOESTADO", idMttoestado.toString());
+        q.addWhere("ID_MTTOVEHICULAR =" + idMttoVehicular);
+        String query = q.obtenerQueryActualizar();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+    public DatosRequest validaEstatusMtto() {
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.FEC_REGISTRO, MT.IND_ACTIVO FROM SVT_MTTO_VEHICULAR MT WHERE MT.IND_ACTIVO=1 ORDER BY MT.ID_MTTOVEHICULAR ASC");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
 }

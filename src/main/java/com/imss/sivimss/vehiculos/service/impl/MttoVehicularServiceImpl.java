@@ -9,6 +9,7 @@ import com.imss.sivimss.vehiculos.beans.Solicitud;
 import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
+import com.imss.sivimss.vehiculos.service.EstatusMttoService;
 import com.imss.sivimss.vehiculos.service.MttoVehicularService;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
@@ -23,6 +24,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +36,9 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
+
+    @Autowired
+    private EstatusMttoService estatusMttoService;
 
     private static final String PATH_CONSULTA="/consulta";
     
@@ -49,7 +56,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     private Registro registro=new Registro();
 
     @Override
-    public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
+    public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         String path=urlDominioConsulta + "/crear";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
@@ -72,6 +79,10 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                 if (requestDto.getSolicitud() != null) {
                     requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                     llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date fechaMtto = simpleDateFormat.parse(requestDto.getSolicitud().getFecRegistro());
+                    estatusMttoService.validarEstatusMtto(authentication,fechaMtto);
                 }
                 if (requestDto.getRegistro() != null) {
                     requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
@@ -112,6 +123,9 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
                     llamarServicio(solicitud.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
                 }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date fechaMtto = simpleDateFormat.parse(requestDto.getSolicitud().getFecRegistro());
+                estatusMttoService.validarEstatusMtto(authentication,fechaMtto);
             }
             if (requestDto.getRegistro() != null) {
                 requestDto.getRegistro().setIdMttoVehicular(idMtto);
