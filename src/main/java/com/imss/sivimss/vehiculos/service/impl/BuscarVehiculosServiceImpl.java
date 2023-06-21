@@ -45,21 +45,21 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     @Override
     public Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException {
         log.info("Obtiene lista de vehiculos");
-        return providerRestTemplate.consumirServicio(vehiculos.buscarVehiculos(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
+        return providerRestTemplate.consumirServicio(vehiculos.buscarVehiculos(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);
     }
 
     @Override
     public Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene reporte encargado");
-        return providerRestTemplate.consumirServicio(mttoReporte.reporteEncargado(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
+        return providerRestTemplate.consumirServicio(mttoReporte.reporteEncargado(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);
     }
 
     @Override
     public Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene reporte predictivo");
-        return providerRestTemplate.consumirServicio(mttoReporte.reportePredictivo(request).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
+        return providerRestTemplate.consumirServicio(mttoReporte.reportePredictivo(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);
     }
 
