@@ -2,12 +2,14 @@ package com.imss.sivimss.vehiculos.beans;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
+import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -19,12 +21,17 @@ import java.util.Map;
 public class Vehiculos {
     private static final Logger logger = LogManager.getLogger(Vehiculos.class);
 
-    public DatosRequest buscarVehiculos(DatosRequest request) throws IOException {
+    public DatosRequest buscarVehiculos(DatosRequest request, Authentication authentication) throws IOException {
         Gson json = new Gson();
         BuscarVehiculosRequest  buscarRequest=new BuscarVehiculosRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
         if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
             buscarRequest = json.fromJson(requestBoby, BuscarVehiculosRequest.class);
+        } else {
+            //Obtiene valores del usuario
+            UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
+            buscarRequest.setDelegacion(usuarioDto.getIdDelegacion());
+            buscarRequest.setVelatorio(usuarioDto.getIdVelatorio());
         }
         Integer pagina = Integer.valueOf(Integer.parseInt(request.getDatos().get("pagina").toString()));
         Integer tamanio = Integer.valueOf(Integer.parseInt(request.getDatos().get("tamanio").toString()));
@@ -106,14 +113,11 @@ public class Vehiculos {
             queryUtil.where("MV.ID_VELATORIO = :velatorio")
                     .setParameter("velatorio", buscarRequest.getVelatorio());
         }
-        if (buscarRequest.getIdVehiculo() != null && buscarRequest.getIdVehiculo()>0) {
-            queryUtil.where("VH.ID_VEHICULO = :idVehiculo")
-                    .setParameter("idVehiculo", buscarRequest.getIdVehiculo());
-        }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {
             queryUtil.where("VH.DES_PLACAS = :placa")
                     .setParameter("placa", buscarRequest.getPlaca());
         }
+
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
