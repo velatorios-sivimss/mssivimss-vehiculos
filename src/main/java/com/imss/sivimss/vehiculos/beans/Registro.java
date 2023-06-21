@@ -80,7 +80,7 @@ public class Registro {
             q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
         }
         q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
-        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
+        q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor()!=null?request.getRegistro().getIdProveedor().toString():"NULL");
         q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
         q.agregarParametroValues("ID_USUARIO_ALTA", request.getIdEstatus().toString());
         q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
