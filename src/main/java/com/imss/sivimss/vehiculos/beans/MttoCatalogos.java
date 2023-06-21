@@ -1,11 +1,15 @@
 package com.imss.sivimss.vehiculos.beans;
 
+import com.google.gson.Gson;
+import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
+import com.imss.sivimss.vehiculos.model.request.CatalogoVehiculosRequest;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -180,6 +184,38 @@ public class MttoCatalogos {
                 .from("SVC_MTTO_PERIODO PE")
                 .where("PE.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", INDESTATUS);
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+    public DatosRequest getCatPlacasVehiculos(DatosRequest request, Authentication authentication) throws IOException {
+        Gson json = new Gson();
+        CatalogoVehiculosRequest buscarRequest=new CatalogoVehiculosRequest();
+        String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+        if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
+            buscarRequest = json.fromJson(requestBoby, CatalogoVehiculosRequest.class);
+        }
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("VE.ID_VEHICULO",
+                        "VE.DES_PLACAS",
+                        "VE.IND_ACTIVO")
+                .from("SVT_VEHICULOS VE")
+                .join("SVC_VELATORIO VELA","VE.ID_VELATORIO=VELA.ID_VELATORIO")
+                .where("VE.IND_ACTIVO = :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        if(buscarRequest!=null && buscarRequest.getDelegacion()!=null && buscarRequest.getDelegacion()>0){
+            queryUtil.where("VELA.ID_DELEGACION = :delegacion")
+                    .setParameter("delegacion", buscarRequest.getDelegacion());
+        }
+        if(buscarRequest!=null && buscarRequest.getVelatorio()!=null && buscarRequest.getVelatorio()>0){
+            queryUtil.where("VE.ID_VELATORIO = :velatorio")
+                    .setParameter("velatorio", buscarRequest.getVelatorio());
+        }
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();

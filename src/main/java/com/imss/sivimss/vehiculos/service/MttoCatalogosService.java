@@ -1,5 +1,6 @@
 package com.imss.sivimss.vehiculos.service;
 
+import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.Response;
 import org.springframework.security.core.Authentication;
 
@@ -15,4 +16,5 @@ public interface MttoCatalogosService {
     Response<?> getCatMttoNivel(Authentication authentication) throws IOException;
     Response<?> getCatMttoReporteTipo(Authentication authentication) throws IOException;
     Response<?> getCatMttoPeriodo(Authentication authentication) throws IOException;
+    Response<?> getCatPlacasVehiculos(DatosRequest request, Authentication authentication) throws IOException;
 }

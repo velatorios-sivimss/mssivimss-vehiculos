@@ -2,6 +2,7 @@ package com.imss.sivimss.vehiculos.service.impl;
 
 import com.imss.sivimss.vehiculos.beans.MttoCatalogos;
 import com.imss.sivimss.vehiculos.service.MttoCatalogosService;
+import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.vehiculos.util.Response;
 import org.apache.logging.log4j.LogManager;
@@ -87,6 +88,13 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
     public Response<?> getCatMttoPeriodo(Authentication authentication) throws IOException {
         log.info("Obtiene lista periodos");
         return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoPeriodo().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getCatPlacasVehiculos(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de placas");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatPlacasVehiculos(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
 }
