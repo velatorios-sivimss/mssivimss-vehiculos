@@ -88,7 +88,11 @@ public class Registro {
         q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
         q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
-        q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+        if(request.getRegistro().getCostoMtto()!=null) {
+            q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
+        } else {
+            q.agregarParametroValues("MON_COSTO_MTTO", "NULL");
+        }
         q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
         q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
         if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
