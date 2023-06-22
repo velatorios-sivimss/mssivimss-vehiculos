@@ -179,12 +179,32 @@ public class MttoReporte {
 
 	public Map<String, Object> reporteEncargado(ReporteDto reporte) throws ParseException {
 		Map<String, Object> envioDatos = new HashMap<>();
-		Date dateI = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaInicio());
-		Date dateF = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaFin());
-	    String fecInicial=formatoConsulta.format(dateI);
-	    String fecFinal=formatoConsulta.format(dateF);
-	
-		envioDatos.put("condition", " AND VH.DES_PLACAS= '"+reporte.getPlacas()+"' AND MV.FEC_REGISTRO >= '"+fecInicial+"' AND MV.FEC_REGISTRO <= '"+fecFinal+"' GROUP BY MV.ID_VEHICULO;");	
+		StringBuilder condition= new StringBuilder();
+		if(reporte.getIdDelegacion()!=null && reporte.getIdDelegacion()>0) {
+			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
+		}
+		if(reporte.getIdVelatorio()!=null && reporte.getIdVelatorio()>0) {
+			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
+		}
+		if(reporte.getIdNivelOficina()!=null && reporte.getIdNivelOficina()>0) {
+			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
+		}
+		if(reporte.getPlacas()!=null && reporte.getPlacas().trim().length()>0) {
+			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
+		}
+        if(reporte.getFechaInicio()!=null) {
+        	Date dateI = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaInicio());
+        	 String fecInicial=formatoConsulta.format(dateI);
+        	 condition.append(" AND MV.FEC_REGISTRO >='"+fecInicial+"'");
+        }
+        if(reporte.getFechaFin()!=null) {
+        	Date dateF = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaFin());
+    	    String fecFinal=formatoConsulta.format(dateF);
+        	 condition.append(" AND MV.FEC_REGISTRO <='"+fecFinal+"'");
+        }
+        condition.append(" GROUP BY MV.ID_VEHICULO");
+	    logger.info("-> " +condition.toString());
+		envioDatos.put("condition", condition.toString());	
 		envioDatos.put("fecInicial", reporte.getFechaInicio());
 		envioDatos.put("fecFinal", reporte.getFechaFin());
 		if(reporte.getNumReporte()==2) {
