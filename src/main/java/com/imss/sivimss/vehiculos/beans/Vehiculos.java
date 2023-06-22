@@ -14,14 +14,19 @@ import org.springframework.security.core.Authentication;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
 public class Vehiculos {
     private static final Logger logger = LogManager.getLogger(Vehiculos.class);
+    private static SimpleDateFormat formatoRequest = new SimpleDateFormat("dd/MM/yyyy");
+    private static SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
 
-    public DatosRequest buscarVehiculos(DatosRequest request, Authentication authentication) throws IOException {
+    public DatosRequest buscarVehiculos(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         Gson json = new Gson();
         BuscarVehiculosRequest  buscarRequest=new BuscarVehiculosRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
@@ -117,7 +122,18 @@ public class Vehiculos {
             queryUtil.where("VH.DES_PLACAS = :placa")
                     .setParameter("placa", buscarRequest.getPlaca());
         }
-
+        if (buscarRequest.getFecInicio() != null) {
+            Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecInicio());
+            queryUtil.where("MV.FEC_REGISTRO >= :fecInicio")
+            .setParameter("fecInicio", formatoConsulta.format(fechaFIRequest));
+        }
+        if (buscarRequest.getFecFin() != null) {
+        	  Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecFin());
+              queryUtil.where("MV.FEC_REGISTRO <= :fecFin")
+              .setParameter("fecFin", formatoConsulta.format(fechaFIRequest));
+              queryUtil.groupBy("MV.ID_VEHICULO");
+        }
+       
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();

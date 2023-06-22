@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public interface BuscarVehiculosService {
-    Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException;
+    Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException, ParseException;
     Response<?> getReporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException;
     Response<?> getReportePredictivo(DatosRequest request, Authentication authentication) throws IOException, ParseException;
 	Response<?> reporteProgramarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException;
