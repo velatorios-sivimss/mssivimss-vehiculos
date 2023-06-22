@@ -2,6 +2,7 @@ package com.imss.sivimss.vehiculos.beans;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
+import com.imss.sivimss.vehiculos.model.request.CatContratosProvRequest;
 import com.imss.sivimss.vehiculos.model.request.CatalogoVehiculosRequest;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
@@ -215,6 +216,37 @@ public class MttoCatalogos {
         if(buscarRequest!=null && buscarRequest.getVelatorio()!=null && buscarRequest.getVelatorio()>0){
             queryUtil.where("VE.ID_VELATORIO = :velatorio")
                     .setParameter("velatorio", buscarRequest.getVelatorio());
+        }
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+
+    public DatosRequest getCatContratosProveedores(DatosRequest request, Authentication authentication) throws IOException {
+        Gson json = new Gson();
+        CatContratosProvRequest buscarRequest=new CatContratosProvRequest();
+        String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+        if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
+            buscarRequest = json.fromJson(requestBoby, CatContratosProvRequest.class);
+        }
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("CON.ID_CONTRATO",
+                        "CON.NUM_CONTRATO",
+                        "CON.DES_CONTRATO",
+                        "CON.ID_PROVEEDOR",
+                        "PRO.NOM_PROVEEDOR")
+                .from("SVT_CONTRATO CON")
+                .join("SVT_PROVEEDOR PRO","PRO.ID_PROVEEDOR=CON.ID_PROVEEDOR")
+                .where("PRO.IND_ACTIVO= :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        if(buscarRequest!=null && buscarRequest.getProveedor()!=null && buscarRequest.getProveedor()>0){
+            queryUtil.where("PRO.ID_PROVEEDOR = :proveedor")
+                    .setParameter("proveedor", buscarRequest.getProveedor());
         }
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
