@@ -28,4 +28,8 @@ public class BuscarVehiculosRequest {
     private String pagina;
     @JsonProperty
     private String tamanio;
+    @JsonProperty
+    private String fecInicio;
+    @JsonProperty
+    private String fecFin;
 }

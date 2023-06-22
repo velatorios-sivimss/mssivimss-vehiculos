@@ -43,7 +43,7 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     private ProviderServiceRestTemplate providerRestTemplate;
 
     @Override
-    public Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException {
+    public Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene lista de vehiculos");
         return providerRestTemplate.consumirServicio(vehiculos.buscarVehiculos(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG,
                 authentication);
