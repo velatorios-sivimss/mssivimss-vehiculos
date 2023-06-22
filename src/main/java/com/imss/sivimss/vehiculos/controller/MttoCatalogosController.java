@@ -157,6 +157,18 @@ public class MttoCatalogosController {
         );
     }
 
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catContratosProveedores")
+    public CompletableFuture<?> getCatContratosProveedores(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de contratos");
+        Response<?> response= mttoCatalogosService.getCatContratosProveedores(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *

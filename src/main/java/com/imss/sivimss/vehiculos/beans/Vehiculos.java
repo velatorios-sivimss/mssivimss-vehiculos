@@ -110,7 +110,7 @@ public class Vehiculos {
                     .setParameter("delegacion", buscarRequest.getDelegacion());
         }
         if (buscarRequest.getVelatorio() != null && buscarRequest.getVelatorio() >0) {
-            queryUtil.where("MV.ID_VELATORIO = :velatorio")
+            queryUtil.where("VH.ID_VELATORIO = :velatorio")
                     .setParameter("velatorio", buscarRequest.getVelatorio());
         }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {

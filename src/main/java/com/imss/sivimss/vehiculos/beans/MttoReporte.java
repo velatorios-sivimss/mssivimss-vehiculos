@@ -69,7 +69,7 @@ public class MttoReporte {
             query.append(" AND VE.ID_DELEGACION =").append(reporteRequest.getDelegacion());
         }
         if (reporteRequest.getVelatorio() != null && reporteRequest.getVelatorio() >0) {
-            query.append(" AND MV.ID_VELATORIO =").append(reporteRequest.getVelatorio());
+            query.append(" AND VH.ID_VELATORIO =").append(reporteRequest.getVelatorio());
         }
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
             query.append(" AND VH.DES_PLACAS =").append("'").append(reporteRequest.getPlaca()).append("'");
@@ -136,7 +136,7 @@ public class MttoReporte {
                 "LEFT JOIN SVC_MTTO_NIVEL SMN_LIMPEXT ON SMN_LIMPEXT.ID_MTTONIVEL=VI.ID_LIMPIEZAEXTERIOR\n" +
                 "WHERE VH.IND_ACTIVO = 1");
         if (reporteRequest.getVelatorio()!=null && reporteRequest.getVelatorio()>0) {
-            query.append(" AND MV.ID_VELATORIO = ").append(reporteRequest.getVelatorio());
+            query.append(" AND VH.ID_VELATORIO = ").append(reporteRequest.getVelatorio());
         }
         if (reporteRequest.getDelegacion() !=null && reporteRequest.getDelegacion() >0) {
             query.append(" AND VE.ID_DELEGACION = ").append(reporteRequest.getDelegacion());

@@ -97,4 +97,11 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
         return providerRestTemplate.consumirServicio(mttoCatalogos.getCatPlacasVehiculos(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
+
+    @Override
+    public Response<?> getCatContratosProveedores(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de contrator de proveedores");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatContratosProveedores(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
 }
