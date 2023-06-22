@@ -116,6 +116,7 @@ public class Solicitud {
                         "SOLI.DES_NOTAS",
                         "SOLI.KILOMETRAJE",
                         "DATE_FORMAT(SOLI.FEC_SOLICTUD,'%d-%m-%Y') AS FEC_SOLICTUD",
+                        "DATE_FORMAT(SOLI.FEC_REGISTRO_FIN,'%d-%m-%Y') AS FEC_REGISTRO_FIN",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
