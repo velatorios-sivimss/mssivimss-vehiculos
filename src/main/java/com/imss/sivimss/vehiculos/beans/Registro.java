@@ -146,6 +146,9 @@ public class Registro {
                         "REG.FEC_ALTA",
                         "REG.DES_NOMBRE_PROVEEDOR",
                         "REG.DES_MTTO_CORRECTIVO",
+                        "REG.ID_CONTRATO",
+                        "CON.NUM_CONTRATO",
+                        "CON.DES_CONTRATO",
                         "MTTO_VEH.ID_MTTOVEHICULAR",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
@@ -182,7 +185,8 @@ public class Registro {
                 .leftJoin("SVC_VELATORIO SVEL","MTTO_VEH.ID_VELATORIO=SVEL.ID_VELATORIO")
                 .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =REG.ID_MTTOMODALIDAD")
                 .leftJoin("SVT_PROVEEDOR SP","REG.ID_PROVEEDOR=SP.ID_PROVEEDOR")
-                .leftJoin("SVC_MTTO_TIPO MTPC","REG.ID_MANTENIMIENTO=MTPC.ID_MTTO_TIPO");
+                .leftJoin("SVC_MTTO_TIPO MTPC","REG.ID_MANTENIMIENTO=MTPC.ID_MTTO_TIPO")
+                .leftJoin("SVT_CONTRATO CON","REG.ID_CONTRATO=CON.ID_CONTRATO");
         if(palabra!=null && palabra.trim().length()>0) {
             queryUtil.where("REG.ID_MTTO_REGISTRO = :idRegistro")
                     .setParameter("idRegistro", Integer.parseInt(palabra));
