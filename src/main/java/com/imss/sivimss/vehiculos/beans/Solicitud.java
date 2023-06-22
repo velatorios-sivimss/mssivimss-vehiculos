@@ -44,7 +44,9 @@ public class Solicitud {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", "1");
-        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
+        if(request.getSolicitud().getFecRegistro2()!=null) {
+            q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -74,6 +76,11 @@ public class Solicitud {
         }
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
         q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
+        if(request.getSolicitud().getFecRegistro2()!=null) {
+            q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
+        } else {
+            q.agregarParametroValues("FEC_REGISTRO_FIN", "NULL");
+        }
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));

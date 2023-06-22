@@ -61,6 +61,9 @@ public class Registro {
         if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
             q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
         }
+        if(request.getRegistro().getIdContrato()!=null && request.getRegistro().getIdContrato()>0) {
+            q.agregarParametroValues("ID_CONTRATO", request.getRegistro().getIdContrato().toString());
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -97,6 +100,11 @@ public class Registro {
         q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
         if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
             q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
+        }
+        if(request.getRegistro().getIdContrato()!=null && request.getRegistro().getIdContrato()>0) {
+            q.agregarParametroValues("ID_CONTRATO", request.getRegistro().getIdContrato().toString());
+        } else {
+            q.agregarParametroValues("ID_CONTRATO", "NULL");
         }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
