@@ -23,6 +23,8 @@ import java.util.Map;
 
 @AllArgsConstructor
 public class MttoReporte {
+	
+	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
     private static final Logger logger = LogManager.getLogger(MttoReporte.class);
     private static SimpleDateFormat formatoRequest = new SimpleDateFormat("dd/MM/yyyy");
     private static SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
@@ -155,20 +157,19 @@ public class MttoReporte {
 		Map<String, Object> envioDatos = new HashMap<>();
 		StringBuilder condition= new StringBuilder();
 		if(reporte.getIdDelegacion()!=null) {
-			condition.append(" AND DL.ID_DELEGACION="+reporte.getIdDelegacion()+"");
+			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
 		}
 		if(reporte.getIdVelatorio()!=null) {
-			condition.append(" AND MV.ID_VELATORIO="+reporte.getIdVelatorio()+"");
+			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
 		if(reporte.getIdNivelOficina()!=null) {
 			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
 		}
 		if(reporte.getPlacas()!=null) {
 			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
-		}
-		logger.info("-> " +condition.toString());
+		}condition.append(" OR MV.IND_ACTIVO = 1 OR MV.FEC_REGISTRO >= CURDATE();");
 		envioDatos.put("condition", condition.toString());	
-		envioDatos.put("rutaNombreReporte", reporte.getRutaNombreReporte());
+		envioDatos.put(RUTA_NOMBRE_REPORTE, reporte.getRutaNombreReporte());
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
 		if(reporte.getTipoReporte().equals("xls")) {
 			envioDatos.put("IS_IGNORE_PAGINATION", true);
@@ -203,14 +204,13 @@ public class MttoReporte {
         	 condition.append(" AND MV.FEC_REGISTRO <='"+fecFinal+"'");
         }
         condition.append(" GROUP BY MV.ID_VEHICULO");
-	    logger.info("-> " +condition.toString());
 		envioDatos.put("condition", condition.toString());	
 		envioDatos.put("fecInicial", reporte.getFechaInicio());
 		envioDatos.put("fecFinal", reporte.getFechaFin());
 		if(reporte.getNumReporte()==2) {
-			envioDatos.put("rutaNombreReporte", "reportes/generales/ReporteEncargado_VerifDiaria.jrxml");	
+			envioDatos.put(RUTA_NOMBRE_REPORTE, "reportes/generales/ReporteEncargado_VerifDiaria.jrxml");	
 		}else {
-			envioDatos.put("rutaNombreReporte", "reportes/generales/ReporteEncargado_ProgramasMtto.jrxml");	
+			envioDatos.put(RUTA_NOMBRE_REPORTE, "reportes/generales/ReporteEncargado_ProgramasMtto.jrxml");	
 		}
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
 		if(reporte.getTipoReporte().equals("xls")) {
