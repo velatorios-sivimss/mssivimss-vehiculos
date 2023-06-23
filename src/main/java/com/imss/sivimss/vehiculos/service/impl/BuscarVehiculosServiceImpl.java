@@ -5,6 +5,7 @@ import com.imss.sivimss.vehiculos.beans.MttoReporte;
 import com.imss.sivimss.vehiculos.beans.Vehiculos;
 import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.ReporteDto;
+import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.service.BuscarVehiculosService;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
@@ -69,9 +70,6 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		Gson gson = new Gson();
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
-        if(reporte.getIdVelatorio()==null && reporte.getPlacas()==null && reporte.getIdDelegacion()==null && reporte.getIdNivelOficina()==null) {
-        	throw new BadRequestException(HttpStatus.BAD_REQUEST, "Informacion incompleta ");
-        }
 		Map<String, Object> envioDatos = new MttoReporte().reporteProgramarMttoVehicular(reporte);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
@@ -82,6 +80,11 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		Gson gson = new Gson();
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
+		 if(reporte.getIdVelatorio()==null || reporte.getIdDelegacion()==null) {
+	        	UsuarioDto usuarioDto = gson.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
+	            reporte.setIdDelegacion(usuarioDto.getIdDelegacion());
+	            reporte.setIdVelatorio(usuarioDto.getIdVelatorio());
+	        }
 		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
