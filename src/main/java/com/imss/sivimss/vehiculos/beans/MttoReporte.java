@@ -196,15 +196,16 @@ public class MttoReporte {
 	public Map<String, Object> reporteEncargado(ReporteDto reporte) throws ParseException {
 		Map<String, Object> envioDatos = new HashMap<>();
 		StringBuilder condition= new StringBuilder();
+		
 		if(reporte.getIdDelegacion()!=null && reporte.getIdDelegacion()>0) {
 			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
 		}
 		if(reporte.getIdVelatorio()!=null && reporte.getIdVelatorio()>0) {
 			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
-		if(reporte.getIdNivelOficina()!=null && reporte.getIdNivelOficina()>0) {
+	/*	if(reporte.getIdNivelOficina()!=null && reporte.getIdNivelOficina()>0) {
 			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
-		} 
+		} */ 
 		if(reporte.getPlacas()!=null && reporte.getPlacas().trim().length()>0) {
 			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
 		}
