@@ -46,13 +46,7 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
     @Override
     public Response<?> getVehiculos(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene lista de vehiculos");
-        String path=urlDominioConsulta + "/consulta";
-        Integer pagina = Integer.valueOf(Integer.parseInt(request.getDatos().get("pagina").toString()));
-        Integer tamanio = Integer.valueOf(Integer.parseInt(request.getDatos().get("tamanio").toString()));
-        if(pagina!=null && pagina>0 && tamanio!=null && tamanio>0) {
-            path=urlDominioConsulta + PATH_BUSQUEDA_PAG;
-        }
-        return providerRestTemplate.consumirServicio(vehiculos.buscarVehiculos(request, authentication).getDatos(), path, authentication);
+        return providerRestTemplate.consumirServicio(vehiculos.buscarVehiculos(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA_PAG, authentication);
     }
 
     @Override

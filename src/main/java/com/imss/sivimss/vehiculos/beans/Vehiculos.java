@@ -142,10 +142,9 @@ public class Vehiculos {
         Map<String, Object> parametro = new HashMap<>();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
-        if(pagina!=null && pagina>0 && tamanio!=null && tamanio>0) {
-            parametro.put("pagina", buscarRequest.getPagina());
-            parametro.put("tamanio", buscarRequest.getTamanio());
-        }
+        parametro.put("pagina", buscarRequest.getPagina());
+        parametro.put("tamanio", buscarRequest.getTamanio());
+        
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
         logger.info(query);
