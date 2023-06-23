@@ -169,6 +169,18 @@ public class MttoCatalogosController {
         );
     }
 
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/registroMttoById")
+    public CompletableFuture<?> getRegistroMtto(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene los ids del registro de mtto");
+        Response<?> response= mttoCatalogosService.getRegistroMtto(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *

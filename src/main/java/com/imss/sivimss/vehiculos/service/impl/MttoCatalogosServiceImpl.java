@@ -104,4 +104,11 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
         return providerRestTemplate.consumirServicio(mttoCatalogos.getCatContratosProveedores(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
+
+    @Override
+    public Response<?> getRegistroMtto(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene los ids del registro de mtto");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getRegistroMtto(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
 }
