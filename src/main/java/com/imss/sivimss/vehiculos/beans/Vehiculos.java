@@ -142,7 +142,7 @@ public class Vehiculos {
         parametro.put(AppConstantes.QUERY, encoded);
         parametro.put("pagina", buscarRequest.getPagina());
         parametro.put("tamanio", buscarRequest.getTamanio());
-        
+
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
         logger.info(query);

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
 import com.imss.sivimss.vehiculos.model.request.CatContratosProvRequest;
 import com.imss.sivimss.vehiculos.model.request.CatalogoVehiculosRequest;
+import com.imss.sivimss.vehiculos.model.request.FiltroMttoRequest;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
@@ -247,6 +248,38 @@ public class MttoCatalogos {
         if(buscarRequest!=null && buscarRequest.getProveedor()!=null && buscarRequest.getProveedor()>0){
             queryUtil.where("PRO.ID_PROVEEDOR = :proveedor")
                     .setParameter("proveedor", buscarRequest.getProveedor());
+        }
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+    public DatosRequest getRegistroMtto(DatosRequest request, Authentication authentication) throws IOException {
+        Gson json = new Gson();
+        FiltroMttoRequest buscarRequest=new FiltroMttoRequest();
+        String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+        if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
+            buscarRequest = json.fromJson(requestBoby, FiltroMttoRequest.class);
+        }
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("MT.ID_MTTOVEHICULAR",
+                        "VEI.ID_MTTOVERIFINICIO",
+                        "SOL.ID_MTTO_SOLICITUD",
+                        "REG.ID_MTTO_REGISTRO",
+                        "MT.ID_VEHICULO")
+                .from("SVT_MTTO_VEHICULAR MT")
+                .leftJoin("SVT_MTTO_VERIF_INICIO VEI","VEI.ID_MTTOVEHICULAR=MT.ID_MTTOVEHICULAR")
+                .leftJoin("SVT_MTTO_SOLICITUD SOL","SOL.ID_MTTOVEHICULAR=MT.ID_MTTOVEHICULAR")
+                .leftJoin("SVT_MTTO_REGISTRO REG","REG.ID_MTTOVEHICULAR=MT.ID_MTTOVEHICULAR")
+                .where("MT.IND_ACTIVO= :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        if(buscarRequest!=null && buscarRequest.getIdMttoVehicular()!=null && buscarRequest.getIdMttoVehicular()>0){
+            queryUtil.where("MT.ID_MTTOVEHICULAR = :idMttoVehicular")
+                    .setParameter("idMttoVehicular", buscarRequest.getIdMttoVehicular());
         }
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();

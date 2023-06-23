@@ -18,4 +18,5 @@ public interface MttoCatalogosService {
     Response<?> getCatMttoPeriodo(Authentication authentication) throws IOException;
     Response<?> getCatPlacasVehiculos(DatosRequest request, Authentication authentication) throws IOException;
     Response<?> getCatContratosProveedores(DatosRequest request, Authentication authentication) throws IOException;
+    Response<?> getRegistroMtto(DatosRequest request, Authentication authentication) throws IOException;
 }
