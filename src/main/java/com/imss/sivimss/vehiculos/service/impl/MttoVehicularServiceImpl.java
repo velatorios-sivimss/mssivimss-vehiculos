@@ -229,6 +229,9 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     private void validaFechas(Date fechaRegistro, Integer idMttoVehicular, String fechaMantenimiento, Authentication authentication) throws ParseException, IOException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaMtto = simpleDateFormat.parse(fechaMantenimiento);
+        if(fechaRegistro==null){
+            fechaRegistro=new Date();
+        }
         this.validarEstatus(fechaRegistro,idMttoVehicular,fechaMtto,authentication);
     }
 }
