@@ -177,9 +177,9 @@ public class MttoReporte {
 		if(reporte.getIdVelatorio()!=null) {
 			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
-		if(reporte.getIdNivelOficina()!=null) {
+	/*	if(reporte.getIdNivelOficina()!=null) {
 			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
-		}
+		} */
 		if(reporte.getPlacas()!=null) {
 			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
 		}condition.append(" OR MV.IND_ACTIVO = 1 OR MV.FEC_REGISTRO >= CURDATE();");
@@ -204,7 +204,7 @@ public class MttoReporte {
 		}
 		if(reporte.getIdNivelOficina()!=null && reporte.getIdNivelOficina()>0) {
 			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
-		}
+		} 
 		if(reporte.getPlacas()!=null && reporte.getPlacas().trim().length()>0) {
 			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
 		}
