@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.beans.MttoReporte;
 import com.imss.sivimss.vehiculos.beans.Vehiculos;
 import com.imss.sivimss.vehiculos.exception.BadRequestException;
+import com.imss.sivimss.vehiculos.model.request.DescargarReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReporteDto;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.service.BuscarVehiculosService;
@@ -85,6 +86,21 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 	            reporte.setIdVelatorio(usuarioDto.getIdVelatorio());
 	        }
 		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte);
+		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
+				authentication);
+	}
+
+	@Override
+	public Response<?> reportePredictivo(DatosRequest request, Authentication authentication) throws IOException, ParseException {
+		Gson gson = new Gson();
+		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		DescargarReportePredictivoRequest reporte= gson.fromJson(datosJson, DescargarReportePredictivoRequest .class);
+		 if(reporte.getIdVelatorio()==null || reporte.getIdDelegacion()==null) {
+	        	UsuarioDto usuarioDto = gson.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
+	            reporte.setIdDelegacion(usuarioDto.getIdDelegacion());
+	            reporte.setIdVelatorio(usuarioDto.getIdVelatorio());
+	        }
+		Map<String, Object> envioDatos = new MttoReporte().reportePredictivo(reporte);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
 	}
