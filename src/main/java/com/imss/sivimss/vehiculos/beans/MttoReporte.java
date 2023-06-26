@@ -1,6 +1,7 @@
 package com.imss.sivimss.vehiculos.beans;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.vehiculos.model.request.DescargarReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReporteDto;
 import com.imss.sivimss.vehiculos.model.request.ReporteEncargadoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReportePredictivoRequest;
@@ -228,6 +229,38 @@ public class MttoReporte {
 		}else {
 			envioDatos.put(RUTA_NOMBRE_REPORTE, "reportes/generales/ReporteEncargado_ProgramasMtto.jrxml");	
 		}
+		envioDatos.put("tipoReporte", reporte.getTipoReporte());
+		if(reporte.getTipoReporte().equals("xls")) {
+			envioDatos.put("IS_IGNORE_PAGINATION", true);
+		}
+		return envioDatos;
+	}
+
+
+	public Map<String, Object> reportePredictivo(DescargarReportePredictivoRequest reporte) {
+		Map<String, Object> envioDatos = new HashMap<>();
+		StringBuilder condition= new StringBuilder();
+		
+		if(reporte.getIdDelegacion()!=null && reporte.getIdDelegacion()>0) {
+			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
+		}
+		if(reporte.getIdVelatorio()!=null && reporte.getIdVelatorio()>0) {
+			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
+		}
+		if(reporte.getPlacas()!=null && reporte.getPlacas().trim().length()>0) {
+			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
+		}
+        condition.append(" GROUP BY MV.ID_VEHICULO;");
+        logger.info("-> " +condition.toString());
+		envioDatos.put("condition", condition.toString());	
+		envioDatos.put("periodo", reporte.getPeriodo());
+		envioDatos.put("nomTipoMtto", reporte.getTipoMtto());
+		envioDatos.put("valor", reporte.getValor());
+		if(reporte.getTipoMtto()!=null && reporte.getValor()!=null) {
+			envioDatos.put(RUTA_NOMBRE_REPORTE, "reportes/generales/ReporteMantenimientoPredictivo1x1.jrxml");		
+		}else {
+				envioDatos.put(RUTA_NOMBRE_REPORTE, "reportes/generales/ReporteMantenimientoPredictivo.jrxml");	
+			}
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
 		if(reporte.getTipoReporte().equals("xls")) {
 			envioDatos.put("IS_IGNORE_PAGINATION", true);
