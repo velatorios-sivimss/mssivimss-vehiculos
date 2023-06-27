@@ -93,6 +93,20 @@ public class MttoVehicular {
         return dr;
     }
 
+    public DatosRequest existeFechaRegistro(MttoVehicularRequest request) {
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT MT.ID_MTTOVEHICULAR, MT.ID_VEHICULO, MT.IND_ACTIVO, MT.FEC_REGISTRO FROM SVT_MTTO_VEHICULAR MT WHERE ");
+        sql.append(" MT.IND_ACTIVO=1").append(" AND MT.ID_VEHICULO="+request.getIdVehiculo()).append(";");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
     public DatosRequest modificarEstatusMtto(Integer idMttoVehicular, Integer idMttoestado) {
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
         DatosRequest dr = new DatosRequest();
