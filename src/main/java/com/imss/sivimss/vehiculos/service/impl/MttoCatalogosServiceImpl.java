@@ -111,4 +111,17 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
         return providerRestTemplate.consumirServicio(mttoCatalogos.getRegistroMtto(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
+
+    @Override
+    public Response<?> getMttoTipoModalidad(DatosRequest request, Authentication authentication) throws IOException {
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getMttoTipoModalidad(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getMttoTipoModalidadDetalle(DatosRequest request, Authentication authentication) throws IOException {
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getMttoTipoModalidadDetalle(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
 }
