@@ -240,7 +240,6 @@ public class MttoReporte {
 	public Map<String, Object> reportePredictivo(DescargarReportePredictivoRequest reporte) {
 		Map<String, Object> envioDatos = new HashMap<>();
 		StringBuilder condition= new StringBuilder();
-		
 		if(reporte.getIdDelegacion()!=null && reporte.getIdDelegacion()>0) {
 			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
 		}

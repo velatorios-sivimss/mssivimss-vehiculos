@@ -78,6 +78,16 @@ public class ReportesMttoVechicularController {
   		return CompletableFuture
   				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
   	}
+    
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+  	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+  	@TimeLimiter(name = "msflujo")
+  	@PostMapping("reporte/mtto/reporte-predictivo")
+  	public CompletableFuture<?> descargarReportePredictivo(@RequestBody DatosRequest request,Authentication authentication) throws IOException, ParseException{
+  		Response<?> response = buscarVehiculosService.reportePredictivo(request,authentication);
+  		return CompletableFuture
+  				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+  	}
 
 
     /**
