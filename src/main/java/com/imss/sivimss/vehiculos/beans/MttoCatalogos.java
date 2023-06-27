@@ -1,10 +1,7 @@
 package com.imss.sivimss.vehiculos.beans;
 
 import com.google.gson.Gson;
-import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
-import com.imss.sivimss.vehiculos.model.request.CatContratosProvRequest;
-import com.imss.sivimss.vehiculos.model.request.CatalogoVehiculosRequest;
-import com.imss.sivimss.vehiculos.model.request.FiltroMttoRequest;
+import com.imss.sivimss.vehiculos.model.request.*;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
@@ -280,6 +277,63 @@ public class MttoCatalogos {
         if(buscarRequest!=null && buscarRequest.getIdMttoVehicular()!=null && buscarRequest.getIdMttoVehicular()>0){
             queryUtil.where("MT.ID_MTTOVEHICULAR = :idMttoVehicular")
                     .setParameter("idMttoVehicular", buscarRequest.getIdMttoVehicular());
+        }
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+
+    public DatosRequest getMttoTipoModalidad(DatosRequest request, Authentication authentication) throws IOException {
+        Gson json = new Gson();
+        FiltroGenericoRequest buscarRequest=new FiltroGenericoRequest();
+        String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+        if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
+            buscarRequest = json.fromJson(requestBoby, FiltroGenericoRequest.class);
+        }
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("MTM.ID_MTTO_MODALIDAD",
+                        "MTM.DES_MTTO_MODALIDAD",
+                        "MTM.ID_MTTOMODALIDAD",
+                        "MTM.IND_ACTIVO")
+                .from("SVT_MTTO_TIPO_MODALIDAD MTM")
+                .where("MTM.IND_ACTIVO= :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        if(buscarRequest!=null && buscarRequest.getIdGenerico()!=null && buscarRequest.getIdGenerico()>0){
+            queryUtil.where("MTM.ID_MTTOMODALIDAD = :idModalidad")
+                    .setParameter("idModalidad", buscarRequest.getIdGenerico());
+        }
+        String query = queryUtil.build();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        parametro.put(AppConstantes.QUERY, encoded);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+    public DatosRequest getMttoTipoModalidadDetalle(DatosRequest request, Authentication authentication) throws IOException {
+        Gson json = new Gson();
+        FiltroGenericoRequest buscarRequest=new FiltroGenericoRequest();
+        String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+        if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
+            buscarRequest = json.fromJson(requestBoby, FiltroGenericoRequest.class);
+        }
+        SelectQueryUtil queryUtil = new SelectQueryUtil();
+        queryUtil.select("MTMD.ID_MTTO_MODALIDAD_DET",
+                        "MTMD.DES_MTTO_MODALIDAD_DET",
+                        "MTMD.ID_MTTO_MODALIDAD",
+                        "MTMD.IND_ACTIVO")
+                .from("SVT_MTTO_TIPO_MODALIDAD_DET MTMD")
+                .where("MTMD.IND_ACTIVO= :idEstatus")
+                .setParameter("idEstatus", INDESTATUS);
+        if(buscarRequest!=null && buscarRequest.getIdGenerico()!=null && buscarRequest.getIdGenerico()>0){
+            queryUtil.where("MTMD.ID_MTTO_MODALIDAD = :idMttoModalidad")
+                    .setParameter("idMttoModalidad", buscarRequest.getIdGenerico());
         }
         String query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
