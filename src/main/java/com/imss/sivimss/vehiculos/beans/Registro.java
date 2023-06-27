@@ -202,8 +202,8 @@ public class Registro {
 
     public DatosRequest existe(MttoVehicularRequest request) {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT REG.ID_MTTO_REGISTRO, REG.ID_MTTOVEHICULAR FROM SVT_MTTO_REGISTRO REG WHERE REG.FEC_REGISTRO=CURRENT_DATE()");
-        sql.append(" AND REG.IND_ACTIVO=1").append(" AND REG.ID_MTTOVEHICULAR="+request.getRegistro().getIdMttoVehicular()).append(";");
+        StringBuilder sql=new StringBuilder("SELECT REG.ID_MTTO_REGISTRO, REG.ID_MTTOVEHICULAR FROM SVT_MTTO_REGISTRO REG WHERE ");
+        sql.append(" REG.IND_ACTIVO=1").append(" AND REG.ID_MTTOVEHICULAR="+request.getRegistro().getIdMttoVehicular()).append(";");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();

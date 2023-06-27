@@ -154,8 +154,8 @@ public class MttoVerifiInicio {
 
     public DatosRequest existe(MttoVehicularRequest request) {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT VI.ID_MTTOVERIFINICIO, VI.ID_MTTOVEHICULAR FROM SVT_MTTO_VERIF_INICIO VI WHERE VI.FEC_REGISTRO=CURRENT_DATE()");
-        sql.append(" AND VI.CVE_ESTATUS=1").append(" AND VI.ID_MTTOVEHICULAR="+request.getVerificacionInicio().getIdMttoVehicular()).append(";");
+        StringBuilder sql=new StringBuilder("SELECT VI.ID_MTTOVERIFINICIO, VI.ID_MTTOVEHICULAR FROM SVT_MTTO_VERIF_INICIO VI WHERE ");
+        sql.append(" VI.CVE_ESTATUS=1").append(" AND VI.ID_MTTOVEHICULAR="+request.getVerificacionInicio().getIdMttoVehicular()).append(";");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
