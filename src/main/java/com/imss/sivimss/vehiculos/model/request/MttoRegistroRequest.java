@@ -37,4 +37,8 @@ public class MttoRegistroRequest {
     private String  fecRegistro;
     @JsonProperty
     private Integer  idContrato;
+    @JsonProperty
+    private Integer idMttoTipoModalidad;
+    @JsonProperty
+    private Integer idMttoTipoModalidadDet;
 }
