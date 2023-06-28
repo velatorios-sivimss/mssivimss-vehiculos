@@ -2,10 +2,7 @@ package com.imss.sivimss.vehiculos.beans;
 
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
-import com.imss.sivimss.vehiculos.util.AppConstantes;
-import com.imss.sivimss.vehiculos.util.DatosRequest;
-import com.imss.sivimss.vehiculos.util.QueryHelper;
-import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
+import com.imss.sivimss.vehiculos.util.*;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,6 +61,12 @@ public class Registro {
         if(request.getRegistro().getIdContrato()!=null && request.getRegistro().getIdContrato()>0) {
             q.agregarParametroValues("ID_CONTRATO", request.getRegistro().getIdContrato().toString());
         }
+        if(request.getRegistro().getIdMttoTipoModalidad()!=null) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getRegistro().getIdMttoTipoModalidad().toString());
+        }
+        if(request.getRegistro().getIdMttoTipoModalidadDet()!=null) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getRegistro().getIdMttoTipoModalidadDet().toString());
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -106,6 +109,16 @@ public class Registro {
         } else {
             q.agregarParametroValues("ID_CONTRATO", "NULL");
         }
+        if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMttoTipoModalidad())) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getRegistro().getIdMttoTipoModalidad().toString());
+        } else {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", "NULL");
+        }
+        if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMttoTipoModalidadDet())) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getRegistro().getIdMttoTipoModalidadDet().toString());
+        } else {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", "NULL");
+        }
         q.addWhere("ID_MTTO_REGISTRO =" + request.getRegistro().getIdMttoRegistro());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -147,6 +160,10 @@ public class Registro {
                         "REG.DES_NOMBRE_PROVEEDOR",
                         "REG.DES_MTTO_CORRECTIVO",
                         "REG.ID_CONTRATO",
+                        "REG.DES_MTTO_CORRECTIVO",
+                        "REG.ID_MTTOMODALIDAD_DET",
+                        "SMTM.DES_MTTO_MODALIDAD",
+                        "SMTMD.DES_MTTO_MODALIDAD_DET",
                         "CON.NUM_CONTRATO",
                         "CON.DES_CONTRATO",
                         "MTTO_VEH.ID_MTTOVEHICULAR",
@@ -186,7 +203,9 @@ public class Registro {
                 .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =REG.ID_MTTOMODALIDAD")
                 .leftJoin("SVT_PROVEEDOR SP","REG.ID_PROVEEDOR=SP.ID_PROVEEDOR")
                 .leftJoin("SVC_MTTO_TIPO MTPC","REG.ID_MANTENIMIENTO=MTPC.ID_MTTO_TIPO")
-                .leftJoin("SVT_CONTRATO CON","REG.ID_CONTRATO=CON.ID_CONTRATO");
+                .leftJoin("SVT_CONTRATO CON","REG.ID_CONTRATO=CON.ID_CONTRATO")
+                .leftJoin("SVT_MTTO_TIPO_MODALIDAD SMTM","SMTM.ID_MTTO_MODALIDAD =REG.ID_MTTO_MODALIDAD")
+                .leftJoin("SVT_MTTO_TIPO_MODALIDAD_DET SMTMD","SMTMD.ID_MTTO_MODALIDAD_DET =REG.ID_MTTO_MODALIDAD_DET");
         if(palabra!=null && palabra.trim().length()>0) {
             queryUtil.where("REG.ID_MTTO_REGISTRO = :idRegistro")
                     .setParameter("idRegistro", Integer.parseInt(palabra));
