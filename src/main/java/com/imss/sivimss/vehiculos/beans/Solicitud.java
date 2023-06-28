@@ -47,6 +47,12 @@ public class Solicitud {
         if(request.getSolicitud().getFecRegistro2()!=null) {
             q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
         }
+        if(request.getSolicitud().getIdMttoTipoModalidad()!=null) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getSolicitud().getIdMttoTipoModalidad().toString());
+        }
+        if(request.getSolicitud().getIdMttoTipoModalidadDet()!=null) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -75,17 +81,27 @@ public class Solicitud {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
-        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
         if(request.getSolicitud().getFecRegistro2()!=null) {
             q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
         } else {
             q.agregarParametroValues("FEC_REGISTRO_FIN", "NULL");
+        }
+        if(this.validarInt(request.getSolicitud().getIdMttoTipoModalidad())) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getSolicitud().getIdMttoTipoModalidad().toString());
+        } else {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", "NULL");
+        }
+        if(this.validarInt(request.getSolicitud().getIdMttoTipoModalidadDet())) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
+        } else {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", "NULL");
         }
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
+        logger.info(query);
         return dr;
     }
 
@@ -117,6 +133,10 @@ public class Solicitud {
                         "SOLI.KILOMETRAJE",
                         "DATE_FORMAT(SOLI.FEC_SOLICTUD,'%d-%m-%Y') AS FEC_SOLICTUD",
                         "DATE_FORMAT(SOLI.FEC_REGISTRO_FIN,'%d-%m-%Y') AS FEC_REGISTRO_FIN",
+                        "SOLI.ID_MTTO_MODALIDAD",
+                        "SOLI.ID_MTTO_MODALIDAD_DET",
+                        "SMTM.DES_MTTO_MODALIDAD",
+                        "SMTMD.DES_MTTO_MODALIDAD_DET",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
@@ -146,7 +166,9 @@ public class Solicitud {
                 .leftJoin("SVC_DELEGACION SD","MTTO_VEH.ID_DELEGACION=SD.ID_DELEGACION")
                 .leftJoin("SVC_VELATORIO SVEL","MTTO_VEH.ID_VELATORIO=SVEL.ID_VELATORIO")
                 .leftJoin("SVC_MTTO_TIPO SMT","SMT.ID_MTTO_TIPO=SOLI.ID_MTTO_TIPO")
-                .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =SOLI.ID_MTTOMODALIDAD");
+                .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =SOLI.ID_MTTOMODALIDAD")
+                .leftJoin("SVT_MTTO_TIPO_MODALIDAD SMTM","SMTM.ID_MTTO_MODALIDAD =SOLI.ID_MTTO_MODALIDAD")
+                .leftJoin("SVT_MTTO_TIPO_MODALIDAD_DET SMTMD","SMTMD.ID_MTTO_MODALIDAD_DET =SOLI.ID_MTTO_MODALIDAD_DET");
         if(palabra!=null && palabra.trim().length()>0) {
             queryUtil.where("SOLI.ID_MTTO_SOLICITUD = :idSolicitud")
                     .setParameter("idSolicitud", Integer.parseInt(palabra));
@@ -172,6 +194,13 @@ public class Solicitud {
         logger.info(query);
         dr.setDatos(parametro);
         return dr;
+    }
+    private boolean validarInt(Integer valor){
+        boolean correcto=false;
+        if(valor!=null && valor>0){
+            correcto=true;
+        }
+        return correcto;
     }
 
 }

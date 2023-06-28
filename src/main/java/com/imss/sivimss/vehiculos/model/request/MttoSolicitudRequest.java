@@ -31,4 +31,8 @@ public class MttoSolicitudRequest {
     private Integer kilometraje;
     @JsonProperty
     private String  fecRegistro2;
+    @JsonProperty
+    private Integer idMttoTipoModalidad;
+    @JsonProperty
+    private Integer idMttoTipoModalidadDet;
 }
