@@ -67,7 +67,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             existe=null;
             log.info("Error al consulta si existe mtto del vehiculo");
         }
-        if(!resultExiste.isEmpty()) {
+        if(resultExiste!=null && !resultExiste.isEmpty()) {
             for (Map<String, Object> map : resultExiste) {
                 existe=(String) map.get("validacion");
             }
