@@ -79,18 +79,18 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                 //correctivo
                 if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(1)){
                     //semetral
-                    mensaje="Mantenimientos ya registrados para este vehículo";
+                    mensaje="Mantenimientos ya registrados para este vehÃ­culo";
                 } else {
                     //anual o frecuente
-                    mensaje="Mantenimientos ya registrados para este vehículo";
+                    mensaje="Mantenimientos ya registrados para este vehÃ­culo";
                 }
             } else if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(1)){
                 //preventivo
                 if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(3)){
                     //frecuente
-                    mensaje="Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
+                    mensaje="Se debe efectuar primero el mantenimiento de AfinaciÃ³n y Cambio de Aceite";
                 } else {
-                    mensaje="Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
+                    mensaje="Se debe efectuar primero el mantenimiento de AfinaciÃ³n y Cambio de Aceite";
                 }
             }
             throw new BadRequestException(HttpStatus.valueOf(400), mensaje);
