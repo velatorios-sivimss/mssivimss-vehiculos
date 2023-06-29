@@ -11,10 +11,7 @@ import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.service.EstatusMttoService;
 import com.imss.sivimss.vehiculos.service.MttoVehicularService;
-import com.imss.sivimss.vehiculos.util.AppConstantes;
-import com.imss.sivimss.vehiculos.util.DatosRequest;
-import com.imss.sivimss.vehiculos.util.ProviderServiceRestTemplate;
-import com.imss.sivimss.vehiculos.util.Response;
+import com.imss.sivimss.vehiculos.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MttoVehicularServiceImpl implements MttoVehicularService {
@@ -56,96 +54,48 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     private Registro registro=new Registro();
 
     SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
-    /*
-    @Override
-    public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException, ParseException {
-        String path=urlDominioConsulta + "/crear";
-        Gson json = new Gson();
-        MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
-        UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-        Response<?> existeMtto = llamarServicio(mttoVehicular.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
-        List<Map<String, Object>> resultExiste= (List<Map<String, Object>>) existeMtto.getDatos();
-        Integer idMtto=null;
-        Date fechaRegistro=null;
-        for (Map<String, Object> map : resultExiste) {
-            idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
-            fechaRegistro=formatoConsulta.parse((String) map.get("FEC_REGISTRO"));
+
+    private void validarSolicitud(MttoVehicularRequest requestDto, Authentication authentication) throws IOException{
+        String existe=null;
+        String mensaje="";
+        Response<?> existeMtto=null;
+        List<Map<String, Object>> resultExiste=null;
+        try {
+            existeMtto = llamarServicio(solicitud.validarRN136(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+            resultExiste= (List<Map<String, Object>>) existeMtto.getDatos();
+        } catch (Exception ex){
+            existe=null;
+            log.info("Error al consulta si existe mtto del vehiculo");
         }
-        if(idMtto==null) {
-            Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-            log.info(response.getCodigo());
-            if (response.getCodigo() == 200) {
-                log.info("Registro exitoso");
-                if (requestDto.getVerificacionInicio() != null) {
-                    requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                    llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                }
-                if (requestDto.getSolicitud() != null) {
-                    requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                    llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                    this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
-                }
-                if (requestDto.getRegistro() != null) {
-                    requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                    llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                    this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
-                }
-                return response;
-            } else {
-                throw new BadRequestException(HttpStatus.valueOf(response.getCodigo()), "Error al insertar registro");
+        if(!resultExiste.isEmpty()) {
+            for (Map<String, Object> map : resultExiste) {
+                existe=(String) map.get("validacion");
             }
+        }
+        if(existe!=null || existe=="DISPONIBLE") {
+            log.info("vehiculo disponible");
         } else {
-            log.info("Ya existe el mtto");
-            if (requestDto.getVerificacionInicio() != null) {
-                requestDto.getVerificacionInicio().setIdMttoVehicular(idMtto);
-                Response<?> existeMttoVI = llamarServicio(verifiInicio.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
-                List<Map<String, Object>> resultExisteVI= (List<Map<String, Object>>) existeMttoVI.getDatos();
-                Integer idMttoVI=null;
-                for (Map<String, Object> map : resultExisteVI) {
-                    idMttoVI=(Integer) map.get("ID_MTTOVERIFINICIO");
-                }
-                if(idMttoVI==null) {
-                    llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+            if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(2)){
+                //correctivo
+                if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(1)){
+                    //semetral
+                    mensaje="Mantenimientos ya registrados para este vehículo";
                 } else {
-                    requestDto.getVerificacionInicio().setIdMttoVerifInicio(idMttoVI);
-                    llamarServicio(verifiInicio.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
+                    //anual o frecuente
+                    mensaje="Mantenimientos ya registrados para este vehículo";
                 }
-            }
-            if (requestDto.getSolicitud() != null) {
-                requestDto.getSolicitud().setIdMttoVehicular(idMtto);
-                Response<?> existeMttoSol = llamarServicio(solicitud.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
-                List<Map<String, Object>> resultExisteSol= (List<Map<String, Object>>) existeMttoSol.getDatos();
-                Integer idMttoSol=null;
-                for (Map<String, Object> map : resultExisteSol) {
-                    idMttoSol=(Integer) map.get("ID_MTTO_SOLICITUD");
-                }
-                if(idMttoSol==null) {
-                    llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                }else {
-                    requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
-                    llamarServicio(solicitud.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
-                }
-                this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
-            }
-            if (requestDto.getRegistro() != null) {
-                requestDto.getRegistro().setIdMttoVehicular(idMtto);
-                Response<?> existeMttoReg = llamarServicio(registro.existe(requestDto).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
-                List<Map<String, Object>> resultExisteReg= (List<Map<String, Object>>) existeMttoReg.getDatos();
-                Integer idMttoReg=null;
-                for (Map<String, Object> map : resultExisteReg) {
-                    idMttoReg=(Integer) map.get("ID_MTTO_REGISTRO");
-                }
-                if(idMttoReg==null) {
-                    llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+            } else if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(1)){
+                //preventivo
+                if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(3)){
+                    //frecuente
+                    mensaje="Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
                 } else {
-                    requestDto.getRegistro().setIdMttoRegistro(idMttoReg);
-                    llamarServicio(registro.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
+                    mensaje="Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
                 }
-                this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
             }
-            return existeMtto;
+            throw new BadRequestException(HttpStatus.valueOf(400), mensaje);
         }
-    }*/
+    }
 
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException, ParseException {
@@ -153,7 +103,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-
+        this.validarSolicitud(requestDto,authentication);
         Integer idMtto=null;
         Date fechaRegistro=null;
         Response<?> existeMtto=null;

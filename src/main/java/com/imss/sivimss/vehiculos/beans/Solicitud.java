@@ -2,16 +2,15 @@ package com.imss.sivimss.vehiculos.beans;
 
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
-import com.imss.sivimss.vehiculos.util.AppConstantes;
-import com.imss.sivimss.vehiculos.util.DatosRequest;
-import com.imss.sivimss.vehiculos.util.QueryHelper;
-import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
+import com.imss.sivimss.vehiculos.util.*;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,12 +85,12 @@ public class Solicitud {
         } else {
             q.agregarParametroValues("FEC_REGISTRO_FIN", "NULL");
         }
-        if(this.validarInt(request.getSolicitud().getIdMttoTipoModalidad())) {
+        if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipoModalidad())) {
             q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getSolicitud().getIdMttoTipoModalidad().toString());
         } else {
             q.agregarParametroValues("ID_MTTO_MODALIDAD", "NULL");
         }
-        if(this.validarInt(request.getSolicitud().getIdMttoTipoModalidadDet())) {
+        if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipoModalidadDet())) {
             q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
         } else {
             q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", "NULL");
@@ -195,12 +194,58 @@ public class Solicitud {
         dr.setDatos(parametro);
         return dr;
     }
-    private boolean validarInt(Integer valor){
-        boolean correcto=false;
-        if(valor!=null && valor>0){
-            correcto=true;
+
+
+    public DatosRequest validarRN136(MttoVehicularRequest request) {
+        LocalDate current_date = LocalDate.now();
+        int currentYear = current_date.getYear();
+        StringBuilder sql=new StringBuilder("");
+        if(request.getSolicitud()!=null){
+            if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipo()) && request.getSolicitud().getIdMttoTipo().equals(2)){
+                //correctivo
+                if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoModalidad()) && request.getSolicitud().getIdMttoModalidad().equals(1)){
+                    //semetral
+                    sql.append("SELECT ")
+                       .append("IF(COUNT(IF(SMS.ID_MTTOMODALIDAD=1, SMS.ID_MTTOMODALIDAD, NULL))>=3, 'MAS DE 2 REGISTROS', 'DISPONIBLE') AS validacion ")
+                            .append("FROM SVT_MTTO_VEHICULAR SMT ")
+                            .append("JOIN SVT_MTTO_SOLICITUD SMS ON SMT.ID_MTTOVEHICULAR = SMS.ID_MTTOVEHICULAR ")
+                            .append("WHERE SMT.ID_VEHICULO=").append(request.getIdVehiculo()).append(" AND SMS.ID_MTTO_TIPO=").append(request.getSolicitud().getIdMttoTipo()).append(" ")
+                            .append("AND SMS.FEC_REGISTRO BETWEEN '").append(currentYear).append("-01-01' AND '").append(currentYear).append("-12-31'");
+                } else {
+                    //anual o frecuente
+                    sql.append("SELECT ")
+                            .append("COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL)) AS solicitudes, ")
+                            .append("IF(COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL))>=2, 'MAS DE 1 REGISTRO', 'DISPONIBLE') AS validacion, ")
+                            .append("SMS.ID_MTTOMODALIDAD ")
+                            .append("FROM SVT_MTTO_VEHICULAR SMT ")
+                            .append("JOIN SVT_MTTO_SOLICITUD SMS ON SMT.ID_MTTOVEHICULAR = SMS.ID_MTTOVEHICULAR ")
+                            .append("WHERE SMT.ID_VEHICULO=").append(request.getIdVehiculo()).append(" AND SMS.ID_MTTO_TIPO=").append(request.getSolicitud().getIdMttoTipo()).append(" ")
+                            .append("AND SMS.FEC_REGISTRO BETWEEN '").append(currentYear).append("-01-01' AND '").append(currentYear).append("-12-31'");
+                }
+            } else if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipo()) && request.getSolicitud().getIdMttoTipo().equals(1)){
+                //preventivo
+                if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoModalidad()) && request.getSolicitud().getIdMttoModalidad().equals(3)){
+                    //frecuente
+                    sql.append("SELECT ")
+                            .append("COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL)) AS solicitudes, ")
+                            .append("IF(COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL))>=2, 'MAS DE 1 REGISTRO', 'DISPONIBLE') AS validacion, ")
+                            .append("SMS.ID_MTTOMODALIDAD ")
+                            .append("FROM SVT_MTTO_VEHICULAR SMT ")
+                            .append("JOIN SVT_MTTO_SOLICITUD SMS ON SMT.ID_MTTOVEHICULAR = SMS.ID_MTTOVEHICULAR ")
+                            .append("WHERE SMT.ID_VEHICULO=").append(request.getIdVehiculo()).append(" AND SMS.ID_MTTO_TIPO=").append(request.getSolicitud().getIdMttoTipo()).append(" ")
+                            .append("AND SMS.FEC_REGISTRO BETWEEN '").append(currentYear).append("-01-01' AND '").append(currentYear).append("-12-31'");
+                }
+            }
         }
-        return correcto;
+        String query=null;
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
     }
 
 }
