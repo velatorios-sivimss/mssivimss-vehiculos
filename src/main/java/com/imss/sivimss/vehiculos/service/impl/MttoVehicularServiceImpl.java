@@ -55,7 +55,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
 
-    private void validarSolicitud(MttoVehicularRequest requestDto, Authentication authentication) throws IOException{
+    private Response<?> validarSolicitud(MttoVehicularRequest requestDto, Authentication authentication) throws IOException{
         String existe=null;
         String mensaje="";
         Response<?> existeMtto=null;
@@ -72,29 +72,35 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                 existe=(String) map.get("validacion");
             }
         }
-        if(existe!=null || existe=="DISPONIBLE") {
+        if(existe==null || existe.equals("DISPONIBLE")) {
+            log.info("vehiculo disponible");
+        } else if(existe!=null && existe.equals("DISPONIBLE")){
             log.info("vehiculo disponible");
         } else {
-            if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(2)){
-                //correctivo
-                if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(1)){
-                    //semetral
-                    mensaje="Mantenimientos ya registrados para este vehículo";
-                } else {
-                    //anual o frecuente
-                    mensaje="Mantenimientos ya registrados para este vehículo";
+            if(requestDto.getSolicitud()!=null) {
+                if (ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(2)) {
+                    //correctivo
+                    if (ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(1)) {
+                        //semetral
+                        mensaje = "Mantenimientos ya registrados para este vehículo";
+                    } else {
+                        //anual o frecuente
+                        mensaje = "Mantenimientos ya registrados para este vehículo";
+                    }
+                } else if (ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(1)) {
+                    //preventivo
+                    if (ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(3)) {
+                        //frecuente
+                        mensaje = "Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
+                    } else {
+                        mensaje = "Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
+                    }
                 }
-            } else if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoTipo()) && requestDto.getSolicitud().getIdMttoTipo().equals(1)){
-                //preventivo
-                if(ValidacionRequestUtil.validarInt(requestDto.getSolicitud().getIdMttoModalidad()) && requestDto.getSolicitud().getIdMttoModalidad().equals(3)){
-                    //frecuente
-                    mensaje="Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
-                } else {
-                    mensaje="Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite";
-                }
+                return Response.builder().error(true).mensaje(mensaje).codigo(200).datos(null).build();
             }
-            throw new BadRequestException(HttpStatus.valueOf(400), mensaje);
+
         }
+        return Response.builder().error(false).mensaje(null).codigo(200).datos(null).build();
     }
 
     @Override
@@ -103,7 +109,11 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-        this.validarSolicitud(requestDto,authentication);
+        Response<?> validacionMtto=this.validarSolicitud(requestDto,authentication);
+        if(validacionMtto!=null && validacionMtto.getCodigo()==200 && validacionMtto.getMensaje()!=null){
+            //enviamos el error
+            return validacionMtto;
+        }
         Integer idMtto=null;
         Date fechaRegistro=null;
         Response<?> existeMtto=null;
