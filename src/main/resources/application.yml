@@ -1,8 +1,8 @@
 server:
   port: 8080
   servlet:
-    contextPath: /${spring.application.name}/v1
-spring: 
+    contextPath: /mssivimss-vehiculos/v1
+spring:
   application:
     name: mssivimss-vehiculos
   mvc:

@@ -78,3 +78,5 @@ resilience4j.timelimiter:
         
         
 formato_fecha: '%d/%m/%Y'
+ruta-log: test
+
