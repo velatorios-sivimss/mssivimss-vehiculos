@@ -31,4 +31,9 @@ public class ReporteEncargadoRequest {
 
     @JsonProperty
     private String tamanio;
+
+    @JsonProperty
+    private Integer delegacion;
+    @JsonProperty
+    private Integer velatorio;
 }

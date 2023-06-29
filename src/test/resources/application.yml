@@ -2,6 +2,8 @@ server:
   servlet:
     contextPath: /mssivimss-arquetipo
 spring:
+  application:
+    name: mssivimss-vehiculos
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -25,10 +27,18 @@ logos:
   msit_logo_sistema: /sivimss_data/LOGOS/logoSistema.png
 
 endpoints:
-   dominio-consulta: http://localhost:1080/mssivimss-mod-catalogos/generico/consulta
-   dominio-consulta-paginado: http://localhost:1080/mssivimss-mod-catalogos/generico/paginado
-   dominio-crear: http://localhost:1080/mssivimss-mod-catalogos/generico/crear
-   dominio-actualizar: http://localhost:1080/mssivimss-mod-catalogos/generico/actualizar
+   dominio: http://localhost:1080/mssivimss-mod-catalogos/v1
+   dominio-consulta: http://localhost:1080/mssivimss-mod-catalogos/v1/generico/consulta
+   dominio-consulta-paginado: http://localhost:1080/mssivimss-mod-catalogos/v1/generico/paginado
+   dominio-crear: http://localhost:1080/mssivimss-mod-catalogos/v1/generico/crear
+   dominio-actualizar: http://localhost:1080/mssivimss-mod-catalogos/v1/generico/actualizar
+   ms-reportes: http://localhost:1080/mssivimss-reportes-jasp/v1/generales/generar-reporte
+   mod-catalogos: http://localhost:1080/mssivimss-mod-catalogos/v1
+
+plantilla:
+  pdf-DisponibilidadVehiculos: reportes/generales/DiponibilidadVehiculos.jrxml
+url_reportes:
+  ms-reportes: http://localhost:1080/mssivimss-reportes-jasp/v1/generales/generar-reporte
 
 jwt:
   secretkey-flujo: funcionamuybien

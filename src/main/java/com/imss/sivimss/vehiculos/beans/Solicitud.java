@@ -2,15 +2,15 @@ package com.imss.sivimss.vehiculos.beans;
 
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
-import com.imss.sivimss.vehiculos.util.AppConstantes;
-import com.imss.sivimss.vehiculos.util.DatosRequest;
-import com.imss.sivimss.vehiculos.util.QueryHelper;
-import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
+import com.imss.sivimss.vehiculos.util.*;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +43,18 @@ public class Solicitud {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", "1");
-        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
+        if(request.getSolicitud().getFecRegistro2()!=null) {
+            q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
+        }
+        if(request.getSolicitud().getIdMttoTipoModalidad()!=null) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getSolicitud().getIdMttoTipoModalidad().toString());
+        }
+        if(request.getSolicitud().getIdMttoTipoModalidadDet()!=null) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
+        }
         String query = q.obtenerQueryInsertar();
         logger.info(query);
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         return dr;
@@ -72,12 +80,27 @@ public class Solicitud {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
         }
         q.agregarParametroValues("IND_ACTIVO", request.getIdEstatus().toString());
-        q.agregarParametroValues("FEC_SOLICTUD","CURRENT_TIMESTAMP()");
+        if(request.getSolicitud().getFecRegistro2()!=null) {
+            q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
+        } else {
+            q.agregarParametroValues("FEC_REGISTRO_FIN", "NULL");
+        }
+        if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipoModalidad())) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getSolicitud().getIdMttoTipoModalidad().toString());
+        } else {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD", "NULL");
+        }
+        if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipoModalidadDet())) {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
+        } else {
+            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", "NULL");
+        }
         q.addWhere("ID_MTTO_SOLICITUD =" + request.getSolicitud().getIdMttoSolicitud());
         String query = q.obtenerQueryActualizar();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
+        logger.info(query);
         return dr;
     }
 
@@ -88,7 +111,7 @@ public class Solicitud {
         q.agregarParametroValues("IND_ACTIVO", String.valueOf(status));
         q.addWhere("ID_MTTO_SOLICITUD =" + idMttoSolicitud);
         String query = q.obtenerQueryActualizar();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         return dr;
@@ -97,22 +120,29 @@ public class Solicitud {
 		String palabra = request.getDatos().get("palabra").toString();
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("SOLI.ID_MTTO_SOLICITUD",
+                        "SOLI.ID_MTTOVEHICULAR",
                         "SOLI.ID_MTTO_TIPO",
                         "SOLI.ID_MTTOMODALIDAD",
-                        "SOLI.FEC_REGISTRO",
+                        "DATE_FORMAT(SOLI.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO",
                         "SOLI.DES_MTTO_CORRECTIVO",
                         "SOLI.ID_MTTOMODALIDAD_DET",
                         "SOLI.IND_ACTIVO",
+                        "SOLI.NUM_KILOMETRAJE",
                         "SOLI.DES_NOTAS",
-                        "SOLI.NUM_KILOMETRAJE",
-                        "SOLI.NUM_KILOMETRAJE",
+                        "SOLI.KILOMETRAJE",
+                        "DATE_FORMAT(SOLI.FEC_SOLICTUD,'%d-%m-%Y') AS FEC_SOLICTUD",
+                        "DATE_FORMAT(SOLI.FEC_REGISTRO_FIN,'%d-%m-%Y') AS FEC_REGISTRO_FIN",
+                        "SOLI.ID_MTTO_MODALIDAD",
+                        "SOLI.ID_MTTO_MODALIDAD_DET",
+                        "SMTM.DES_MTTO_MODALIDAD",
+                        "SMTMD.DES_MTTO_MODALIDAD_DET",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
                         "MTTO_VEH.ID_VELATORIO",
-                        "MTTO_VEH.FEC_ALTA",
-                        "MTTO_VEH.FEC_ACTUALIZACION",
-                        "MTTO_VEH.FEC_BAJA",
+                        "DATE_FORMAT(MTTO_VEH.FEC_ALTA,'%d-%m-%Y') AS FEC_ALTA",
+                        "DATE_FORMAT(MTTO_VEH.FEC_ACTUALIZACION,'%d-%m-%Y') AS FEC_ACTUALIZACION",
+                        "DATE_FORMAT(MTTO_VEH.FEC_BAJA,'%d-%m-%Y') AS FEC_BAJA",
                         "MTTO_VEH.IND_ACTIVO",
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
@@ -135,7 +165,9 @@ public class Solicitud {
                 .leftJoin("SVC_DELEGACION SD","MTTO_VEH.ID_DELEGACION=SD.ID_DELEGACION")
                 .leftJoin("SVC_VELATORIO SVEL","MTTO_VEH.ID_VELATORIO=SVEL.ID_VELATORIO")
                 .leftJoin("SVC_MTTO_TIPO SMT","SMT.ID_MTTO_TIPO=SOLI.ID_MTTO_TIPO")
-                .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =SOLI.ID_MTTOMODALIDAD");
+                .leftJoin("SVC_MTTO_MODALIDAD SMM","SMM.ID_MTTOMODALIDAD =SOLI.ID_MTTOMODALIDAD")
+                .leftJoin("SVT_MTTO_TIPO_MODALIDAD SMTM","SMTM.ID_MTTO_MODALIDAD =SOLI.ID_MTTO_MODALIDAD")
+                .leftJoin("SVT_MTTO_TIPO_MODALIDAD_DET SMTMD","SMTMD.ID_MTTO_MODALIDAD_DET =SOLI.ID_MTTO_MODALIDAD_DET");
         if(palabra!=null && palabra.trim().length()>0) {
             queryUtil.where("SOLI.ID_MTTO_SOLICITUD = :idSolicitud")
                     .setParameter("idSolicitud", Integer.parseInt(palabra));
@@ -143,7 +175,7 @@ public class Solicitud {
             queryUtil.orderBy("SOLI.ID_MTTO_SOLICITUD");
         }
         String query = queryUtil.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 		logger.info(query);
 		return request;
@@ -151,12 +183,65 @@ public class Solicitud {
 
     public DatosRequest existe(MttoVehicularRequest request) {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT SOL.ID_MTTO_SOLICITUD, SOL.ID_MTTOVEHICULAR FROM SVT_MTTO_SOLICITUD SOL WHERE SOL.FEC_SOLICTUD=CURRENT_DATE()");
-        sql.append(" AND SOL.IND_ACTIVO=1").append(" AND SOL.ID_MTTOVEHICULAR="+request.getSolicitud().getIdMttoVehicular()).append(";");
+        StringBuilder sql=new StringBuilder("SELECT SOL.ID_MTTO_SOLICITUD, SOL.ID_MTTOVEHICULAR FROM SVT_MTTO_SOLICITUD SOL WHERE ");
+        sql.append(" SOL.IND_ACTIVO=1").append(" AND SOL.ID_MTTOVEHICULAR="+request.getSolicitud().getIdMttoVehicular()).append(";");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+
+    public DatosRequest validarRN136(MttoVehicularRequest request) {
+        LocalDate current_date = LocalDate.now();
+        int currentYear = current_date.getYear();
+        StringBuilder sql=new StringBuilder("");
+        if(request.getSolicitud()!=null){
+            if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipo()) && request.getSolicitud().getIdMttoTipo().equals(2)){
+                //correctivo
+                if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoModalidad()) && request.getSolicitud().getIdMttoModalidad().equals(1)){
+                    //semetral
+                    sql.append("SELECT ")
+                       .append("IF(COUNT(IF(SMS.ID_MTTOMODALIDAD=1, SMS.ID_MTTOMODALIDAD, NULL))>=3, 'MAS DE 2 REGISTROS', 'DISPONIBLE') AS validacion ")
+                            .append("FROM SVT_MTTO_VEHICULAR SMT ")
+                            .append("JOIN SVT_MTTO_SOLICITUD SMS ON SMT.ID_MTTOVEHICULAR = SMS.ID_MTTOVEHICULAR ")
+                            .append("WHERE SMT.ID_VEHICULO=").append(request.getIdVehiculo()).append(" AND SMS.ID_MTTO_TIPO=").append(request.getSolicitud().getIdMttoTipo()).append(" ")
+                            .append("AND SMS.FEC_REGISTRO BETWEEN '").append(currentYear).append("-01-01' AND '").append(currentYear).append("-12-31'");
+                } else {
+                    //anual o frecuente
+                    sql.append("SELECT ")
+                            .append("COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL)) AS solicitudes, ")
+                            .append("IF(COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL))>=2, 'MAS DE 1 REGISTRO', 'DISPONIBLE') AS validacion, ")
+                            .append("SMS.ID_MTTOMODALIDAD ")
+                            .append("FROM SVT_MTTO_VEHICULAR SMT ")
+                            .append("JOIN SVT_MTTO_SOLICITUD SMS ON SMT.ID_MTTOVEHICULAR = SMS.ID_MTTOVEHICULAR ")
+                            .append("WHERE SMT.ID_VEHICULO=").append(request.getIdVehiculo()).append(" AND SMS.ID_MTTO_TIPO=").append(request.getSolicitud().getIdMttoTipo()).append(" ")
+                            .append("AND SMS.FEC_REGISTRO BETWEEN '").append(currentYear).append("-01-01' AND '").append(currentYear).append("-12-31'");
+                }
+            } else if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipo()) && request.getSolicitud().getIdMttoTipo().equals(1)){
+                //preventivo
+                if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoModalidad()) && request.getSolicitud().getIdMttoModalidad().equals(3)){
+                    //frecuente
+                    sql.append("SELECT ")
+                            .append("COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL)) AS solicitudes, ")
+                            .append("IF(COUNT(IF(SMS.ID_MTTOMODALIDAD!=1, SMS.ID_MTTOMODALIDAD, NULL))>=2, 'MAS DE 1 REGISTRO', 'DISPONIBLE') AS validacion, ")
+                            .append("SMS.ID_MTTOMODALIDAD ")
+                            .append("FROM SVT_MTTO_VEHICULAR SMT ")
+                            .append("JOIN SVT_MTTO_SOLICITUD SMS ON SMT.ID_MTTOVEHICULAR = SMS.ID_MTTOVEHICULAR ")
+                            .append("WHERE SMT.ID_VEHICULO=").append(request.getIdVehiculo()).append(" AND SMS.ID_MTTO_TIPO=").append(request.getSolicitud().getIdMttoTipo()).append(" ")
+                            .append("AND SMS.FEC_REGISTRO BETWEEN '").append(currentYear).append("-01-01' AND '").append(currentYear).append("-12-31'");
+                }
+            }
+        }
+        String query=null;
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         logger.info(query);
         dr.setDatos(parametro);

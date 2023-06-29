@@ -8,15 +8,16 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReporteDto {
-
-	private Integer numReporte;
+public class DescargarReportePredictivoRequest {
+	
 	private Integer idDelegacion;
 	private Integer idNivelOficina;
 	private Integer idVelatorio;
+	private String tipoMtto;
+	private String valor;
 	private String placas;
-	private String fechaInicio;
-	private String fechaFin;
+	private String periodo;
 	private String tipoReporte;
 	private String rutaNombreReporte;
+
 }

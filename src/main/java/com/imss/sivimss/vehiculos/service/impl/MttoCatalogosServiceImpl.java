@@ -2,6 +2,7 @@ package com.imss.sivimss.vehiculos.service.impl;
 
 import com.imss.sivimss.vehiculos.beans.MttoCatalogos;
 import com.imss.sivimss.vehiculos.service.MttoCatalogosService;
+import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.vehiculos.util.Response;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +21,7 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
     @Value("${endpoints.dominio}")
     private String urlDominioConsulta;
 
-    private static final String PATH_BUSQUEDA="/generico/consulta";
+    private static final String PATH_BUSQUEDA="/consulta";
 
     private MttoCatalogos mttoCatalogos=new MttoCatalogos();
 
@@ -82,4 +83,45 @@ public class MttoCatalogosServiceImpl implements MttoCatalogosService {
         return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoReporteTipo().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
                 authentication);
     }
+
+    @Override
+    public Response<?> getCatMttoPeriodo(Authentication authentication) throws IOException {
+        log.info("Obtiene lista periodos");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatMttoPeriodo().getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getCatPlacasVehiculos(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de placas");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatPlacasVehiculos(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getCatContratosProveedores(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de contrator de proveedores");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getCatContratosProveedores(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getRegistroMtto(DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene los ids del registro de mtto");
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getRegistroMtto(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getMttoTipoModalidad(DatosRequest request, Authentication authentication) throws IOException {
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getMttoTipoModalidad(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
+    @Override
+    public Response<?> getMttoTipoModalidadDetalle(DatosRequest request, Authentication authentication) throws IOException {
+        return providerRestTemplate.consumirServicio(mttoCatalogos.getMttoTipoModalidadDetalle(request, authentication).getDatos(), urlDominioConsulta + PATH_BUSQUEDA,
+                authentication);
+    }
+
 }

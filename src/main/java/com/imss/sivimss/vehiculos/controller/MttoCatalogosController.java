@@ -132,6 +132,77 @@ public class MttoCatalogosController {
         );
     }
 
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catMttoPeriodo")
+    public CompletableFuture<?> getCatMttoPeriodo(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de periodos");
+        Response<?> response= mttoCatalogosService.getCatMttoPeriodo(authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
+
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catPlacasVehiculos")
+    public CompletableFuture<?> getCatPlacasVehiculos(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de periodos");
+        Response<?> response= mttoCatalogosService.getCatPlacasVehiculos(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catContratosProveedores")
+    public CompletableFuture<?> getCatContratosProveedores(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene lista de contratos");
+        Response<?> response= mttoCatalogosService.getCatContratosProveedores(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/registroMttoById")
+    public CompletableFuture<?> getRegistroMtto(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        log.info("Obtiene los ids del registro de mtto");
+        Response<?> response= mttoCatalogosService.getRegistroMtto(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catMttoTipoModalidad")
+    public CompletableFuture<?> getMttoTipoModalidad(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        Response<?> response= mttoCatalogosService.getMttoTipoModalidad(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
+    @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("catalogo/catMttoTipoModalidadDetalle")
+    public CompletableFuture<?> getMttoTipoModalidadDetalle(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+        Response<?> response= mttoCatalogosService.getMttoTipoModalidadDetalle(request,authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+    }
+
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *

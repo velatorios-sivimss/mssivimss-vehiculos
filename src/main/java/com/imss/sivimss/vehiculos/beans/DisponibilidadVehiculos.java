@@ -108,7 +108,7 @@ public class DisponibilidadVehiculos {
 	}
 
 	public DatosRequest consultarDisponibilidadVehiculos(DatosRequest request, String formatoFecha, String formatoHora) {
-		String query = "SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" +  formatoFecha + "') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas"
 				+ ", TIME_FORMAT(IF(sdv.TIM_HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.TIM_HORA_ENTRADA),sdv.TIM_HORA_SALIDA,sdv.TIM_HORA_ENTRADA), '" + formatoHora + "') AS hora "
@@ -130,7 +130,7 @@ public class DisponibilidadVehiculos {
 	}
 	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request) {
 		String where="";
-		String query = "SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'%Y-%m-%d') AS fecha"
 				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ FROM + TABLA_SVT_VEHICULO_SV 
@@ -150,7 +150,7 @@ public class DisponibilidadVehiculos {
 		if(this.idVelatorio != null) {
 			where = where + " AND sv.ID_VELATORIO = " + this.idVelatorio;
 		}
-		query = query + where + " GROUP BY fecha";
+		query = query + where + " GROUP BY idVehiculo, fecha ORDER BY fecha ASC";
 
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
 
@@ -158,7 +158,7 @@ public class DisponibilidadVehiculos {
 	}
 	
 	public DatosRequest consultaDetalleVehiculo(DatosRequest request) {
-		final String query = " SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo"
+		final String query = " SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo"
 				+ ", sv.DES_PLACAS AS placas, sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
 				+ ", sos.CVE_FOLIO AS folioODS, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
@@ -185,7 +185,7 @@ public class DisponibilidadVehiculos {
 	
 	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request, String formatoFecha, String formatoHora) {
 		
-		String query = "SELECT sdv.id_disponibilidad_vehiculo AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
+		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
 				+ ", sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
@@ -315,8 +315,7 @@ public class DisponibilidadVehiculos {
 
 		String query = "UPDATE SVT_DISPONIBILIDAD_VEHICULO sdv SET "
 		 + " sdv.IND_ACTIVO = 0 "
-		 + " WHERE sdv.ID_VEHICULO = " + this.idVehiculo
-	     + " AND DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') = '" + this.fecSalida + "'";
+		 + " WHERE sdv.ID_VEHICULO = " + this.idVehiculo;
 		
 		  String encoded =DatatypeConverter.printBase64Binary(query.getBytes());
 		  request.getDatos().put(AppConstantes.QUERY, encoded);

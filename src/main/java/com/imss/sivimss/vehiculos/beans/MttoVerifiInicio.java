@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         return dr;
@@ -59,7 +60,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
         q.addWhere("ID_MTTOVERIFINICIO =" + request.getVerificacionInicio().getIdMttoVerifInicio());
         String query = q.obtenerQueryActualizar();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         return dr;
@@ -72,7 +73,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("CVE_ESTATUS", String.valueOf(status));
         q.addWhere("ID_MTTOVERIFINICIO =" + idMmttoVerifInicio);
         String query = q.obtenerQueryActualizar();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         dr.setDatos(parametro);
         return dr;
@@ -93,13 +94,14 @@ public class MttoVerifiInicio {
                         "VERI_IN.ID_LIMPIEZAINTERIOR",
                         "VERI_IN.ID_LIMPIEZAEXTERIOR",
                         "VERI_IN.CVE_ESTATUS",
+                        "DATE_FORMAT(VERI_IN.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO",
                         "MTTO_VEH.ID_MTTOESTADO",
                         "MTTO_VEH.ID_VEHICULO",
                         "MTTO_VEH.ID_DELEGACION",
                         "MTTO_VEH.ID_VELATORIO",
-                        "MTTO_VEH.FEC_ALTA",
-                        "MTTO_VEH.FEC_ACTUALIZACION",
-                        "MTTO_VEH.FEC_BAJA",
+                        "DATE_FORMAT(MTTO_VEH.FEC_ALTA,'%d-%m-%Y') AS FEC_ALTA",
+                        "DATE_FORMAT(MTTO_VEH.FEC_ACTUALIZACION,'%d-%m-%Y') AS FEC_ACTUALIZACION",
+                        "DATE_FORMAT(MTTO_VEH.FEC_BAJA,'%d-%m-%Y') AS FEC_BAJA",
                         "MTTO_VEH.IND_ACTIVO",
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
@@ -144,7 +146,7 @@ public class MttoVerifiInicio {
             queryUtil.orderBy("VERI_IN.ID_MTTOVERIFINICIO");
         }
         String query = queryUtil.build();
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 		logger.info(query);
 		return request;
@@ -152,12 +154,12 @@ public class MttoVerifiInicio {
 
     public DatosRequest existe(MttoVehicularRequest request) {
         String query=null;
-        StringBuilder sql=new StringBuilder("SELECT VI.ID_MTTOVERIFINICIO, VI.ID_MTTOVEHICULAR FROM SVT_MTTO_VERIF_INICIO VI WHERE VI.FEC_REGISTRO=CURRENT_DATE()");
-        sql.append(" AND VI.CVE_ESTATUS=1").append(" AND VI.ID_MTTOVEHICULAR="+request.getVerificacionInicio().getIdMttoVehicular()).append(";");
+        StringBuilder sql=new StringBuilder("SELECT VI.ID_MTTOVERIFINICIO, VI.ID_MTTOVEHICULAR FROM SVT_MTTO_VERIF_INICIO VI WHERE ");
+        sql.append(" VI.CVE_ESTATUS=1").append(" AND VI.ID_MTTOVEHICULAR="+request.getVerificacionInicio().getIdMttoVehicular()).append(";");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
         logger.info(query);
         dr.setDatos(parametro);

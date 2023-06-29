@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 @RestController
 @RequestMapping("/")
@@ -37,14 +39,14 @@ public class BuscarVehiculosController {
     @Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
     @TimeLimiter(name = "msflujo")
     @PostMapping("vehiculos/mtto/buscar")
-    public CompletableFuture<?> getVehiculos(@RequestBody DatosRequest request, Authentication authentication) throws IOException {
+    public CompletableFuture<?> getVehiculos(@RequestBody DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Obtiene lista de vehiculos");
         Response<?> response =  buscarVehiculosService.getVehiculos(request, authentication);
         return CompletableFuture.supplyAsync(
                 () -> getResponseEntity(response)
         );
     }
-
+    
     /**
      * Crea el responseEntity para contestar la petici&oacute;n.
      *

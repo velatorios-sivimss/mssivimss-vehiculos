@@ -29,4 +29,16 @@ public class MttoRegistroRequest {
     private String desNombreTaller;
     @JsonProperty
     private Float costoMtto;
+    @JsonProperty
+    private String desNombreProveedor;
+    @JsonProperty
+    private String  desMttoCorrectivo;
+    @JsonProperty
+    private String  fecRegistro;
+    @JsonProperty
+    private Integer  idContrato;
+    @JsonProperty
+    private Integer idMttoTipoModalidad;
+    @JsonProperty
+    private Integer idMttoTipoModalidadDet;
 }

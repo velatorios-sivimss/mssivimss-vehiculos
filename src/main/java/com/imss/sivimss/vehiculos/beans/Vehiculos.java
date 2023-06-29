@@ -2,28 +2,41 @@ package com.imss.sivimss.vehiculos.beans;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.model.request.BuscarVehiculosRequest;
+import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
 public class Vehiculos {
     private static final Logger logger = LogManager.getLogger(Vehiculos.class);
+    private static SimpleDateFormat formatoRequest = new SimpleDateFormat("dd/MM/yyyy");
+    private static SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
 
-    public DatosRequest buscarVehiculos(DatosRequest request) throws IOException {
+    public DatosRequest buscarVehiculos(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         Gson json = new Gson();
         BuscarVehiculosRequest  buscarRequest=new BuscarVehiculosRequest();
         String requestBoby=String.valueOf(request.getDatos().get(AppConstantes.DATOS));
         if(requestBoby!=null && requestBoby!="null" && requestBoby.trim().length()>0) {
             buscarRequest = json.fromJson(requestBoby, BuscarVehiculosRequest.class);
+        } else {
+            //Obtiene valores del usuario
+            UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
+            buscarRequest.setDelegacion(usuarioDto.getIdDelegacion());
+            buscarRequest.setVelatorio(usuarioDto.getIdVelatorio());
         }
         Integer pagina = Integer.valueOf(Integer.parseInt(request.getDatos().get("pagina").toString()));
         Integer tamanio = Integer.valueOf(Integer.parseInt(request.getDatos().get("tamanio").toString()));
@@ -42,7 +55,7 @@ public class Vehiculos {
                         "VH.DES_NUMSERIE",
                         "VH.DES_NUMMOTOR",
                         "VH.DES_VEHICULO",
-                        "VH.FEC_ADQUISICION",
+                        "DATE_FORMAT(VH.FEC_ADQUISICION, '%d-%m-%Y') AS FEC_ADQUISICION",
                         "VH.NUM_TOTAL",
                         "VH.IMP_PRIMA",
                         "VH.IND_ACTIVO",
@@ -67,9 +80,9 @@ public class Vehiculos {
                         "VI.ID_CODIGOFALLO",
                         "VI.ID_LIMPIEZAINTERIOR",
                         "VI.ID_LIMPIEZAEXTERIOR",
-                        "VI.FEC_REGISTRO AS FECHA_REGISTRO_VERI_INICIO",
+                        "DATE_FORMAT(VI.FEC_REGISTRO,'%d-%m-%Y') AS FECHA_REGISTRO_VERI_INICIO",
                         "MS.ID_MTTO_SOLICITUD",
-                        "MS.FEC_SOLICTUD",
+                        "DATE_FORMAT(MS.FEC_SOLICTUD, '%d-%m-%Y') AS FEC_SOLICTUD",
                         "MS.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_SOL",
                         "MS.KILOMETRAJE AS KILOMETRAJE_SOL",
                         "MS.DES_NOTAS AS DES_NOTAS_SOL",
@@ -80,7 +93,10 @@ public class Vehiculos {
                         "REG.DES_NOMBRE_TALLER",
                         "REG.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_REG",
                         "REG.COSTO_MTTO AS COSTO_MTTO_REG",
-                        "REG.FEC_REGISTRO AS FEC_REGISTRO_REG",
+                        "DATE_FORMAT(REG.FEC_REGISTRO_REG,'%d-%m-%Y') AS FEC_REGISTRO_REG",
+                        "DATE_FORMAT(MS.FEC_REGISTRO,'%d-%m-%Y') AS FEC_MTTO_SOL",
+                        "MS.DES_MTTO_CORRECTIVO",
+                        "SP.NOM_PROVEEDOR",
                         "(select case count(mvt.ID_VEHICULO) when 0 then 'false' else 'true' end as verificacion from SVT_MTTO_VERIF_INICIO vit left join SVT_MTTO_VEHICULAR mvt on (vit.ID_MTTOVEHICULAR=mvt.ID_MTTOVEHICULAR) where mvt.ID_VEHICULO =VH.ID_VEHICULO and vit.FEC_REGISTRO =CURRENT_DATE()) as verificacionDia")
                 .from("SVT_VEHICULOS VH")
                 .join("SVC_USO_VEHICULO UV", "VH.ID_USOVEHICULO = UV.ID_USOVEHICULO")
@@ -90,43 +106,45 @@ public class Vehiculos {
                 .leftJoin("SVT_MTTO_SOLICITUD MS", "MV.ID_MTTOVEHICULAR = MS.ID_MTTOVEHICULAR")
                 .leftJoin("SVT_MTTO_VERIF_INICIO VI", "VI.ID_MTTOVEHICULAR = MV.ID_MTTOVEHICULAR")
                 .leftJoin("SVT_MTTO_REGISTRO REG", "REG.ID_MTTOVEHICULAR = MV.ID_MTTOVEHICULAR")
+                .leftJoin("SVT_PROVEEDOR SP", "REG.ID_PROVEEDOR = SP.ID_PROVEEDOR ")
                 .leftJoin("SVC_MTTO_ESTADO ME", "ME.ID_MTTOESTADO = MV.ID_MTTOESTADO")
                 .leftJoin("SVC_MTTO_MODALIDAD TM", "TM.ID_MTTOMODALIDAD = MS.ID_MTTOMODALIDAD")
                 .leftJoin("SVC_MTTO_TIPO MT", "MT.ID_MTTO_TIPO = MS.ID_MTTO_TIPO")
                 .leftJoin("SVC_DELEGACION DL", "DL.ID_DELEGACION = MV.ID_DELEGACION")
                 .where("VH.IND_ACTIVO = :idEstatus")
                 .setParameter("idEstatus", 1);
-        if (buscarRequest.getVelatorio() != null) {
-            queryUtil.where("MV.ID_VELATORIO = :velatorio")
+        if (buscarRequest.getDelegacion() != null && buscarRequest.getDelegacion()>0) {
+            queryUtil.where("VE.ID_DELEGACION = :delegacion")
+                    .setParameter("delegacion", buscarRequest.getDelegacion());
+        }
+        if (buscarRequest.getVelatorio() != null && buscarRequest.getVelatorio() >0) {
+            queryUtil.where("VH.ID_VELATORIO = :velatorio")
                     .setParameter("velatorio", buscarRequest.getVelatorio());
-        }
-        if (buscarRequest.getNivelOficina() != null) {
-            queryUtil.where("VH.ID_OFICINA = :nivelOficina")
-                    .setParameter("nivelOficina", buscarRequest.getNivelOficina());
-        }
-        if (buscarRequest.getIdVehiculo() != null && buscarRequest.getIdVehiculo()>0) {
-            queryUtil.where("VH.ID_VEHICULO = :idVehiculo")
-                    .setParameter("idVehiculo", buscarRequest.getIdVehiculo());
         }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {
             queryUtil.where("VH.DES_PLACAS = :placa")
                     .setParameter("placa", buscarRequest.getPlaca());
         }
-        if (buscarRequest.getTipoMtto() != null) {
-            queryUtil.where("MS.ID_MTTO_TIPO = :tipoMtto")
-                    .setParameter("tipoMtto", buscarRequest.getTipoMtto());
+        if (buscarRequest.getFecInicio() != null) {
+            Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecInicio());
+            queryUtil.where("MV.FEC_REGISTRO >= :fecInicio")
+            .setParameter("fecInicio", formatoConsulta.format(fechaFIRequest));
         }
-        if (buscarRequest.getEstadoMtto() != null) {
-            queryUtil.where("MV.ID_MTTOESTADO = :tipoMtto")
-                    .setParameter("tipoMtto", buscarRequest.getEstadoMtto());
+        if (buscarRequest.getFecFin() != null) {
+        	  Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecFin());
+              queryUtil.where("MV.FEC_REGISTRO <= :fecFin")
+              .setParameter("fecFin", formatoConsulta.format(fechaFIRequest));
+              queryUtil.groupBy("MV.ID_VEHICULO");
         }
+       
         query = queryUtil.build();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
-        parametro.put("pagina",buscarRequest.getPagina());
-        parametro.put("tamanio",buscarRequest.getTamanio());
+        parametro.put("pagina", buscarRequest.getPagina());
+        parametro.put("tamanio", buscarRequest.getTamanio());
+
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
         logger.info(query);
