@@ -62,7 +62,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         List<Map<String, Object>> resultExiste=null;
         //validamos si es verificaciom vehicular
         Integer total=0;
-        if(validarVerificacion(request,authentication)){
+        if(validarVerificacionSolicitud(request,authentication)){
             total=0;
             responseMtto = llamarServicio(solicitud.existeVerificacionVehicular(request).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
             resultExiste= (List<Map<String, Object>>) responseMtto.getDatos();
@@ -97,13 +97,70 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         return responseMtto;
     }
 
+    public Response<?> validarRegistro(MttoVehicularRequest request, Authentication authentication) throws IOException {
+        Integer semetral=2;
+        Integer anual=1;
+        Response<?> responseMtto=null;
+        List<Map<String, Object>> resultExiste=null;
+        //validamos si es verificaciom vehicular
+        Integer total=0;
+        if(validarVerificacionRegistro(request,authentication)){
+            total=0;
+            responseMtto = llamarServicio(registro.existeVerificacionVehicular(request).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+            resultExiste= (List<Map<String, Object>>) responseMtto.getDatos();
+            for (Map<String, Object> map : resultExiste) {
+                total = (Integer) map.get("SOLICITUDES");
+            }
+            if(total==0){
+                return Response.builder().error(true).mensaje("Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite").codigo(200).datos(null).build();
+            }
+        } else {
+            //validamos si existe el mtto
+            total=0;
+            responseMtto = llamarServicio(registro.existeSolicitud(request).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+            resultExiste= (List<Map<String, Object>>) responseMtto.getDatos();
+            for (Map<String, Object> map : resultExiste) {
+                total = (Integer) map.get("SOLICITUDES");
+            }
+            //semestral 2 veces
+            if(request.getRegistro().getIdMttoModalidad()==1){
+                if(semetral==total){
+                    return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
+                }
+            }
 
-    private boolean validarVerificacion(MttoVehicularRequest request, Authentication authentication) throws IOException{
+            //anaul 1 vez
+            if(request.getRegistro().getIdMttoModalidad()==2) {
+                if (anual==total) {
+                    return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
+                }
+            }
+        }
+        return responseMtto;
+    }
+
+
+
+    private boolean validarVerificacionSolicitud(MttoVehicularRequest request, Authentication authentication) throws IOException{
         boolean esVerificacion=false;
         if(request.getSolicitud()!=null && request.getSolicitud().getIdMttoModalidad()==1){
             if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipo()) && request.getSolicitud().getIdMttoTipo()==1){
                 if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipoModalidad()) && request.getSolicitud().getIdMttoTipoModalidad()==4){
                     if(ValidacionRequestUtil.validarInt(request.getSolicitud().getIdMttoTipoModalidadDet()) && request.getSolicitud().getIdMttoTipoModalidadDet()==20){
+                        esVerificacion=true;
+                    }
+                }
+            }
+        }
+        return esVerificacion;
+    }
+
+    private boolean validarVerificacionRegistro(MttoVehicularRequest request, Authentication authentication) throws IOException{
+        boolean esVerificacion=false;
+        if(request.getRegistro()!=null && request.getRegistro().getIdMttoModalidad()==1){
+            if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMantenimiento()) && request.getRegistro().getIdMantenimiento()==1){
+                if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMttoTipoModalidad()) && request.getRegistro().getIdMttoTipoModalidad()==4){
+                    if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMttoTipoModalidadDet()) && request.getRegistro().getIdMttoTipoModalidadDet()==20){
                         esVerificacion=true;
                     }
                 }
@@ -118,11 +175,24 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-        Response<?> validacionMtto=this.validarSolicitud(requestDto, authentication);
-        if(validacionMtto!=null && validacionMtto.getCodigo()==200 && validacionMtto.getError()){
-            //enviamos el error
-            return validacionMtto;
+
+        //validamos solicitud
+        if(requestDto!=null && requestDto.getSolicitud()!=null) {
+            Response<?> validacionMttoSol = this.validarSolicitud(requestDto, authentication);
+            if (validacionMttoSol != null && validacionMttoSol.getCodigo() == 200 && validacionMttoSol.getError()) {
+                //enviamos el error
+                return validacionMttoSol;
+            }
         }
+        //validamos registro
+        if(requestDto!=null && requestDto.getRegistro()!=null) {
+            Response<?> validacionMttoReg = this.validarRegistro(requestDto, authentication);
+            if (validacionMttoReg != null && validacionMttoReg.getCodigo() == 200 && validacionMttoReg.getError()) {
+                //enviamos el error
+                return validacionMttoReg;
+            }
+        }
+
         Integer idMtto=null;
         Date fechaRegistro=null;
         Response<?> existeMtto=null;
