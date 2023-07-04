@@ -248,4 +248,47 @@ public class Solicitud {
         return dr;
     }
 
+
+    public DatosRequest existeVerificacionVehicular(MttoVehicularRequest request) {
+        LocalDate current_date = LocalDate.now();
+        int currentYear = current_date.getYear();
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT COUNT(MV.ID_MTTOVEHICULAR) SOLICITUDES ");
+        sql.append(" FROM SVT_MTTO_VEHICULAR  MV ");
+        sql.append(" LEFT JOIN SVT_MTTO_SOLICITUD MVS ON (MV.ID_MTTOVEHICULAR=MVS.ID_MTTOVEHICULAR) ");
+        sql.append(" WHERE MV.IND_ACTIVO =1 AND MVS.ID_MTTO_MODALIDAD =4 ");
+        sql.append(" AND MVS.ID_MTTO_MODALIDAD_DET =19 AND MV.ID_VEHICULO =").append(request.getIdVehiculo()).append(" ");
+        sql.append(" AND MVS.FEC_SOLICTUD BETWEEN '").append(currentYear + "-01-01'").append(" AND '").append(currentYear + "-12-31'");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
+
+    public DatosRequest existeSolicitud(MttoVehicularRequest request) {
+        LocalDate current_date = LocalDate.now();
+        int currentYear = current_date.getYear();
+        String query=null;
+        StringBuilder sql=new StringBuilder("SELECT COUNT(MV.ID_MTTOVEHICULAR) SOLICITUDES ");
+        sql.append(" FROM SVT_MTTO_VEHICULAR  MV ");
+        sql.append(" LEFT JOIN SVT_MTTO_SOLICITUD MVS ON (MV.ID_MTTOVEHICULAR=MVS.ID_MTTOVEHICULAR) ");
+        sql.append(" WHERE MV.IND_ACTIVO =1 AND MVS.ID_MTTO_MODALIDAD =").append(request.getSolicitud().getIdMttoTipoModalidad());
+        sql.append(" AND MVS.ID_MTTO_MODALIDAD_DET =").append(request.getSolicitud().getIdMttoTipoModalidadDet()).append(" ");
+        sql.append(" AND MV.ID_VEHICULO =").append(request.getIdVehiculo()).append(" ");
+        sql.append(" AND MVS.FEC_SOLICTUD BETWEEN '").append(currentYear + "-01-01'").append(" AND '").append(currentYear + "-12-31'");
+        query = sql.toString();
+        DatosRequest dr = new DatosRequest();
+        Map<String, Object> parametro = new HashMap<>();
+        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+        parametro.put(AppConstantes.QUERY, encoded);
+        logger.info(query);
+        dr.setDatos(parametro);
+        return dr;
+    }
+
 }
