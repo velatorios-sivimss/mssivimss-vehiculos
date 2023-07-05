@@ -261,11 +261,11 @@ public class Registro {
         String query=null;
         StringBuilder sql=new StringBuilder("SELECT COUNT(MV.ID_MTTOVEHICULAR) SOLICITUDES ");
         sql.append(" FROM SVT_MTTO_VEHICULAR  MV ");
-        sql.append(" LEFT JOIN SVT_MTTO_SOLICITUD MVS ON (MV.ID_MTTOVEHICULAR=MVS.ID_MTTOVEHICULAR) ");
+        sql.append(" LEFT JOIN SVT_MTTO_REGISTRO MVS ON (MV.ID_MTTOVEHICULAR=MVS.ID_MTTOVEHICULAR) ");
         sql.append(" WHERE MV.IND_ACTIVO =1 AND MVS.ID_MTTO_MODALIDAD =").append(request.getRegistro().getIdMttoTipoModalidad());
         sql.append(" AND MVS.ID_MTTO_MODALIDAD_DET =").append(request.getRegistro().getIdMttoTipoModalidadDet()).append(" ");
         sql.append(" AND MV.ID_VEHICULO =").append(request.getIdVehiculo()).append(" ");
-        sql.append(" AND MVS.FEC_SOLICTUD BETWEEN '").append(currentYear + "-01-01'").append(" AND '").append(currentYear + "-12-31'");
+        sql.append(" AND MVS.FEC_REGISTRO BETWEEN '").append(currentYear + "-01-01'").append(" AND '").append(currentYear + "-12-31'");
         query = sql.toString();
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
