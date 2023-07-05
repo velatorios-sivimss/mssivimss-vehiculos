@@ -52,15 +52,30 @@ public class Solicitud {
         if(request.getSolicitud().getIdMttoTipoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
         }
-        String query = q.obtenerQueryInsertar();
+        String query = q.obtenerQueryInsertar() + "$$" + asignarEdoMtto(request.getIdMttoVehicular(), request.getIdMttoestado());
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
+        parametro.put("separador","$$");
         dr.setDatos(parametro);
         return dr;
     }
 
-    public DatosRequest modificar(MttoVehicularRequest request, UsuarioDto user) {
+    private String asignarEdoMtto(Integer idMttoVehicular, Integer idMttoEstado) {
+    	 final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
+         DatosRequest dr = new DatosRequest();
+         Map<String, Object> parametro = new HashMap<>();
+         q.agregarParametroValues("ID_MTTOESTADO", idMttoEstado.toString());
+         q.addWhere("ID_MTTOVEHICULAR =" + idMttoVehicular.toString());
+         String query = q.obtenerQueryActualizar();
+         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+         parametro.put(AppConstantes.QUERY, encoded);
+         dr.setDatos(parametro);
+         logger.info(query);
+         return query;
+	}
+
+	public DatosRequest modificar(MttoVehicularRequest request, UsuarioDto user) {
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_SOLICITUD");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();

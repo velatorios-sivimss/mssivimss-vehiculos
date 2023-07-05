@@ -26,7 +26,7 @@ public class MttoVehicular {
         final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_VEHICULAR");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-        q.agregarParametroValues("ID_MTTOESTADO", request.getIdMttoestado().toString());
+     //   q.agregarParametroValues("ID_MTTOESTADO", request.getIdMttoestado().toString());
         q.agregarParametroValues("ID_VEHICULO", request.getIdVehiculo().toString());
         q.agregarParametroValues("ID_DELEGACION", request.getIdDelegacion().toString());
         q.agregarParametroValues("ID_VELATORIO", request.getIdVelatorio().toString());

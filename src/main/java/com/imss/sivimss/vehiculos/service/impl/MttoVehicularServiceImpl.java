@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         String path=urlDominioConsulta + "/crear";
+        String pathMultiple=urlDominioConsulta + "/insertarMultiple";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
@@ -226,7 +228,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     }
                     if (requestDto.getSolicitud() != null) {
                         requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                         llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), pathMultiple, authentication);
                         this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
                     }
                     if (requestDto.getRegistro() != null) {
@@ -269,7 +271,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                         idMttoSol=(Integer) map.get("ID_MTTO_SOLICITUD");
                     }
                     if(idMttoSol==null) {
-                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), pathMultiple, authentication);
+                        return existeMtto;
                     }else {
                         requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
                         llamarServicio(solicitud.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
@@ -300,7 +303,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         }
     }
 
-    @Override
+	@Override
     public Response<?> modificarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/actualizar";
         Gson json = new Gson();
@@ -369,6 +372,12 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Response<?> response = providerRestTemplate.consumirServicio(dato,url,authentication);
         return response;
     }
+    
+ /*   private Response<?> llamarServicioInsertarMultiple(Map<String, Object> dato, String url, Authentication authentication) {
+    	  Response<?> response = providerRestTemplate.consumirServicio(dato,url,authentication);
+          return response;
+	} */
+
 
 	@Override
 	public Response<?> detalleVerifInicio(DatosRequest request, Authentication authentication) throws IOException {
