@@ -218,22 +218,27 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             Response<?> response = llamarServicio(mttoVehicular.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
             log.info(response.getCodigo());
             if (response.getCodigo() == 200) {
-                log.info("Registro exitoso");
-                if (requestDto.getVerificacionInicio() != null) {
-                    requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                    llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                }
-                if (requestDto.getSolicitud() != null) {
-                    requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                    llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                    this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
-                }
-                if (requestDto.getRegistro() != null) {
-                    requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                    llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                    this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
-                }
-                return response;
+                try {
+                	log.info("Registro exitoso");
+                    if (requestDto.getVerificacionInicio() != null) {
+                        requestDto.getVerificacionInicio().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                        llamarServicio(verifiInicio.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                    }
+                    if (requestDto.getSolicitud() != null) {
+                        requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                        this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
+                    }
+                    if (requestDto.getRegistro() != null) {
+                        requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
+                        llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                        this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
+                    }
+                    return response;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return response;
+				}
             } else {
                 throw new BadRequestException(HttpStatus.valueOf(response.getCodigo()), "Error al insertar registro");
             }
