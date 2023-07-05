@@ -81,14 +81,14 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                 total = (Integer) map.get("SOLICITUDES");
             }
             //semestral 2 veces
-            if(request.getSolicitud().getIdMttoModalidad()==1){
+            if(request.getSolicitud().getIdMttoModalidad()!= null && request.getSolicitud().getIdMttoModalidad()==1){
                 if(semetral==total){
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
             }
 
             //anaul 1 vez
-            if(request.getSolicitud().getIdMttoModalidad()==2) {
+            if(request.getSolicitud().getIdMttoModalidad()!= null && request.getSolicitud().getIdMttoModalidad()==2) {
                 if (anual==total) {
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
@@ -123,14 +123,14 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                 total = (Integer) map.get("SOLICITUDES");
             }
             //semestral 2 veces
-            if(request.getRegistro().getIdMttoModalidad()==1){
+            if(request.getRegistro().getIdMttoModalidad()!=null && request.getRegistro().getIdMttoModalidad()==1){
                 if(semetral==total){
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
             }
 
             //anaul 1 vez
-            if(request.getRegistro().getIdMttoModalidad()==2) {
+            if(request.getRegistro().getIdMttoModalidad()!=null && request.getRegistro().getIdMttoModalidad()==2) {
                 if (anual==total) {
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
