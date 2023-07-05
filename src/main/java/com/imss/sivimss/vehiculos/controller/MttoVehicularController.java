@@ -41,14 +41,11 @@ public class MttoVehicularController {
     public CompletableFuture<?> mttovehicularAgregar(@RequestBody DatosRequest request, Authentication authentication) throws IOException, ParseException {
         log.info("Se agrega un nuevo mtto vehicular");
         
-        Response<?> response = new Response<>();
-        try {
-        	response =   mttoVehicularService.insertarMttoVehicular(request, authentication);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        
-        return null;
+        Response<?> response =  mttoVehicularService.insertarMttoVehicular(request, authentication);
+        return CompletableFuture.supplyAsync(
+                () -> getResponseEntity(response)
+        );
+       
     }
 
     @CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
