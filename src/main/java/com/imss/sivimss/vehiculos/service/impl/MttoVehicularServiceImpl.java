@@ -285,6 +285,22 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         String path=urlDominioConsulta + "/actualizar";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
+        //validamos solicitud
+        if(requestDto!=null && requestDto.getSolicitud()!=null) {
+            Response<?> validacionMttoSol = this.validarSolicitud(requestDto, authentication);
+            if (validacionMttoSol != null && validacionMttoSol.getCodigo() == 200 && validacionMttoSol.getError()) {
+                //enviamos el error
+                return validacionMttoSol;
+            }
+        }
+        //validamos registro
+        if(requestDto!=null && requestDto.getRegistro()!=null) {
+            Response<?> validacionMttoReg = this.validarRegistro(requestDto, authentication);
+            if (validacionMttoReg != null && validacionMttoReg.getCodigo() == 200 && validacionMttoReg.getError()) {
+                //enviamos el error
+                return validacionMttoReg;
+            }
+        }
         UsuarioDto usuarioDto = null;
         Response<?> response = llamarServicio(mttoVehicular.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
         if (response.getCodigo() == 200) {
