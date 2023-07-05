@@ -157,10 +157,20 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     private boolean validarVerificacionRegistro(MttoVehicularRequest request, Authentication authentication) throws IOException{
         boolean esVerificacion=false;
-        if(request.getRegistro()!=null && request.getRegistro().getIdMttoModalidad()==1){
-            if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMantenimiento()) && request.getRegistro().getIdMantenimiento()==1){
-                if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMttoTipoModalidad()) && request.getRegistro().getIdMttoTipoModalidad()==4){
-                    if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMttoTipoModalidadDet()) && request.getRegistro().getIdMttoTipoModalidadDet()==20){
+        if(request.getRegistro()!=null 
+        		&& request.getRegistro().getIdMttoModalidad()!=null 
+        		&& request.getRegistro().getIdMttoModalidad()==1){
+            if(ValidacionRequestUtil.validarInt(request.getRegistro().getIdMantenimiento()) 
+            		&& request.getRegistro().getIdMantenimiento()!=null
+            		&& request.getRegistro().getIdMantenimiento()==1){
+                if(ValidacionRequestUtil.validarInt(
+                		request.getRegistro().getIdMttoTipoModalidad()) 
+                		&& request.getRegistro().getIdMttoTipoModalidad()!=null
+                		&& request.getRegistro().getIdMttoTipoModalidad()==4){
+                    if(ValidacionRequestUtil.validarInt(
+                    		request.getRegistro().getIdMttoTipoModalidadDet()) 
+                    		&& request.getRegistro().getIdMttoTipoModalidadDet()!=null
+                    		&& request.getRegistro().getIdMttoTipoModalidadDet()==20){
                         esVerificacion=true;
                     }
                 }
