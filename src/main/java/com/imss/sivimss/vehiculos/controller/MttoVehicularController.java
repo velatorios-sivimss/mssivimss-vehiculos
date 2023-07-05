@@ -45,7 +45,7 @@ public class MttoVehicularController {
         try {
         	response =   mttoVehicularService.insertarMttoVehicular(request, authentication);
 		} catch (Exception e) {
-			e.getMessage();
+			e.printStackTrace();
 		}
         
         return null;
