@@ -61,7 +61,7 @@ public class Solicitud {
         return dr;
     }
 
-    private String asignarEdoMtto(Integer idMttoVehicular, Integer idMttoEstado) {
+  /*  private String asignarEdoMtto(Integer idMttoVehicular, Integer idMttoEstado) {
     	 final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
          DatosRequest dr = new DatosRequest();
          Map<String, Object> parametro = new HashMap<>();
@@ -73,7 +73,7 @@ public class Solicitud {
          dr.setDatos(parametro);
          logger.info(query);
          return query;
-	}
+	} */
 
 	public DatosRequest modificar(MttoVehicularRequest request, UsuarioDto user) {
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_SOLICITUD");
@@ -306,7 +306,7 @@ public class Solicitud {
         return dr;
     }
 
-	public DatosRequest insertarMultiple(MttoVehicularRequest request, UsuarioDto usuarioDto) {
+	/* public DatosRequest insertarMultiple(MttoVehicularRequest request, UsuarioDto usuarioDto) {
 		 final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_SOLICITUD");
 	        DatosRequest dr = new DatosRequest();
 	        Map<String, Object> parametro = new HashMap<>();
@@ -347,6 +347,6 @@ public class Solicitud {
 	        parametro.put("separador","$$");
 	        dr.setDatos(parametro);
 	        return dr;
-	}
+	} */
 
 }

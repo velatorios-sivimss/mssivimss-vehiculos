@@ -281,7 +281,7 @@ public class Registro {
 		 DatosRequest request = new DatosRequest();
 	        Map<String, Object> parametro = new HashMap<>();
 	        StringBuilder sql=new StringBuilder("SELECT ");
-	        sql.append(" TIMESTAMPDIFF(DAY, SOL.FEC_REGISTRO, IFNULL(REG.FEC_REGISTRO_REG, DATE_ADD(SOL.FEC_REGISTRO, INTERVAL -30 DAY))) AS F");
+	        sql.append(" TIMESTAMPDIFF(DAY, IFNULL(SOL.FEC_REGISTRO, DATE_ADD(REG.FEC_REGISTRO_REG, INTERVAL -30 DAY)), IFNULL(REG.FEC_REGISTRO_REG, DATE_ADD(SOL.FEC_REGISTRO, INTERVAL 30 DAY))) AS F");
 	        sql.append(" FROM SVT_MTTO_SOLICITUD SOL ");
 	        sql.append(" LEFT JOIN SVT_MTTO_REGISTRO REG ON SOL.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR ");
 	        sql.append(" WHERE SOL.ID_MTTOVEHICULAR = ").append(requestDto.getIdMttoVehicular());

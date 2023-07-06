@@ -231,12 +231,20 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     if (requestDto.getSolicitud() != null) {
                         requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                          llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                        this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
+                         Integer idMttoRegistro=16;
+                         Integer idMttoSol = Integer.parseInt(response.getDatos().toString());
+                 		providerRestTemplate.consumirServicio(registro.actualizarEstatus(idMttoSol, idMttoRegistro).getDatos(), urlDominioConsulta+"/actualizar",
+                 				authentication);
+                         // this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
                     }
                     if (requestDto.getRegistro() != null) {
                         requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
                         llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                        this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
+                        Integer idMttoRegistro=16;
+                        Integer idMttoSol = Integer.parseInt(response.getDatos().toString());
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(idMttoSol, idMttoRegistro).getDatos(), urlDominioConsulta+"/actualizar",
+                				authentication);
+                        // this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
                     }
                     return response;
 				} catch (Exception e) {
@@ -273,7 +281,10 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                         idMttoSol=(Integer) map.get("ID_MTTO_SOLICITUD");
                     }
                     if(idMttoSol==null) {
-                        llamarServicio(solicitud.insertarMultiple(requestDto, usuarioDto).getDatos(), pathMultiple, authentication);
+                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                        Integer diferenciaDias = obtenerDif(requestDto, authentication); 
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferenciaDias).getDatos(), urlDominioConsulta+"/actualizar",
+                				authentication);
                         return existeMtto;
                     }else {
                         requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
@@ -294,7 +305,6 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     }
                     if(idMttoReg==null) {
                         llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                    //   Integer diferenciaDias = obtenerDif(requestDto, authentication); 
                         Integer idMttoRegistro=16;
                 		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), idMttoRegistro).getDatos(), urlDominioConsulta+"/actualizar",
                 				authentication);
@@ -303,7 +313,6 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                         requestDto.getRegistro().setIdMttoRegistro(idMttoReg);
                         llamarServicio(registro.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
                         Integer diferenciaDias = obtenerDif(requestDto, authentication); 
-                        log.info("-> " +diferenciaDias);
                 		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferenciaDias).getDatos(), urlDominioConsulta+"/actualizar",
                 				authentication);
                     }
@@ -320,8 +329,16 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 	private Integer obtenerDif(MttoVehicularRequest requestDto, Authentication authentication) {
 		Response<?> res = providerRestTemplate.consumirServicio(registro.validarSolicitud(requestDto).getDatos(), urlDominioConsulta+"/consulta",
 				authentication);
-        String respuesta = res.getDatos().toString();
-        Integer diferencia = -1;
+		Integer diferencia = -1;
+		
+		if(res.getDatos().toString().equals("[]")) {
+			log.info("res " +res.getDatos().toString());
+			diferencia = 30;
+		}
+		String respuesta = res.getDatos().toString();	
+		
+        
+        
     	
 		Pattern pattern = Pattern.compile("F=(\\d+)");
 		Matcher matcher = pattern.matcher(respuesta);
