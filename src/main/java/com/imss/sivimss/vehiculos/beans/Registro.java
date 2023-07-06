@@ -281,9 +281,9 @@ public class Registro {
 		 DatosRequest request = new DatosRequest();
 	        Map<String, Object> parametro = new HashMap<>();
 	        StringBuilder sql=new StringBuilder("SELECT ");
-	        sql.append(" TIMESTAMPDIFF(DAY, REG.FEC_REGISTRO_REG, SOL.FEC_REGISTRO) AS F");
+	        sql.append(" TIMESTAMPDIFF(DAY, SOL.FEC_REGISTRO, IFNULL(REG.FEC_REGISTRO_REG, DATE_ADD(SOL.FEC_REGISTRO, INTERVAL -30 DAY))) AS F");
 	        sql.append(" FROM SVT_MTTO_SOLICITUD SOL ");
-	        sql.append(" JOIN SVT_MTTO_REGISTRO REG ON SOL.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR ");
+	        sql.append(" LEFT JOIN SVT_MTTO_REGISTRO REG ON SOL.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR ");
 	        sql.append(" WHERE SOL.ID_MTTOVEHICULAR = ").append(requestDto.getIdMttoVehicular());
 	        String query = sql.toString();
 	        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -303,7 +303,7 @@ public class Registro {
 	       if(diferencia<0) {
 	    	   q.agregarParametroValues("ID_MTTOESTADO", "3");   
 	       }
-	       if(diferencia>0 && diferencia<=15) {
+	       if(diferencia>0 && diferencia<15) {
 	    	   q.agregarParametroValues("ID_MTTOESTADO", "4");   
 	       }
 	       if(diferencia>15) {
