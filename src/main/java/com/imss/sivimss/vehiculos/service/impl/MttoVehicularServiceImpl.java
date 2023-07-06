@@ -294,9 +294,9 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     }
                     if(idMttoReg==null) {
                         llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
-                       Integer diferenciaDias = obtenerDif(requestDto, authentication); 
-                       log.info("-> " +diferenciaDias);
-                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferenciaDias).getDatos(), urlDominioConsulta+"/actualizar",
+                    //   Integer diferenciaDias = obtenerDif(requestDto, authentication); 
+                        Integer idMttoRegistro=16;
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), idMttoRegistro).getDatos(), urlDominioConsulta+"/actualizar",
                 				authentication);
                         
                     } else {
