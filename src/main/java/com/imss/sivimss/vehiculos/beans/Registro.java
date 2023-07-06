@@ -285,7 +285,6 @@ public class Registro {
 	        sql.append(" FROM SVT_MTTO_SOLICITUD SOL ");
 	        sql.append(" JOIN SVT_MTTO_REGISTRO REG ON SOL.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR ");
 	        sql.append(" WHERE SOL.ID_MTTOVEHICULAR = ").append(requestDto.getIdMttoVehicular());
-	       sql.append(" GROUP BY SOL.ID_MTTOVEHICULAR");
 	        String query = sql.toString();
 	        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 	        parametro.put(AppConstantes.QUERY, encoded);
