@@ -1,5 +1,6 @@
 package com.imss.sivimss.vehiculos.beans;
 
+import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.*;
@@ -275,4 +276,47 @@ public class Registro {
         dr.setDatos(parametro);
         return dr;
     }
+
+	public DatosRequest validarSolicitud(MttoVehicularRequest requestDto) {
+		 DatosRequest request = new DatosRequest();
+	        Map<String, Object> parametro = new HashMap<>();
+	        StringBuilder sql=new StringBuilder("SELECT ");
+	        sql.append(" TIMESTAMPDIFF(DAY, REG.FEC_REGISTRO_REG, SOL.FEC_REGISTRO) AS F");
+	        sql.append(" FROM SVT_MTTO_SOLICITUD SOL ");
+	        sql.append(" JOIN SVT_MTTO_REGISTRO REG ON SOL.ID_MTTOVEHICULAR = REG.ID_MTTOVEHICULAR ");
+	        sql.append(" WHERE SOL.ID_MTTOVEHICULAR = ").append(requestDto.getIdMttoVehicular());
+	       sql.append(" GROUP BY SOL.ID_MTTOVEHICULAR");
+	        String query = sql.toString();
+	        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+	        parametro.put(AppConstantes.QUERY, encoded);
+	        logger.info(query);
+	        request.setDatos(parametro);
+	        return request;
+	}
+
+	public DatosRequest actualizarEstatus(Integer idMttoVehicular, Integer diferencia) {
+		  DatosRequest dr = new DatosRequest();
+	        Map<String, Object> parametro = new HashMap<>();
+	        final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
+	       if(diferencia==0) {
+	    	   q.agregarParametroValues("ID_MTTOESTADO", "2");   
+	       }
+	       if(diferencia<0) {
+	    	   q.agregarParametroValues("ID_MTTOESTADO", "3");   
+	       }
+	       if(diferencia>0 && diferencia<=15) {
+	    	   q.agregarParametroValues("ID_MTTOESTADO", "4");   
+	       }
+	       if(diferencia>15) {
+	    	   q.agregarParametroValues("ID_MTTOESTADO", "1");   
+	       }
+	        
+	        q.addWhere("ID_MTTOVEHICULAR =" + idMttoVehicular);
+	        String query = q.obtenerQueryActualizar();
+	        logger.info("query update " +query);
+	        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
+	        parametro.put(AppConstantes.QUERY, encoded);
+	        dr.setDatos(parametro);
+	        return dr;
+	}
 }

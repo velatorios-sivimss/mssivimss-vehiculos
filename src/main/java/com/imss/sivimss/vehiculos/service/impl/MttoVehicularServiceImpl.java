@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class MttoVehicularServiceImpl implements MttoVehicularService {
@@ -289,11 +291,27 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     }
                     if(idMttoReg==null) {
                         llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                     //  Integer obtenerDifDias(requestDto); 
+                        Response<?> res = providerRestTemplate.consumirServicio(registro.validarSolicitud(requestDto).getDatos(), urlDominioConsulta+"/consulta",
+                				authentication);
+                        String respuesta = res.getDatos().toString();
+                        Integer diferencia = 0;
+                    	
+                		Pattern pattern = Pattern.compile("F=(\\d+)");
+                		Matcher matcher = pattern.matcher(respuesta);
+                		if (matcher.find()) {
+                		    diferencia = Integer.parseInt(matcher.group(1));
+                		}
+        log.info("-> "+diferencia);
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferencia).getDatos(), urlDominioConsulta+"/actualizar",
+                				authentication);
+                		
+                        
                     } else {
                         requestDto.getRegistro().setIdMttoRegistro(idMttoReg);
                         llamarServicio(registro.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
                     }
-                    this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
+                  //  this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
                 }
                 return existeMtto;
 			} catch (Exception e) {
@@ -372,12 +390,6 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Response<?> response = providerRestTemplate.consumirServicio(dato,url,authentication);
         return response;
     }
-    
- /*   private Response<?> llamarServicioInsertarMultiple(Map<String, Object> dato, String url, Authentication authentication) {
-    	  Response<?> response = providerRestTemplate.consumirServicio(dato,url,authentication);
-          return response;
-	} */
-
 
 	@Override
 	public Response<?> detalleVerifInicio(DatosRequest request, Authentication authentication) throws IOException {
