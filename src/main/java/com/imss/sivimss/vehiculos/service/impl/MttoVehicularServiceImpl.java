@@ -85,14 +85,14 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             }
             //semestral 2 veces
             if(request.getSolicitud().getIdMttoModalidad()!= null && request.getSolicitud().getIdMttoModalidad()==1){
-                if(semetral==total){
+                if(total >= semetral){
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
             }
 
             //anaul 1 vez
             if(request.getSolicitud().getIdMttoModalidad()!= null && request.getSolicitud().getIdMttoModalidad()==2) {
-                if (anual==total) {
+                if (total >= anual) {
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
             }
