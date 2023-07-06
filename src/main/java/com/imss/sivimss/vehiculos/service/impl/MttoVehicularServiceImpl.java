@@ -23,10 +23,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class MttoVehicularServiceImpl implements MttoVehicularService {
@@ -182,6 +185,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Override
     public Response<?> insertarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException, ParseException {
         String path=urlDominioConsulta + "/crear";
+        String pathMultiple=urlDominioConsulta + "/insertarMultiple";
         Gson json = new Gson();
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
@@ -226,7 +230,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     }
                     if (requestDto.getSolicitud() != null) {
                         requestDto.getSolicitud().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));
-                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                         llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
                         this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
                     }
                     if (requestDto.getRegistro() != null) {
@@ -269,12 +273,16 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                         idMttoSol=(Integer) map.get("ID_MTTO_SOLICITUD");
                     }
                     if(idMttoSol==null) {
-                        llamarServicio(solicitud.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                        llamarServicio(solicitud.insertarMultiple(requestDto, usuarioDto).getDatos(), pathMultiple, authentication);
+                        return existeMtto;
                     }else {
                         requestDto.getSolicitud().setIdMttoSolicitud(idMttoSol);
                         llamarServicio(solicitud.modificar(requestDto, usuarioDto).getDatos(),path,authentication);
+                        Integer diferenciaDias = obtenerDif(requestDto, authentication); 
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferenciaDias).getDatos(), urlDominioConsulta+"/actualizar",
+                				authentication);
                     }
-                    this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
+                  //  this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
                 }
                 if (requestDto.getRegistro() != null) {
                     requestDto.getRegistro().setIdMttoVehicular(idMtto);
@@ -286,11 +294,20 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                     }
                     if(idMttoReg==null) {
                         llamarServicio(registro.insertar(requestDto, usuarioDto).getDatos(), path, authentication);
+                       Integer diferenciaDias = obtenerDif(requestDto, authentication); 
+                       log.info("-> " +diferenciaDias);
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferenciaDias).getDatos(), urlDominioConsulta+"/actualizar",
+                				authentication);
+                        
                     } else {
                         requestDto.getRegistro().setIdMttoRegistro(idMttoReg);
                         llamarServicio(registro.modificar(requestDto, usuarioDto).getDatos(), path, authentication);
+                        Integer diferenciaDias = obtenerDif(requestDto, authentication); 
+                        log.info("-> " +diferenciaDias);
+                		providerRestTemplate.consumirServicio(registro.actualizarEstatus(requestDto.getIdMttoVehicular(), diferenciaDias).getDatos(), urlDominioConsulta+"/actualizar",
+                				authentication);
                     }
-                    this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
+                  //  this.validaFechas(fechaRegistro,requestDto.getRegistro().getIdMttoVehicular(),requestDto.getRegistro().getFecRegistro(),authentication);
                 }
                 return existeMtto;
 			} catch (Exception e) {
@@ -300,7 +317,22 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         }
     }
 
-    @Override
+	private Integer obtenerDif(MttoVehicularRequest requestDto, Authentication authentication) {
+		Response<?> res = providerRestTemplate.consumirServicio(registro.validarSolicitud(requestDto).getDatos(), urlDominioConsulta+"/consulta",
+				authentication);
+        String respuesta = res.getDatos().toString();
+        Integer diferencia = -1;
+    	
+		Pattern pattern = Pattern.compile("F=(\\d+)");
+		Matcher matcher = pattern.matcher(respuesta);
+		if (matcher.find()) {
+		    diferencia = Integer.parseInt(matcher.group(1));
+		    log.info("-> "+diferencia);
+		}
+		return diferencia;
+	}
+
+	@Override
     public Response<?> modificarMttoVehicular(DatosRequest request, Authentication authentication) throws IOException {
         String path=urlDominioConsulta + "/actualizar";
         Gson json = new Gson();
