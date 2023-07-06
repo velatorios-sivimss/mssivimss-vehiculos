@@ -1,17 +1,14 @@
 package com.imss.sivimss.vehiculos.beans;
 
-import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.*;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -293,7 +290,7 @@ public class Solicitud {
         sql.append(" FROM SVT_MTTO_VEHICULAR  MV ");
         sql.append(" LEFT JOIN SVT_MTTO_SOLICITUD MVS ON (MV.ID_MTTOVEHICULAR=MVS.ID_MTTOVEHICULAR) ");
         sql.append(" WHERE MV.IND_ACTIVO =1 AND MVS.ID_MTTO_MODALIDAD =").append(request.getSolicitud().getIdMttoTipoModalidad());
-        sql.append(" AND MVS.ID_MTTO_MODALIDAD_DET =").append(request.getSolicitud().getIdMttoTipoModalidadDet()).append(" ");
+        sql.append(" AND MVS.DES_MTTO_CORRECTIVO =").append(request.getSolicitud().getDesMttoCorrectivo()).append(" ");
         sql.append(" AND MV.ID_VEHICULO =").append(request.getIdVehiculo()).append(" ");
         sql.append(" AND MVS.FEC_SOLICTUD BETWEEN '").append(currentYear + "-01-01'").append(" AND '").append(currentYear + "-12-31'");
         query = sql.toString();

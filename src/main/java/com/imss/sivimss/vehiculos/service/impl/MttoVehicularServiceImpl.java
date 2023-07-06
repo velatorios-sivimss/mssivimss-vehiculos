@@ -1,6 +1,5 @@
 package com.imss.sivimss.vehiculos.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.beans.MttoVehicular;
 import com.imss.sivimss.vehiculos.beans.MttoVerifiInicio;
@@ -23,13 +22,14 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.bind.DatatypeConverter;
 
 @Service
 public class MttoVehicularServiceImpl implements MttoVehicularService {
@@ -46,7 +46,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
     @Autowired
     private ProviderServiceRestTemplate providerRestTemplate;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+	private LogUtil logUtil;
 
     private MttoVehicular mttoVehicular=new MttoVehicular();
 
@@ -56,6 +57,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 
     private Registro registro=new Registro();
 
+    private static final String CONSULTA = "consulta";
+    
     SimpleDateFormat formatoConsulta = new SimpleDateFormat("yyyy-MM-dd");
 
     public Response<?> validarSolicitud(MttoVehicularRequest request, Authentication authentication) throws IOException {
@@ -65,13 +68,32 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         List<Map<String, Object>> resultExiste=null;
         //validamos si es verificaciom vehicular
         Integer total=0;
+        
+        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+				this.getClass().getPackage().toString(), "","Entro en Validar Solicitud", authentication);
+        
         if(validarVerificacionSolicitud(request,authentication)){
             total=0;
-            responseMtto = llamarServicio(solicitud.existeVerificacionVehicular(request).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+            
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Solicitud Validada", authentication);
+            
+            Map<String, Object> dato = solicitud.existeVerificacionVehicular(request).getDatos();
+    		String query = (String) dato.get(AppConstantes.QUERY);
+    		query = new String(DatatypeConverter.parseBase64Binary(query), "UTF-8");
+    		
+    		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "",CONSULTA +" " + query, authentication);
+            
+            responseMtto = llamarServicio(dato, urlDominioConsulta + PATH_CONSULTA, authentication);
             resultExiste= (List<Map<String, Object>>) responseMtto.getDatos();
             for (Map<String, Object> map : resultExiste) {
                 total = (Integer) map.get("SOLICITUDES");
             }
+            
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Total de verificaciones Vehiculares: " + total, authentication);
+            
             if(total==0){
                 return Response.builder().error(true).mensaje("Se debe efectuar primero el mantenimiento de Afinación y Cambio de Aceite").codigo(200).datos(null).build();
             }
@@ -83,6 +105,10 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             for (Map<String, Object> map : resultExiste) {
                 total = (Integer) map.get("SOLICITUDES");
             }
+            
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Total de Mantenimientos iguales: " + total, authentication);
+            
             //semestral 2 veces
             if(request.getSolicitud().getIdMttoModalidad()!= null && request.getSolicitud().getIdMttoModalidad()==1){
                 if(total >= semetral){
@@ -190,8 +216,15 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         MttoVehicularRequest requestDto = json.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)),MttoVehicularRequest.class);
         UsuarioDto usuarioDto = json.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
 
+        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+				this.getClass().getPackage().toString(), "",CONSULTA +" " + requestDto, authentication);
+        
         //validamos solicitud
         if(requestDto!=null && requestDto.getSolicitud()!=null) {
+        	
+        	logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Entro en Solicitud", authentication);
+        	
             Response<?> validacionMttoSol = this.validarSolicitud(requestDto, authentication);
             if (validacionMttoSol != null && validacionMttoSol.getCodigo() == 200 && validacionMttoSol.getError()) {
                 //enviamos el error
