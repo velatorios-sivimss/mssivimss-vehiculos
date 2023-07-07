@@ -131,11 +131,27 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         Integer anual=1;
         Response<?> responseMtto=null;
         List<Map<String, Object>> resultExiste=null;
+        Map<String, Object> dato;
         //validamos si es verificaciom vehicular
         Integer total=0;
+        
+        logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+				this.getClass().getPackage().toString(), "","Entro en Validar Registro", authentication);
+        
         if(validarVerificacionRegistro(request,authentication)){
             total=0;
-            responseMtto = llamarServicio(registro.existeVerificacionVehicular(request).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+            
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Registro Validado", authentication);
+            
+            dato = registro.existeVerificacionVehicular(request).getDatos();
+    		String query = (String) dato.get(AppConstantes.QUERY);
+    		query = new String(DatatypeConverter.parseBase64Binary(query), "UTF-8");
+    		
+    		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "",CONSULTA +" " + query, authentication);
+            
+            responseMtto = llamarServicio(dato, urlDominioConsulta + PATH_CONSULTA, authentication);
             resultExiste= (List<Map<String, Object>>) responseMtto.getDatos();
             for (Map<String, Object> map : resultExiste) {
                 total = (Integer) map.get("SOLICITUDES");
@@ -146,11 +162,24 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         } else {
             //validamos si existe el mtto
             total=0;
-            responseMtto = llamarServicio(registro.existeSolicitud(request).getDatos(), urlDominioConsulta + PATH_CONSULTA, authentication);
+            
+           dato = registro.existeSolicitud(request).getDatos();
+    		String query = (String) dato.get(AppConstantes.QUERY);
+    		query = new String(DatatypeConverter.parseBase64Binary(query), "UTF-8");
+    		
+    		logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "",CONSULTA +" " + query, authentication);
+            
+            responseMtto = llamarServicio(dato, urlDominioConsulta + PATH_CONSULTA, authentication);
             resultExiste= (List<Map<String, Object>>) responseMtto.getDatos();
             for (Map<String, Object> map : resultExiste) {
                 total = (Integer) map.get("SOLICITUDES");
             }
+            
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Total de Mantenimientos iguales: " + total, authentication);
+            
+            
             //semestral 2 veces
             if(request.getRegistro().getIdMttoModalidad()!=null && request.getRegistro().getIdMttoModalidad()==1){
                 if(total >= semetral){
@@ -233,6 +262,10 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
         }
         //validamos registro
         if(requestDto!=null && requestDto.getRegistro()!=null) {
+        	
+        	logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), 
+    				this.getClass().getPackage().toString(), "","Entro en Registro", authentication);
+        	
             Response<?> validacionMttoReg = this.validarRegistro(requestDto, authentication);
             if (validacionMttoReg != null && validacionMttoReg.getCodigo() == 200 && validacionMttoReg.getError()) {
                 //enviamos el error
