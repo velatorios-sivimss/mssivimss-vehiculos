@@ -117,7 +117,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             }
 
             //anaul 1 vez
-            if(request.getSolicitud().getIdMttoModalidad()!= null && request.getSolicitud().getIdMttoModalidad()==2) {
+            if(request.getSolicitud().getIdMttoModalidad()!= null && ( request.getSolicitud().getIdMttoModalidad()==2
+            		|| request.getSolicitud().getIdMttoModalidad()==3)) {
                 if (total >= anual) {
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
@@ -188,7 +189,8 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
             }
 
             //anaul 1 vez
-            if(request.getRegistro().getIdMttoModalidad()!=null && request.getRegistro().getIdMttoModalidad()==2) {
+            if(request.getRegistro().getIdMttoModalidad()!=null && (request.getRegistro().getIdMttoModalidad()==2
+            		|| request.getRegistro().getIdMttoModalidad()==3 )) {
                 if (total >= anual) {
                     return Response.builder().error(true).mensaje("Mantenimientos ya registrados para este vehículo").codigo(200).datos(null).build();
                 }
