@@ -135,6 +135,8 @@ public class Vehiculos {
               queryUtil.where("MV.FEC_REGISTRO <= :fecFin")
               .setParameter("fecFin", formatoConsulta.format(fechaFIRequest));
               queryUtil.groupBy("MV.ID_VEHICULO");
+        }else {
+        	queryUtil.orderBy("ID_MTTOVEHICULAR ASC"); 	
         }
        
         query = queryUtil.build();
