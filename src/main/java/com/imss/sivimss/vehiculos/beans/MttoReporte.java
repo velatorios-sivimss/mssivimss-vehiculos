@@ -178,12 +178,10 @@ public class MttoReporte {
 		if(reporte.getIdVelatorio()!=null) {
 			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
-	/*	if(reporte.getIdNivelOficina()!=null) {
-			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
-		} */
 		if(reporte.getPlacas()!=null) {
 			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
-		}condition.append(" OR MV.IND_ACTIVO = 1 OR MV.FEC_REGISTRO >= CURDATE();");
+		}condition.append(" ORDER BY ID_MTTOVEHICULAR ASC");
+		logger.info("estoy aqui: "+condition.toString() );
 		envioDatos.put("condition", condition.toString());	
 		envioDatos.put(RUTA_NOMBRE_REPORTE, reporte.getRutaNombreReporte());
 		envioDatos.put("tipoReporte", reporte.getTipoReporte());
@@ -221,6 +219,7 @@ public class MttoReporte {
         	 condition.append(" AND MV.FEC_REGISTRO <='"+fecFinal+"'");
         }
         condition.append(" GROUP BY MV.ID_VEHICULO");
+        logger.info("-> " +condition.toString());
 		envioDatos.put("condition", condition.toString());	
 		envioDatos.put("fecInicial", reporte.getFechaInicio());
 		envioDatos.put("fecFinal", reporte.getFechaFin());
