@@ -218,7 +218,7 @@ public class MttoReporte {
     	    String fecFinal=formatoConsulta.format(dateF);
         	 condition.append(" AND MV.FEC_REGISTRO <='"+fecFinal+"'");
         }
-        condition.append(" GROUP BY MV.ID_VEHICULO");
+        //condition.append(" GROUP BY MV.ID_VEHICULO");
         logger.info("-> " +condition.toString());
 		envioDatos.put("condition", condition.toString());	
 		envioDatos.put("fecInicial", reporte.getFechaInicio());
