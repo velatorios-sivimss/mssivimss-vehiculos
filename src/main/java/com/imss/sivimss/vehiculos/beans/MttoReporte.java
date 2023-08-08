@@ -85,7 +85,7 @@ public class MttoReporte {
             Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
             query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
-        query. append(" GROUP BY MV.ID_VEHICULO");
+       // query. append(" GROUP BY MV.ID_VEHICULO");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         String encoded = DatatypeConverter.printBase64Binary(query.toString().getBytes());

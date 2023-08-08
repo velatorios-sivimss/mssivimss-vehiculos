@@ -134,7 +134,7 @@ public class Vehiculos {
         	  Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecFin());
               queryUtil.where("MV.FEC_REGISTRO <= :fecFin")
               .setParameter("fecFin", formatoConsulta.format(fechaFIRequest));
-              queryUtil.groupBy("MV.ID_VEHICULO");
+              //queryUtil.groupBy("MV.ID_VEHICULO");
         }else {
         	queryUtil.orderBy("ID_MTTOVEHICULAR ASC"); 	
         }
@@ -146,7 +146,6 @@ public class Vehiculos {
         parametro.put(AppConstantes.QUERY, encoded);
         parametro.put("pagina", buscarRequest.getPagina());
         parametro.put("tamanio", buscarRequest.getTamanio());
-
         request.getDatos().remove("datos");
         dr.setDatos(parametro);
         logger.info(query);
