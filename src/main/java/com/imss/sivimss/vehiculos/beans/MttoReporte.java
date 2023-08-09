@@ -52,7 +52,7 @@ public class MttoReporte {
         query.append("SELECT DATE_FORMAT(MV.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO,VH.DES_PLACAS,SMN_ACEITE.DES_NIVEL as DES_NIVEL_ACEITE,SMN_AGUA.DES_NIVEL as DES_NIVEL_AGUA,\n" +
                 "SMN_NETRA.DES_NIVEL as DES_NIVEL_NEUMATRASE,SMN_NEDEL.DES_NIVEL as DES_NIVEL_NEUMADELA,SMN_COMB.DES_NIVEL as DES_NIVEL_COMBUSTIBLE,\n" +
                 "SMN_BATERIA.DES_NIVEL as DES_NIVEL_BATERIA,SMN_CODIGO.DES_NIVEL as DES_NIVEL_CODIGOFALLO,SMN_LIMPINT.DES_NIVEL as DES_NIVEL_LIMPIEZAINTERIOR,\n" +
-                "SMN_LIMPEXT.DES_NIVEL as DES_NIVEL_LIMPIEZAEXTERIOR,VI.ID_MTTOVERIFINICIO,VH.ID_VEHICULO,MV.ID_MTTOVEHICULAR,MV.ID_DELEGACION,COUNT(MV.ID_VEHICULO) AS TOTAL_VEHICULOS\n" +
+                "SMN_LIMPEXT.DES_NIVEL as DES_NIVEL_LIMPIEZAEXTERIOR,VI.ID_MTTOVERIFINICIO,VH.ID_VEHICULO,MV.ID_MTTOVEHICULAR,MV.ID_DELEGACION \n" +
                 "FROM SVT_VEHICULOS VH\n" +
                 "INNER JOIN SVC_VELATORIO VE ON VH.ID_VELATORIO = VE.ID_VELATORIO\n" +
                 "INNER JOIN SVC_USO_VEHICULO UV ON VH.ID_USOVEHICULO = UV.ID_USOVEHICULO\n" +
@@ -86,6 +86,7 @@ public class MttoReporte {
             query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
        // query. append(" GROUP BY MV.ID_VEHICULO");
+        logger.info("estoyr en "+query);
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
         String encoded = DatatypeConverter.printBase64Binary(query.toString().getBytes());
