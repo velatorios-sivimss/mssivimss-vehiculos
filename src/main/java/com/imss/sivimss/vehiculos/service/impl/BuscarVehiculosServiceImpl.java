@@ -80,11 +80,6 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		Gson gson = new Gson();
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
-		 if(reporte.getIdVelatorio()==null && reporte.getIdDelegacion()==null) {
-	        	UsuarioDto usuarioDto = gson.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-	            reporte.setIdDelegacion(usuarioDto.getIdDelegacion());
-	            reporte.setIdVelatorio(usuarioDto.getIdVelatorio());
-	        }
 		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
@@ -95,11 +90,6 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		Gson gson = new Gson();
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		DescargarReportePredictivoRequest reporte= gson.fromJson(datosJson, DescargarReportePredictivoRequest .class);
-		 if(reporte.getIdVelatorio()==null && reporte.getIdDelegacion()==null) {
-	        	UsuarioDto usuarioDto = gson.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
-	            reporte.setIdDelegacion(usuarioDto.getIdDelegacion());
-	            reporte.setIdVelatorio(usuarioDto.getIdVelatorio());
-	        }
 		Map<String, Object> envioDatos = new MttoReporte().reportePredictivo(reporte);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
