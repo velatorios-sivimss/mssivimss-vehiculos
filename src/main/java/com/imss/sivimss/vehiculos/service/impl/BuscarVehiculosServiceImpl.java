@@ -3,9 +3,9 @@ package com.imss.sivimss.vehiculos.service.impl;
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.beans.MttoReporte;
 import com.imss.sivimss.vehiculos.beans.Vehiculos;
-import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.DescargarReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReporteDto;
+import com.imss.sivimss.vehiculos.model.request.ReporteEncargadoDto;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.service.BuscarVehiculosService;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +80,7 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		 UsuarioDto usuario = gson.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
 		 Integer velatorioUsr = usuario.getIdVelatorio();
-		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
+		ReporteEncargadoDto reporte= gson.fromJson(datosJson, ReporteEncargadoDto.class);
 		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte, velatorioUsr);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);

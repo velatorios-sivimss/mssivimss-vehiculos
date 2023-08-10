@@ -3,6 +3,7 @@ package com.imss.sivimss.vehiculos.beans;
 import com.google.gson.Gson;
 import com.imss.sivimss.vehiculos.model.request.DescargarReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReporteDto;
+import com.imss.sivimss.vehiculos.model.request.ReporteEncargadoDto;
 import com.imss.sivimss.vehiculos.model.request.ReporteEncargadoRequest;
 import com.imss.sivimss.vehiculos.model.request.ReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
@@ -193,15 +194,15 @@ public class MttoReporte {
 	}
 
 
-	public Map<String, Object> reporteEncargado(ReporteDto reporte, Integer velatorioUsr) throws ParseException {
+	public Map<String, Object> reporteEncargado(ReporteEncargadoDto reporte, Integer velatorioUsr) throws ParseException {
 		Map<String, Object> envioDatos = new HashMap<>();
 		StringBuilder condition= new StringBuilder();
 		
-		if(reporte.getIdDelegacion()!=null && reporte.getIdDelegacion()>0) {
-			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
+		if(reporte.getDelegacion()!=null && reporte.getDelegacion()>0) {
+			condition.append(" AND VE.ID_DELEGACION="+reporte.getDelegacion()+"");
 		}
-		if(reporte.getIdVelatorio()!=null && reporte.getIdVelatorio()>0) {
-			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
+		if(reporte.getVelatorio()!=null && reporte.getVelatorio()>0) {
+			condition.append(" AND VH.ID_VELATORIO="+reporte.getVelatorio()+"");
 		}
 	/*	if(reporte.getIdNivelOficina()!=null && reporte.getIdNivelOficina()>0) {
 			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
