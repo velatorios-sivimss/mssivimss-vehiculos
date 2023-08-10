@@ -79,8 +79,10 @@ public class BuscarVehiculosServiceImpl implements BuscarVehiculosService {
 	public Response<?> reporteEncargado(DatosRequest request, Authentication authentication) throws IOException, ParseException {
 		Gson gson = new Gson();
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		 UsuarioDto usuario = gson.fromJson(authentication.getPrincipal().toString(), UsuarioDto.class);
+		 Integer velatorioUsr = usuario.getIdVelatorio();
 		ReporteDto reporte= gson.fromJson(datosJson, ReporteDto.class);
-		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte);
+		Map<String, Object> envioDatos = new MttoReporte().reporteEncargado(reporte, velatorioUsr);
 		return providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes,
 				authentication);
 	}
