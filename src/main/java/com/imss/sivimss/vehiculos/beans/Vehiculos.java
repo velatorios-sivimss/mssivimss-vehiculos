@@ -77,10 +77,8 @@ public class Vehiculos {
               //queryUtil.groupBy("MV.ID_VEHICULO");
         }else {
         	queryUtil.orderBy("ID_MTTOVEHICULAR ASC"); 	
-        }
-        logger.info("where "+where.toString());
-        
-        queryUtil.select("VH.ID_VEHICULO",
+        }    
+      queryUtil.select("VH.ID_VEHICULO",
                         "VH.ID_USOVEHICULO",
                         "UV.DES_USO",
                         "VH.ID_VELATORIO",

@@ -173,10 +173,10 @@ public class MttoReporte {
 	public Map<String, Object> reporteProgramarMttoVehicular(ReporteDto reporte) {
 		Map<String, Object> envioDatos = new HashMap<>();
 		StringBuilder condition= new StringBuilder();
-		if(reporte.getIdDelegacion()!=null) {
+		if(reporte.getIdDelegacion()!=null && reporte.getIdDelegacion()>0) {
 			condition.append(" AND VE.ID_DELEGACION="+reporte.getIdDelegacion()+"");
 		}
-		if(reporte.getIdVelatorio()!=null) {
+		if(reporte.getIdVelatorio()!=null && reporte.getIdVelatorio()>0) {
 			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
 		if(reporte.getPlacas()!=null) {
@@ -193,7 +193,7 @@ public class MttoReporte {
 	}
 
 
-	public Map<String, Object> reporteEncargado(ReporteDto reporte) throws ParseException {
+	public Map<String, Object> reporteEncargado(ReporteDto reporte, Integer velatorioUsr) throws ParseException {
 		Map<String, Object> envioDatos = new HashMap<>();
 		StringBuilder condition= new StringBuilder();
 		
@@ -224,6 +224,7 @@ public class MttoReporte {
 		envioDatos.put("condition", condition.toString());	
 		envioDatos.put("fecInicial", reporte.getFechaInicio());
 		envioDatos.put("fecFinal", reporte.getFechaFin());
+		envioDatos.put("velatorio", velatorioUsr);
 		if(reporte.getNumReporte()==2) {
 			envioDatos.put(RUTA_NOMBRE_REPORTE, "reportes/generales/ReporteEncargado_VerifDiaria.jrxml");	
 		}else {
