@@ -113,7 +113,7 @@ public class MttoCatalogos {
                         "CVE_BANCARIA",
                         "ID_TIPO_PROVEEDOR",
                         "DES_RFC",
-                        "DES_CURP",
+                        "CVE_CURP AS DES_CURP",
                         "DES_TIPO_CONTRATO",
                         "FEC_VIGENCIA",
                         "DES_DIRECCION",
@@ -235,7 +235,7 @@ public class MttoCatalogos {
         }
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("CON.ID_CONTRATO",
-                        "CON.NUM_CONTRATO",
+                        "CON.CVE_CONTRATO AS NUM_CONTRATO",
                         "CON.DES_CONTRATO",
                         "CON.ID_PROVEEDOR",
                         "PRO.NOM_PROVEEDOR")

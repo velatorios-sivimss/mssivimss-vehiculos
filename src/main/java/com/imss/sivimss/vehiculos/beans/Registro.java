@@ -167,7 +167,7 @@ public class Registro {
                         "REG.ID_MTTO_MODALIDAD_DET",
                         "SMTM.DES_MTTO_MODALIDAD",
                         "SMTMD.DES_MTTO_MODALIDAD_DET",
-                        "CON.NUM_CONTRATO",
+                        "CON.CVE_CONTRATO AS NUM_CONTRATO",
                         "CON.DES_CONTRATO",
                         "MTTO_VEH.ID_MTTOVEHICULAR",
                         "MTTO_VEH.ID_MTTOESTADO",
