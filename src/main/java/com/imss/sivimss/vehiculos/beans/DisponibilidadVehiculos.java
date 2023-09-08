@@ -270,9 +270,7 @@ public class DisponibilidadVehiculos {
 		queryUtil
 				.select("so.ID_OPERADOR AS idResponsable"," CONCAT(su.NOM_USUARIO ,' ', su.NOM_APELLIDO_PATERNO ,' ', su.NOM_APELLIDO_MATERNO ) AS nombreResponsable")
 				.from(TABALA_SVT_OPERADORES_SO)
-				.innerJoin(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO  = so.ID_USUARIO")
-				.where("so.ID_VEHICULO = :idVehi")
-				.setParameter(PARAM_IDVEHICULO, this.idVehiculo);
+				.innerJoin(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO  = so.ID_USUARIO");
 		final String query = queryUtil.build();
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
 
