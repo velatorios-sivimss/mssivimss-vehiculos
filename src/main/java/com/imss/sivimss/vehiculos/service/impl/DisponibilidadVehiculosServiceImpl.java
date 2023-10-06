@@ -180,7 +180,6 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		VehiculoRequest vehiculoRequest = gson.fromJson(datosJson, VehiculoRequest.class);
 		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
-		vehiculo = new DisponibilidadVehiculos(vehiculoRequest);
 		Map<String, Object> envioDatos = vehiculo.consultaDetalleODS(request).getDatos();
 		try {
 			log.info( CU060_NOMBRE + CONSULTA_ODS + queryDecoded(envioDatos));
