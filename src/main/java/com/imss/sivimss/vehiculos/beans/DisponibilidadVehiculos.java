@@ -208,26 +208,25 @@ public class DisponibilidadVehiculos {
 		return request;
 	}
 	public DatosRequest consultaDetalleODS(DatosRequest request) {
-		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil.select("sos.ID_ORDEN_SERVICIO AS idOds","concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
-				,"concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
-				,"scpt.DES_ORIGEN AS nombreOrigen"," scpt.DES_DESTINO AS nombreDestino")
-				.from(TABLA_SVC_ORDEN_SERVICIO_SOS)
-				.join(TABLA_SVC_CONTRATANTE_SC, "sos.ID_CONTRATANTE = sc.ID_CONTRATANTE")
-				.join(TABLA_SVC_PERSONA_SP,"sc.ID_PERSONA = sp.ID_PERSONA")
-				.leftJoin(TABLA_SVC_FINADO_SF, CAMPO_SOS_ID_ORDEN_SERVICIO + " = sf.ID_ORDEN_SERVICIO")
-				.leftJoin(TABLA_SVC_PERSONA_SP2,"sp2.ID_PERSONA = sf.ID_PERSONA")
-				.leftJoin("SVC_CARACTERISTICAS_PAQUETE scp", "scp.ID_ORDEN_SERVICIO = " + CAMPO_SOS_ID_ORDEN_SERVICIO)
-				.leftJoin("SVC_DETALLE_CARAC_PAQ sdcp ", "sdcp.ID_CARAC_PAQUETE = scp.ID_CARAC_PAQUETE ")
-				.join("SVC_CARAC_PAQ_TRAS scpt", "scpt.ID_DETALLE_CARACTERISTICAS = sdcp.ID_DETALLE_CARAC")
-				.where("sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2)")
-				.and("sos.CVE_FOLIO = :idODS" )
-				.setParameter("idODS", this.idODS)
-				.groupBy(CAMPO_SOS_ID_ORDEN_SERVICIO);
+		String queryUno = "";
+		String queryDos = "";
+		queryUno = "SELECT sos.ID_ORDEN_SERVICIO AS idOds"
+				+ ", concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
+				+ ", concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
+				+ ", scpt.DES_ORIGEN AS nombreOrigen, scpt.DES_DESTINO AS nombreDestino"
+				+ FROM + TABLA_SVC_ORDEN_SERVICIO_SOS
+				+ JOIN + TABLA_SVC_CONTRATANTE_SC + " ON sos.ID_CONTRATANTE = sc.ID_CONTRATANTE"
+				+ JOIN + TABLA_SVC_PERSONA_SP + " ON sc.ID_PERSONA = sp.ID_PERSONA"
+				+ LEFT_JOIN + TABLA_SVC_FINADO_SF + " ON " + CAMPO_SOS_ID_ORDEN_SERVICIO + " = sf.ID_ORDEN_SERVICIO"
+				+ LEFT_JOIN + TABLA_SVC_PERSONA_SP2 + " ON sp2.ID_PERSONA = sf.ID_PERSONA"
+				+ LEFT_JOIN + " SVC_CARACTERISTICAS_PAQUETE scp ON scp.ID_ORDEN_SERVICIO = " + CAMPO_SOS_ID_ORDEN_SERVICIO
+				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PAQ sdcp ON sdcp.ID_CARAC_PAQUETE = scp.ID_CARAC_PAQUETE "
+				+ JOIN + " SVC_CARAC_PAQ_TRAS scpt ON scpt.ID_DETALLE_CARACTERISTICAS = sdcp.ID_DETALLE_CARAC"
+				+ " WHERE sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2)"
+				+ " AND sos.CVE_FOLIO = '" + this.idODS +"'";
+		
 
-		final String query = queryUtil.build();
-
-		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
+		request.getDatos().put(AppConstantes.QUERY, queryEncoded(queryUno));
 
 		return request;
 	}
