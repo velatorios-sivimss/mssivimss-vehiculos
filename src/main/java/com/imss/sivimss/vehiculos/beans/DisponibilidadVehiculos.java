@@ -1,5 +1,6 @@
 package com.imss.sivimss.vehiculos.beans;
 
+
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class DisponibilidadVehiculos {
 	private static final String CAMPO_SISV_ID_DOMICILIO = "sisv.ID_DOMICILIO";
 	private static final String CAMPO_SD_ID_CP = "sd.DES_CP";
 	
-	private static final String NOW = "CURRENT_TIMESTAMP()";
+	private static final String NOW = "CURDATE()";
 	private static final String JOIN = " JOIN ";
 	private static final String LEFT_JOIN = " LEFT JOIN ";
 	private static final String FROM = " FROM ";
@@ -209,7 +210,6 @@ public class DisponibilidadVehiculos {
 	}
 	public DatosRequest consultaDetalleODS(DatosRequest request) {
 		String queryUno = "";
-		String queryDos = "";
 		queryUno = "SELECT sos.ID_ORDEN_SERVICIO AS idOds"
 				+ ", concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				+ ", concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
@@ -222,7 +222,7 @@ public class DisponibilidadVehiculos {
 				+ LEFT_JOIN + " SVC_CARACTERISTICAS_PAQUETE scp ON scp.ID_ORDEN_SERVICIO = " + CAMPO_SOS_ID_ORDEN_SERVICIO
 				+ LEFT_JOIN + " SVC_DETALLE_CARAC_PAQ sdcp ON sdcp.ID_CARAC_PAQUETE = scp.ID_CARAC_PAQUETE "
 				+ JOIN + " SVC_CARAC_PAQ_TRAS scpt ON scpt.ID_DETALLE_CARACTERISTICAS = sdcp.ID_DETALLE_CARAC"
-				+ " WHERE sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2)"
+				+ " WHERE sos.ID_ESTATUS_ORDEN_SERVICIO in (1,2,3)"
 				+ " AND sos.CVE_FOLIO = '" + this.idODS +"'";
 		
 
@@ -274,7 +274,18 @@ public class DisponibilidadVehiculos {
 		  
 		  return request; 
 	  }
-
+	public DatosRequest actualizaEstatusODS(DatosRequest request) {
+		StringBuilder query = new StringBuilder("UPDATE SVC_ORDEN_SERVICIO SET ");
+		query.append(" ID_ESTATUS_ORDEN_SERVICIO = 3");
+		query.append(", ID_USUARIO_MODIFICA = '" + this.idUsuarioAlta + "'");
+		query.append(", FEC_ACTUALIZACION = " + NOW);
+		query.append(" WHERE ID_ORDEN_SERVICIO = " + this.idODS);
+		
+		  String encoded =DatatypeConverter.printBase64Binary(query.toString().getBytes(StandardCharsets.UTF_8));
+		  request.getDatos().put(AppConstantes.QUERY, encoded);
+		  
+		  return request; 
+	  }
 	public DatosRequest actualizaVehiculosParaSalir(DatosRequest request) {
 
 		String query = "UPDATE SVT_DISPONIBILIDAD_VEHICULO sdv SET "
