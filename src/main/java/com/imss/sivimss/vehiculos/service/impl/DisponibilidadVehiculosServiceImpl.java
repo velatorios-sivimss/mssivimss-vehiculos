@@ -230,16 +230,23 @@ public class DisponibilidadVehiculosServiceImpl implements DisponibilidadVehicul
 		vehiculo.setIdUsuarioAlta(usuarioDto.getIdUsuario());
 		Map<String, Object> envioDatos = vehiculo.actualizaVehiculosParaSalir(request).getDatos();
 		try {
-			
+
 			  log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos)); 
 			  logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
-			  this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication); 
+			  this.getClass().getPackage().toString(), "actualizaVehiculosParaSalir", ALTA, authentication); 
 			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + ACTUALIZAR, authentication);
 			envioDatos = vehiculo.registrarVehiculoSalida(request).getDatos();
+
+			  log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos)); 
+			  logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
+			  this.getClass().getPackage().toString(), "registrarVehiculoSalida", ALTA, authentication); 
+			response = providerRestTemplate.consumirServicio(envioDatos, urlModCatalogos + ACTUALIZAR, authentication);
+			envioDatos = vehiculo.actualizaEstatusODS(request).getDatos();
+			
 			
 			log.info( CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + queryDecoded(envioDatos));
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU060_NOMBRE + REGISTRA_SALIDA_VEHICULO + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(), "registraSalidaVehiculo", ALTA, authentication);
+					this.getClass().getPackage().toString(), "actualizaEstatusODS", ALTA, authentication);
 			response = providerRestTemplate.consumirServicio(envioDatos,
 					urlModCatalogos + CONSULTAR, authentication);
 		return MensajeResponseUtil.mensajeConsultaResponse(response, REGISTRO_SALIDA);
