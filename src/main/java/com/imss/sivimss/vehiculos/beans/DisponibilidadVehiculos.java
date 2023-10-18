@@ -68,7 +68,7 @@ public class DisponibilidadVehiculos {
 	private static final String CAMPO_SD_ID_DOMICILIO = "sd.ID_DOMICILIO";
 	private static final String CAMPO_SC2_ID_CODIG_POSTAL = "sc2.ID_CODIGO_POSTAL";
 	private static final String CAMPO_SISV_ID_DOMICILIO = "sisv.ID_DOMICILIO";
-	private static final String CAMPO_SD_ID_CP = "sd.DES_CP";
+	private static final String CAMPO_SD_ID_CP = "sd.REF_CP";
 	
 	private static final String NOW = "CURDATE()";
 	private static final String JOIN = " JOIN ";
@@ -102,9 +102,9 @@ public class DisponibilidadVehiculos {
 	}
 
 	public DatosRequest consultarDisponibilidadVehiculos(DatosRequest request, String formatoFecha, String formatoHora) {
-		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.REF_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'" +  formatoFecha + "') AS fecha"
-				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas"
+				+ ", sv.REF_MARCA AS marca, sv.REF_MODELO AS modelo, sv.REF_PLACAS AS placas"
 				+ ", TIME_FORMAT(IF(sdv.TIM_HORA_ENTRADA = '00:00:00' OR ISNULL(sdv.TIM_HORA_ENTRADA),sdv.TIM_HORA_SALIDA,sdv.TIM_HORA_ENTRADA), '" + formatoHora + "') AS hora "
 				
 				+ FROM + TABLA_SVT_VEHICULO_SV 
@@ -124,9 +124,9 @@ public class DisponibilidadVehiculos {
 	}
 	public DatosRequest consultarDisponibilidadVehiculosCalendario(DatosRequest request) {
 		String where="";
-		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
+		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.REF_VEHICULO AS descripcion,  IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", DATE_FORMAT(IFNULL(sdv.FEC_ENTRADA,sdv.FEC_SALIDA),'%Y-%m-%d') AS fecha"
-				+ ", sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
+				+ ", sv.REF_MARCA AS marca, sv.REF_MODELO AS modelo, sv.REF_PLACAS AS placas "
 				+ FROM + TABLA_SVT_VEHICULO_SV 
 				+ LEFT_JOIN  + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON + VALIDACION_CAMPOS_VEHICULOS
 				+ JOIN + TABLA_SVC_VELATORIO_SV2 + " ON sv2.ID_VELATORIO = sv.ID_VELATORIO";
@@ -152,8 +152,8 @@ public class DisponibilidadVehiculos {
 	}
 	
 	public DatosRequest consultaDetalleVehiculo(DatosRequest request) {
-		final String query = " SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo"
-				+ ", sv.DES_PLACAS AS placas, sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
+		final String query = " SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.REF_MARCA AS marca, sv.REF_MODELO AS modelo"
+				+ ", sv.REF_PLACAS AS placas, sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
 				+ ", sos.CVE_FOLIO AS folioODS, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
 				+ ", sc2.DES_MNPIO AS nombreDestino, " + CAMPO_SOS_ID_ORDEN_SERVICIO
@@ -179,13 +179,13 @@ public class DisponibilidadVehiculos {
 	
 	public DatosRequest consultaDetalleVehiculoxDia(DatosRequest request, String formatoFecha, String formatoHora) {
 		
-		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.DES_MARCA AS marca, sv.DES_MODELO AS modelo, sv.DES_PLACAS AS placas "
+		String query = "SELECT sdv.ID_DISPONIBILIDAD_VEHICULO AS idDisponibilidad, sv.ID_VEHICULO AS idVehiculo, sv.REF_MARCA AS marca, sv.REF_MODELO AS modelo, sv.REF_PLACAS AS placas "
 				+ ", sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
 				+ ", sc2.DES_MNPIO AS nombreDestino, TIME_FORMAT(sdv.TIM_HORA_ENTRADA, '" + formatoHora + "') AS horaEntrada"
-				+ ", TIME_FORMAT(sdv.TIM_HORA_SALIDA, '" + formatoHora + "') AS horaSalida, sdv.DES_NIVEL_GASOLINA_INICIAL AS nivelGasIni "
-				+ ", sdv.DES_NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.NUM_KM_INICIAL AS kmInicial, sdv.NUM_KM_FINAL AS kmFin"
+				+ ", TIME_FORMAT(sdv.TIM_HORA_SALIDA, '" + formatoHora + "') AS horaSalida, sdv.REF_NIVEL_GASOLINA_INICIAL AS nivelGasIni "
+				+ ", sdv.REF_NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.NUM_KM_INICIAL AS kmInicial, sdv.NUM_KM_FINAL AS kmFin"
 				+ ", DATE_FORMAT(sdv.FEC_ENTRADA,'" + formatoFecha + "') AS fechaEntrada, DATE_FORMAT(sdv.FEC_SALIDA,'" + formatoFecha + "') AS fechaSalida"
 				+ ", IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible"
 				+ ", IF(sv.ID_USOVEHICULO=1,0,1) AS ods"
@@ -213,7 +213,7 @@ public class DisponibilidadVehiculos {
 		queryUno = "SELECT sos.ID_ORDEN_SERVICIO AS idOds"
 				+ ", concat(sp.NOM_PERSONA, ' ' , sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) as nombreContratante"
 				+ ", concat(sp2.NOM_PERSONA, ' ', sp2.NOM_PRIMER_APELLIDO,' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
-				+ ", scpt.DES_ORIGEN AS nombreOrigen, scpt.DES_DESTINO AS nombreDestino"
+				+ ", scpt.REF_ORIGEN AS nombreOrigen, scpt.REF_DESTINO AS nombreDestino"
 				+ FROM + TABLA_SVC_ORDEN_SERVICIO_SOS
 				+ JOIN + TABLA_SVC_CONTRATANTE_SC + " ON sos.ID_CONTRATANTE = sc.ID_CONTRATANTE"
 				+ JOIN + TABLA_SVC_PERSONA_SP + " ON sc.ID_PERSONA = sp.ID_PERSONA"
@@ -259,7 +259,7 @@ public class DisponibilidadVehiculos {
 		q.agregarParametroValues("ID_ODS", "" + this.idODS + "");
 		q.agregarParametroValues("FEC_SALIDA", "'" + this.fecSalida + "'");
 		q.agregarParametroValues("TIM_HORA_SALIDA", "'" + this.horaSalida + "'");
-		q.agregarParametroValues("DES_NIVEL_GASOLINA_INICIAL", "'" + this.gasolinaInicial + "'");
+		q.agregarParametroValues("REF_NIVEL_GASOLINA_INICIAL", "'" + this.gasolinaInicial + "'");
 		q.agregarParametroValues("NUM_KM_INICIAL", "'" + this.kmInicial + "'");
 		q.agregarParametroValues("NUM_DISPONIBLE", "0");
 		q.agregarParametroValues("ID_RESPONSABLE", "'" + this.idResponsable + "'");
@@ -305,7 +305,7 @@ public class DisponibilidadVehiculos {
 		 + ", FEC_ENTRADA = '" + this.fecEntrada + "'"
 		 + ", TIM_HORA_ENTRADA = '" + this.horaEntrada + "'"
 		 + ", NUM_DISPONIBLE = 1 "
-		 + ", DES_NIVEL_GASOLINA_FINAL = '" + this.gasolinaFinal + "'"
+		 + ", REF_NIVEL_GASOLINA_FINAL = '" + this.gasolinaFinal + "'"
 		 + ", NUM_KM_FINAL = '" + this.kmFinal + "'"
 		 + ", ID_USUARIO_MODIFICA = '" + this.idUsuarioAlta + "'"
 		 + ", FEC_ACTUALIZACION =" + NOW 
@@ -323,7 +323,7 @@ public class DisponibilidadVehiculos {
 		q.agregarParametroValues("ID_ODS", "" + this.idODS + "");
 		q.agregarParametroValues("FEC_ENTRADA", "'" + this.fecEntrada + "'");
 		q.agregarParametroValues("TIM_HORA_ENTRADA", "'" + this.horaEntrada + "'");
-		q.agregarParametroValues("DES_NIVEL_GASOLINA_FINAL", "'" + this.gasolinaFinal + "'");
+		q.agregarParametroValues("REF_NIVEL_GASOLINA_FINAL", "'" + this.gasolinaFinal + "'");
 		q.agregarParametroValues("NUM_KM_FINAL", "'" + this.kmFinal + "'");
 		q.agregarParametroValues("NUM_DISPONIBLE", "1");
 		q.agregarParametroValues("ID_BITACORA", "1");
