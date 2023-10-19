@@ -5,7 +5,6 @@ import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
 import com.imss.sivimss.vehiculos.util.QueryHelper;
-import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
 
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -20,13 +19,12 @@ import java.util.Map;
 public class MttoVehicular {
     private static final Logger logger = LogManager.getLogger(MttoVehicular.class);
 
-    private static final String FECHAACTUAL="CURRENT_TIMESTAMP()";
+    private static final String FECHAACTUAL="CURRENT_DATE()";
 
     public DatosRequest insertar(MttoVehicularRequest request, UsuarioDto user) {
         final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_VEHICULAR");
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
-     //   q.agregarParametroValues("ID_MTTOESTADO", request.getIdMttoestado().toString());
         q.agregarParametroValues("ID_VEHICULO", request.getIdVehiculo().toString());
         q.agregarParametroValues("ID_DELEGACION", request.getIdDelegacion().toString());
         q.agregarParametroValues("ID_VELATORIO", request.getIdVelatorio().toString());

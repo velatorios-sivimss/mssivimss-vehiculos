@@ -9,7 +9,6 @@ import com.imss.sivimss.vehiculos.model.request.ReportePredictivoRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.AppConstantes;
 import com.imss.sivimss.vehiculos.util.DatosRequest;
-import com.imss.sivimss.vehiculos.util.SelectQueryUtil;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,12 +16,10 @@ import org.springframework.security.core.Authentication;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -86,7 +83,6 @@ public class MttoReporte {
             Date fechaFFRequest=formatoRequest.parse(reporteRequest.getFechaFinal());
             query.append(" AND MV.FEC_REGISTRO <= '").append(formatoConsulta.format(fechaFFRequest)).append("'");
         }
-       // query. append(" GROUP BY MV.ID_VEHICULO");
         logger.info("estoyr en "+query);
         DatosRequest dr = new DatosRequest();
         Map<String, Object> parametro = new HashMap<>();
@@ -117,9 +113,8 @@ public class MttoReporte {
         Integer tamanio = Integer.valueOf(Integer.parseInt(request.getDatos().get("tamanio").toString()));
         reporteRequest.setTamanio(tamanio.toString());
         reporteRequest.setPagina(pagina.toString());
-        SelectQueryUtil queryUtil = new SelectQueryUtil();
         StringBuilder query=new StringBuilder();
-        query.append("SELECT DATE_FORMAT(MV.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO,VH.DES_PLACAS,VH.DES_MARCA,VH.DES_SUBMARCA,VH.DES_MODELO,\n" +
+        query.append("SELECT DATE_FORMAT(MV.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO,VH.REF_PLACAS,VH.REF_MARCA,VH.REF_SUBMARCA,VH.REF_MODELO,\n" +
                 "SMN_ACEITE.DES_NIVEL as DES_NIVEL_ACEITE,SMN_AGUA.DES_NIVEL as DES_NIVEL_AGUA,SMN_NETRA.DES_NIVEL as DES_NIVEL_NEUMATRASE,\n" +
                 "SMN_NEDEL.DES_NIVEL as DES_NIVEL_NEUMADELA,SMN_COMB.DES_NIVEL as DES_NIVEL_COMBUSTIBLE,\n" +
                 "SMN_BATERIA.DES_NIVEL as DES_NIVEL_BATERIA,SMN_CODIGO.DES_NIVEL as DES_NIVEL_CODIGOFALLO,\n" +

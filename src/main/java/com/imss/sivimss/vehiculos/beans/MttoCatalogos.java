@@ -108,26 +108,26 @@ public class MttoCatalogos {
     public DatosRequest getCatProveedores() throws IOException {
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("ID_PROVEEDOR",
-                        "NOM_PROVEEDOR",
-                        "DES_BANCO",
+                        "REF_PROVEEDOR",
+                        "REF_BANCO",
                         "CVE_BANCARIA",
                         "ID_TIPO_PROVEEDOR",
-                        "DES_RFC",
+                        "CVE_RFC",
                         "CVE_CURP AS DES_CURP",
-                        "DES_TIPO_CONTRATO",
+                        "REF_TIPO_CONTRATO",
                         "FEC_VIGENCIA",
-                        "DES_DIRECCION",
+                        "REF_DIRECCION",
                         "NUM_EXTERIOR",
                         "NUM_INTERIOR",
                         "ID_CODIGO_POSTAL",
-                        "DES_DIRECCION_REFE",
+                        "REF_DIRECCION_REFE",
                         "NUM_EXTERIOR_REFE",
                         "NUM_INTERIOR_REFE",
                         "ID_CODIGO_POSTAL_REFE",
                         "NUM_TELEFONO",
-                        "DES_CORREOE",
-                        "DES_REGIMEN",
-                        "DES_REPRESENTANTE_LEGAL",
+                        "REF_CORREOE",
+                        "REF_REGIMEN",
+                        "REF_REPRESENTANTE_LEGAL",
                         "IND_ACTIVO",
                         "ID_USUARIO_ALTA")
                 .from("SVT_PROVEEDOR PV")
@@ -202,7 +202,7 @@ public class MttoCatalogos {
         }
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("VE.ID_VEHICULO",
-                        "VE.DES_PLACAS",
+                        "VE.REF_PLACAS",
                         "VE.IND_ACTIVO")
                 .from("SVT_VEHICULOS VE")
                 .join("SVC_VELATORIO VELA","VE.ID_VELATORIO=VELA.ID_VELATORIO")
@@ -238,7 +238,7 @@ public class MttoCatalogos {
                         "CON.CVE_CONTRATO AS NUM_CONTRATO",
                         "CON.DES_CONTRATO",
                         "CON.ID_PROVEEDOR",
-                        "PRO.NOM_PROVEEDOR")
+                        "PRO.REF_PROVEEDOR")
                 .from("SVT_CONTRATO CON")
                 .join("SVT_PROVEEDOR PRO","PRO.ID_PROVEEDOR=CON.ID_PROVEEDOR")
                 .where("PRO.IND_ACTIVO= :idEstatus")
@@ -326,7 +326,7 @@ public class MttoCatalogos {
         }
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("MTMD.ID_MTTO_MODALIDAD_DET",
-                        "MTMD.DES_MTTO_MODALIDAD_DET",
+                        "MTMD.REF_MTTO_MODALIDAD_DET",
                         "MTMD.ID_MTTO_MODALIDAD",
                         "MTMD.IND_ACTIVO")
                 .from("SVT_MTTO_TIPO_MODALIDAD_DET MTMD")

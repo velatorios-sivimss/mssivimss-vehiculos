@@ -1,6 +1,5 @@
 package com.imss.sivimss.vehiculos.beans;
 
-import com.imss.sivimss.vehiculos.exception.BadRequestException;
 import com.imss.sivimss.vehiculos.model.request.MttoVehicularRequest;
 import com.imss.sivimss.vehiculos.model.request.UsuarioDto;
 import com.imss.sivimss.vehiculos.util.*;
@@ -180,12 +179,12 @@ public class Registro {
                         "MTTO_VEH.IND_ACTIVO",
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
-                        "SV.DES_MARCA",
-                        "SV.DES_SUBMARCA",
-                        "SV.DES_MODELO",
-                        "SV.DES_PLACAS",
-                        "SV.DES_NUMSERIE",
-                        "SV.DES_NUMMOTOR",
+                        "SV.REF_MARCA",
+                        "SV.REF_SUBMARCA",
+                        "SV.REF_MODELO",
+                        "SV.REF_PLACAS",
+                        "SV.REF_NUMSERIE",
+                        "SV.REF_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
                         "SVEL.DES_VELATORIO",

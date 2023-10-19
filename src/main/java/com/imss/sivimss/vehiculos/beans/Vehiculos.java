@@ -47,34 +47,22 @@ public class Vehiculos {
         
         StringBuilder where = new StringBuilder();
         where.append("VH.IND_ACTIVO=1 " );
-         //       .where("VH.IND_ACTIVO = :idEstatus")
-           //     .setParameter("idEstatus", 1);
         if (buscarRequest.getDelegacion() != null && buscarRequest.getDelegacion()>0) {
             where.append(" AND VE.ID_DELEGACION = "+buscarRequest.getDelegacion()+"");
-                    //.setParameter("delegacion", buscarRequest.getDelegacion());
         }
         if (buscarRequest.getVelatorio() != null && buscarRequest.getVelatorio() >0) {
         	  where.append(" AND VH.ID_VELATORIO = "+buscarRequest.getVelatorio()+"");
-          //  queryUtil.where("VH.ID_VELATORIO = :velatorio")
-            //        .setParameter("velatorio", buscarRequest.getVelatorio());
         }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {
         	 where.append(" AND VH.DES_PLACAS = '"+buscarRequest.getPlaca()+"' ");
-           // queryUtil.where("VH.DES_PLACAS = :placa")
-             //       .setParameter("placa", buscarRequest.getPlaca());
         }
         if (buscarRequest.getFecInicio() != null) {
             Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecInicio());
             where.append(" AND MV.FEC_REGISTRO >='"+formatoConsulta.format(fechaFIRequest)+"' ");
-            //   queryUtil.where("MV.FEC_REGISTRO >= :fecInicio")
-          //  .setParameter("fecInicio", formatoConsulta.format(fechaFIRequest));
         }
         if (buscarRequest.getFecFin() != null) {
         	  Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecFin());
             where.append(" AND MV.FEC_REGISTRO <='"+formatoConsulta.format(fechaFIRequest)+"' ");
-        	  //  queryUtil.where("MV.FEC_REGISTRO <= :fecFin")
-             // .setParameter("fecFin", formatoConsulta.format(fechaFIRequest));
-              //queryUtil.groupBy("MV.ID_VEHICULO");
         }else {
         	queryUtil.orderBy("ID_MTTOVEHICULAR ASC"); 	
         }    
@@ -82,13 +70,13 @@ public class Vehiculos {
                         "VH.ID_USOVEHICULO",
                         "UV.DES_USO",
                         "VH.ID_VELATORIO",
-                        "VH.DES_MARCA",
-                        "VH.DES_SUBMARCA",
-                        "VH.DES_MODELO",
-                        "VH.DES_PLACAS",
-                        "VH.DES_NUMSERIE",
-                        "VH.DES_NUMMOTOR",
-                        "VH.DES_VEHICULO",
+                        "VH.REF_MARCA",
+                        "VH.REF_SUBMARCA",
+                        "VH.REF_MODELO",
+                        "VH.REF_PLACAS",
+                        "VH.REF_NUMSERIE",
+                        "VH.REF_NUMMOTOR",
+                        "VH.REF_VEHICULO",
                         "DATE_FORMAT(VH.FEC_ADQUISICION, '%d-%m-%Y') AS FEC_ADQUISICION",
                         "VH.NUM_TOTAL",
                         "VH.IMP_PRIMA",

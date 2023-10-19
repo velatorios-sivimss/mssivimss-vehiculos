@@ -58,20 +58,6 @@ public class Solicitud {
         return dr;
     }
 
-  /*  private String asignarEdoMtto(Integer idMttoVehicular, Integer idMttoEstado) {
-    	 final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_VEHICULAR");
-         DatosRequest dr = new DatosRequest();
-         Map<String, Object> parametro = new HashMap<>();
-         q.agregarParametroValues("ID_MTTOESTADO", idMttoEstado.toString());
-         q.addWhere("ID_MTTOVEHICULAR =" + idMttoVehicular.toString());
-         String query = q.obtenerQueryActualizar();
-         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
-         parametro.put(AppConstantes.QUERY, encoded);
-         dr.setDatos(parametro);
-         logger.info(query);
-         return query;
-	} */
-
 	public DatosRequest modificar(MttoVehicularRequest request, UsuarioDto user) {
         final QueryHelper q = new QueryHelper("UPDATE SVT_MTTO_SOLICITUD");
         DatosRequest dr = new DatosRequest();
@@ -158,12 +144,12 @@ public class Solicitud {
                         "MTTO_VEH.IND_ACTIVO",
                         "MTTO_VEH.ID_USUARIO_ALTA",
                         "SME.DES_MTTOESTADO",
-                        "SV.DES_MARCA",
-                        "SV.DES_SUBMARCA",
-                        "SV.DES_MODELO",
-                        "SV.DES_PLACAS",
-                        "SV.DES_NUMSERIE",
-                        "SV.DES_NUMMOTOR",
+                        "SV.REF_MARCA",
+                        "SV.REF_SUBMARCA",
+                        "SV.REF_MODELO",
+                        "SV.REF_PLACAS",
+                        "SV.REF_NUMSERIE",
+                        "SV.REF_NUMMOTOR",
                         "SUV.DES_USO",
                         "SD.DES_DELEGACION",
                         "SVEL.DES_VELATORIO",
@@ -302,48 +288,5 @@ public class Solicitud {
         dr.setDatos(parametro);
         return dr;
     }
-
-	/* public DatosRequest insertarMultiple(MttoVehicularRequest request, UsuarioDto usuarioDto) {
-		 final QueryHelper q = new QueryHelper("INSERT INTO SVT_MTTO_SOLICITUD");
-	        DatosRequest dr = new DatosRequest();
-	        Map<String, Object> parametro = new HashMap<>();
-	        q.agregarParametroValues("ID_MTTOVEHICULAR", request.getSolicitud().getIdMttoVehicular().toString());
-	        q.agregarParametroValues("ID_MTTO_TIPO", request.getSolicitud().getIdMttoTipo().toString());
-	        q.agregarParametroValues("ID_MTTOMODALIDAD", request.getSolicitud().getIdMttoModalidad().toString());
-	        if(request.getSolicitud().getFecRegistro()==null){
-	            q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
-	        } else {
-	            q.agregarParametroValues("FEC_REGISTRO", "'" + request.getSolicitud().getFecRegistro() + "'");
-	        }
-	        if(request.getSolicitud().getDesMttoCorrectivo()!=null) {
-	            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
-	        }
-	        if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
-	            q.agregarParametroValues("ID_MTTOMODALIDAD_DET", request.getSolicitud().getIdMttoModalidadDet().toString());
-	        }
-	        if(request.getSolicitud().getDesNotas()!=null) {
-	            q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
-	        }
-	        if(request.getSolicitud().getKilometraje()!=null) {
-	            q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
-	        }
-	        q.agregarParametroValues("IND_ACTIVO", "1");
-	        if(request.getSolicitud().getFecRegistro2()!=null) {
-	            q.agregarParametroValues("FEC_REGISTRO_FIN", "'" + request.getSolicitud().getFecRegistro2() + "'");
-	        }
-	        if(request.getSolicitud().getIdMttoTipoModalidad()!=null) {
-	            q.agregarParametroValues("ID_MTTO_MODALIDAD", request.getSolicitud().getIdMttoTipoModalidad().toString());
-	        }
-	        if(request.getSolicitud().getIdMttoTipoModalidadDet()!=null) {
-	            q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
-	        }
-	        String query = q.obtenerQueryInsertar() + "$$" + asignarEdoMtto(request.getIdMttoVehicular(), request.getIdMttoestado());
-	        logger.info(query);
-	        String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
-	        parametro.put(AppConstantes.QUERY, encoded);
-	        parametro.put("separador","$$");
-	        dr.setDatos(parametro);
-	        return dr;
-	} */
 
 }
