@@ -149,7 +149,7 @@ public class Registro {
                         "REG.ID_MANTENIMIENTO",
                         "REG.DES_NOTAS",
                         "REG.ID_PROVEEDOR",
-                        "REG.DES_NUMCONTRATO",
+                        "REG.REF_NUMCONTRATO",
                         "REG.MON_COSTO_MTTO",
                         "REG.DES_NOMBRE_TALLER",
                         "REG.NUM_KILOMETRAJE",

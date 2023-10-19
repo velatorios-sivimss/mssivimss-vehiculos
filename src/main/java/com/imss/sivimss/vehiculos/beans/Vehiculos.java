@@ -110,7 +110,7 @@ public class Vehiculos {
                         "MS.REF_NOTAS AS DES_NOTAS_SOL",
                         "REG.ID_MTTO_REGISTRO",
                         "REG.ID_PROVEEDOR",
-                        "REG.DES_NUMCONTRATO",
+                        "REG.REF_NUMCONTRATO",
                         "REG.MON_COSTO_MTTO",
                         "REG.DES_NOMBRE_TALLER",
                         "REG.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_REG",
