@@ -107,7 +107,7 @@ public class Vehiculos {
                         "DATE_FORMAT(MS.FEC_SOLICTUD, '%d-%m-%Y') AS FEC_SOLICTUD",
                         "MS.NUM_KILOMETRAJE AS NUM_KILOMETRAJE_SOL",
                         "MS.KILOMETRAJE AS KILOMETRAJE_SOL",
-                        "MS.DES_NOTAS AS DES_NOTAS_SOL",
+                        "MS.REF_NOTAS AS DES_NOTAS_SOL",
                         "REG.ID_MTTO_REGISTRO",
                         "REG.ID_PROVEEDOR",
                         "REG.DES_NUMCONTRATO",
