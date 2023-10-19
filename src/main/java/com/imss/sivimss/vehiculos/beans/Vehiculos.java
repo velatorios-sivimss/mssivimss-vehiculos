@@ -136,7 +136,7 @@ public class Vehiculos {
                         + " left join SVC_MTTO_TIPO MT on MT.ID_MTTO_TIPO = MS.ID_MTTO_TIPO  \r\n"
                         + " left join SVC_DELEGACION DL on DL.ID_DELEGACION = MV.ID_DELEGACION  "
                         + " where "+where.toString()+") AS totalCosto ",
-                        "MODAL.DES_MTTO_MODALIDAD_DET")
+                        "MODAL.REF_MTTO_MODALIDAD_DET")
                 .from("SVT_VEHICULOS VH")
                 .join("SVC_USO_VEHICULO UV", "VH.ID_USOVEHICULO = UV.ID_USOVEHICULO")
                 .join("SVC_VELATORIO VE", "VH.ID_VELATORIO = VE.ID_VELATORIO")
