@@ -189,7 +189,7 @@ public class Registro {
                         "SD.DES_DELEGACION",
                         "SVEL.DES_VELATORIO",
                         "SMM.DES_MODALIDAD",
-                        "SP.NOM_PROVEEDOR",
+                        "SP.REF_PROVEEDOR",
                         "SP.ID_TIPO_PROVEEDOR",
                         "SP.DES_TIPO_CONTRATO",
                         "SP.DES_REGIMEN",
