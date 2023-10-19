@@ -147,7 +147,7 @@ public class Registro {
         queryUtil.select("REG.ID_MTTO_REGISTRO",
                         "REG.ID_MTTOMODALIDAD",
                         "REG.ID_MANTENIMIENTO",
-                        "REG.DES_NOTAS",
+                        "REG.REF_NOTAS",
                         "REG.ID_PROVEEDOR",
                         "REG.REF_NUMCONTRATO",
                         "REG.MON_COSTO_MTTO",

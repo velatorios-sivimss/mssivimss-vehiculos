@@ -122,7 +122,7 @@ public class Solicitud {
                         "SOLI.ID_MTTO_TIPO",
                         "SOLI.ID_MTTOMODALIDAD",
                         "DATE_FORMAT(SOLI.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO",
-                        "SOLI.DES_MTTO_CORRECTIVO",
+                        "SOLI.REF_MTTO_CORRECTIVO",
                         "SOLI.ID_MTTOMODALIDAD_DET",
                         "SOLI.IND_ACTIVO",
                         "SOLI.NUM_KILOMETRAJE",
