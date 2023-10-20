@@ -47,7 +47,7 @@ public class MttoReporte {
         reporteRequest.setTamanio(tamanio.toString());
         reporteRequest.setPagina(pagina.toString());
         StringBuilder query=new StringBuilder();
-        query.append("SELECT DATE_FORMAT(MV.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO,VH.DES_PLACAS,SMN_ACEITE.DES_NIVEL as DES_NIVEL_ACEITE,SMN_AGUA.DES_NIVEL as DES_NIVEL_AGUA,\n" +
+        query.append("SELECT DATE_FORMAT(MV.FEC_REGISTRO,'%d-%m-%Y') AS FEC_REGISTRO,VH.REF_PLACAS AS DES_PLACAS,SMN_ACEITE.DES_NIVEL as DES_NIVEL_ACEITE,SMN_AGUA.DES_NIVEL as DES_NIVEL_AGUA,\n" +
                 "SMN_NETRA.DES_NIVEL as DES_NIVEL_NEUMATRASE,SMN_NEDEL.DES_NIVEL as DES_NIVEL_NEUMADELA,SMN_COMB.DES_NIVEL as DES_NIVEL_COMBUSTIBLE,\n" +
                 "SMN_BATERIA.DES_NIVEL as DES_NIVEL_BATERIA,SMN_CODIGO.DES_NIVEL as DES_NIVEL_CODIGOFALLO,SMN_LIMPINT.DES_NIVEL as DES_NIVEL_LIMPIEZAINTERIOR,\n" +
                 "SMN_LIMPEXT.DES_NIVEL as DES_NIVEL_LIMPIEZAEXTERIOR,VI.ID_MTTOVERIFINICIO,VH.ID_VEHICULO,MV.ID_MTTOVEHICULAR,MV.ID_DELEGACION \n" +
@@ -73,7 +73,7 @@ public class MttoReporte {
             query.append(" AND VH.ID_VELATORIO =").append(reporteRequest.getVelatorio());
         }
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
-            query.append(" AND VH.DES_PLACAS =").append("'").append(reporteRequest.getPlaca()).append("'");
+            query.append(" AND VH.REF_PLACAS =").append("'").append(reporteRequest.getPlaca()).append("'");
         }
         if (reporteRequest.getFechaInicio() != null) {
             Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
@@ -142,7 +142,7 @@ public class MttoReporte {
             query.append(" AND VE.ID_DELEGACION = ").append(reporteRequest.getDelegacion());
         }
         if (reporteRequest.getPlaca() != null && reporteRequest.getPlaca().trim().length()>0) {
-            query.append(" AND VH.DES_PLACAS = ").append("'" + reporteRequest.getPlaca() + "'");
+            query.append(" AND VH.REF_PLACAS = ").append("'" + reporteRequest.getPlaca() + "'");
         }
         if (reporteRequest.getFechaInicio() != null) {
             Date fechaFIRequest=formatoRequest.parse(reporteRequest.getFechaInicio());
@@ -176,7 +176,7 @@ public class MttoReporte {
 			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
 		if(reporte.getPlacas()!=null) {
-			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
+			condition.append(" AND VH.REF_PLACAS= '"+reporte.getPlacas()+"'");
 		}condition.append(" ORDER BY ID_MTTOVEHICULAR ASC");
 		logger.info("estoy aqui: "+condition.toString() );
 		envioDatos.put("condition", condition.toString());	
@@ -203,7 +203,7 @@ public class MttoReporte {
 			condition.append(" AND VH.ID_OFICINA="+reporte.getIdNivelOficina()+"");
 		} */ 
 		if(reporte.getPlacas()!=null && reporte.getPlacas().trim().length()>0) {
-			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
+			condition.append(" AND VH.REF_PLACAS= '"+reporte.getPlacas()+"'");
 		}
         if(reporte.getFechaInicio()!=null) {
         	Date dateI = new SimpleDateFormat("dd-MM-yyyy").parse(reporte.getFechaInicio());
@@ -244,7 +244,7 @@ public class MttoReporte {
 			condition.append(" AND VH.ID_VELATORIO="+reporte.getIdVelatorio()+"");
 		}
 		if(reporte.getPlacas()!=null && reporte.getPlacas().trim().length()>0) {
-			condition.append(" AND VH.DES_PLACAS= '"+reporte.getPlacas()+"'");
+			condition.append(" AND VH.REF_PLACAS= '"+reporte.getPlacas()+"'");
 		}
         condition.append(" GROUP BY MV.ID_VEHICULO;");
         logger.info("-> " +condition.toString());

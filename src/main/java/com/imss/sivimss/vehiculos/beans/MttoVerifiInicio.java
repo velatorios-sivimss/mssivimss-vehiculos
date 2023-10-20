@@ -34,7 +34,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("ID_LIMPIEZAINTERIOR", request.getVerificacionInicio().getIdLimpiezaInterior().toString());
         q.agregarParametroValues("ID_LIMPIEZAEXTERIOR", request.getVerificacionInicio().getIdLimpiezaExterior().toString());
         q.agregarParametroValues("CVE_ESTATUS", "1");
-        q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
+        q.agregarParametroValues("FEC_REGISTRO", "CURRENT_DATE()");
         String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -57,7 +57,7 @@ public class MttoVerifiInicio {
         q.agregarParametroValues("ID_LIMPIEZAINTERIOR", request.getVerificacionInicio().getIdLimpiezaInterior().toString());
         q.agregarParametroValues("ID_LIMPIEZAEXTERIOR", request.getVerificacionInicio().getIdLimpiezaExterior().toString());
         q.agregarParametroValues("CVE_ESTATUS", request.getIdEstatus().toString());
-        q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
+        q.agregarParametroValues("FEC_REGISTRO", "CURRENT_DATE()");
         q.addWhere("ID_MTTOVERIFINICIO =" + request.getVerificacionInicio().getIdMttoVerifInicio());
         String query = q.obtenerQueryActualizar();
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));

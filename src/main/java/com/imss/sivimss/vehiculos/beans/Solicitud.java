@@ -24,7 +24,7 @@ public class Solicitud {
         q.agregarParametroValues("ID_MTTO_TIPO", request.getSolicitud().getIdMttoTipo().toString());
         q.agregarParametroValues("ID_MTTOMODALIDAD", request.getSolicitud().getIdMttoModalidad().toString());
         if(request.getSolicitud().getFecRegistro()==null){
-            q.agregarParametroValues("FEC_REGISTRO", "CURRENT_TIMESTAMP()");
+            q.agregarParametroValues("FEC_REGISTRO", "CURRENT_DATE()");
         } else {
             q.agregarParametroValues("FEC_REGISTRO", "'" + request.getSolicitud().getFecRegistro() + "'");
         }
@@ -35,7 +35,7 @@ public class Solicitud {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", request.getSolicitud().getIdMttoModalidadDet().toString());
         }
         if(request.getSolicitud().getDesNotas()!=null) {
-            q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
+            q.agregarParametroValues("REF_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
         }
         if(request.getSolicitud().getKilometraje()!=null) {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");
@@ -50,7 +50,7 @@ public class Solicitud {
         if(request.getSolicitud().getIdMttoTipoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTO_MODALIDAD_DET", request.getSolicitud().getIdMttoTipoModalidadDet().toString());
         }
-        String query = q.obtenerQueryInsertar();// + "$$" + asignarEdoMtto(request.getIdMttoVehicular(), request.getIdMttoestado());
+        String query = q.obtenerQueryInsertar();
         logger.info(query);
         String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
         parametro.put(AppConstantes.QUERY, encoded);
@@ -72,7 +72,7 @@ public class Solicitud {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", "'" + request.getSolicitud().getIdMttoModalidadDet().toString()  + "'");
         }
         if(request.getSolicitud().getDesNotas()!=null) {
-            q.agregarParametroValues("DES_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
+            q.agregarParametroValues("REF_NOTAS", "'" + request.getSolicitud().getDesNotas() + "'");
         }
         if(request.getSolicitud().getKilometraje()!=null) {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getSolicitud().getKilometraje() + "'");

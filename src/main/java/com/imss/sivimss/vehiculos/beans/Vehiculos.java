@@ -54,7 +54,7 @@ public class Vehiculos {
         	  where.append(" AND VH.ID_VELATORIO = "+buscarRequest.getVelatorio()+"");
         }
         if (buscarRequest.getPlaca() != null && buscarRequest.getPlaca().trim().length()>0) {
-        	 where.append(" AND VH.DES_PLACAS = '"+buscarRequest.getPlaca()+"' ");
+        	 where.append(" AND VH.REF_PLACAS = '"+buscarRequest.getPlaca()+"' ");
         }
         if (buscarRequest.getFecInicio() != null) {
             Date fechaFIRequest=formatoRequest.parse(buscarRequest.getFecInicio());

@@ -29,18 +29,18 @@ public class Registro {
             q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
         }
         if(request.getRegistro().getDesNotas()!=null) {
-            q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
+            q.agregarParametroValues("REF_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
         }
         if(request.getRegistro().getIdProveedor()!=null) {
             q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor().toString());
         }
         if(request.getRegistro().getDesNumcontrato()!=null) {
-            q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
+            q.agregarParametroValues("REF_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
         }
         q.agregarParametroValues("ID_USUARIO_ALTA", request.getIdEstatus().toString());
         q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
         q.agregarParametroValues("IND_ACTIVO", "1");
-        q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
+        q.agregarParametroValues("FEC_ALTA", "CURRENT_DATE()");
         if(request.getRegistro().getKilometraje()!=null) {
             q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         }
@@ -51,10 +51,10 @@ public class Registro {
             q.agregarParametroValues("MON_COSTO_MTTO", "'" + request.getRegistro().getCostoMtto() + "'");
         }
         if(request.getRegistro().getDesNombreProveedor()!=null) {
-            q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
+            q.agregarParametroValues("REF_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
         }
         if(request.getRegistro().getDesMttoCorrectivo()!=null) {
-            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
+            q.agregarParametroValues("REF_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
         }
         if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
             q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
@@ -86,13 +86,13 @@ public class Registro {
         if(request.getRegistro().getIdMantenimiento()!=null) {
             q.agregarParametroValues("ID_MANTENIMIENTO", request.getRegistro().getIdMantenimiento().toString());
         }
-        q.agregarParametroValues("DES_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
+        q.agregarParametroValues("REF_NOTAS", "'" + request.getRegistro().getDesNotas() + "'");
         q.agregarParametroValues("ID_PROVEEDOR", request.getRegistro().getIdProveedor()!=null?request.getRegistro().getIdProveedor().toString():"NULL");
-        q.agregarParametroValues("DES_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
+        q.agregarParametroValues("REF_NUMCONTRATO", "'" + request.getRegistro().getDesNumcontrato() + "'");
         q.agregarParametroValues("ID_USUARIO_ALTA", request.getIdEstatus().toString());
         q.agregarParametroValues("ID_USUARIO_ALTA", user.getIdUsuario().toString());
         q.agregarParametroValues("IND_ACTIVO", "1");
-        q.agregarParametroValues("FEC_ALTA", "CURRENT_TIMESTAMP()");
+        q.agregarParametroValues("FEC_ALTA", "CURRENT_DATE()");
         q.agregarParametroValues("NUM_KILOMETRAJE", "'" + request.getRegistro().getKilometraje() + "'");
         q.agregarParametroValues("DES_NOMBRE_TALLER", "'" + request.getRegistro().getDesNombreTaller() + "'");
         if(request.getRegistro().getCostoMtto()!=null) {
@@ -100,8 +100,8 @@ public class Registro {
         } else {
             q.agregarParametroValues("MON_COSTO_MTTO", "NULL");
         }
-        q.agregarParametroValues("DES_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
-        q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
+        q.agregarParametroValues("REF_NOMBRE_PROVEEDOR", "'" + request.getRegistro().getDesNombreProveedor() + "'");
+        q.agregarParametroValues("REF_MTTO_CORRECTIVO", "'" + request.getRegistro().getDesMttoCorrectivo() + "'");
         if(request.getRegistro().getFecRegistro()!=null && request.getRegistro().getFecRegistro().trim().length()>0) {
             q.agregarParametroValues("FEC_REGISTRO_REG", "'" + request.getRegistro().getFecRegistro() + "'");
         }

@@ -202,7 +202,7 @@ public class MttoCatalogos {
         }
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("VE.ID_VEHICULO",
-                        "VE.REF_PLACAS",
+                        "VE.REF_PLACAS AS DES_PLACAS",
                         "VE.IND_ACTIVO")
                 .from("SVT_VEHICULOS VE")
                 .join("SVC_VELATORIO VELA","VE.ID_VELATORIO=VELA.ID_VELATORIO")
