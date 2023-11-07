@@ -298,7 +298,7 @@ public class MttoCatalogos {
         }
         SelectQueryUtil queryUtil = new SelectQueryUtil();
         queryUtil.select("MTM.ID_MTTO_MODALIDAD",
-                        "MTM.DES_MTTO_MODALIDAD",
+                        "MTM.REF_MTTO_MODALIDAD AS DES_MTTO_MODALIDAD",
                         "MTM.ID_MTTOMODALIDAD",
                         "MTM.IND_ACTIVO")
                 .from("SVT_MTTO_TIPO_MODALIDAD MTM")
