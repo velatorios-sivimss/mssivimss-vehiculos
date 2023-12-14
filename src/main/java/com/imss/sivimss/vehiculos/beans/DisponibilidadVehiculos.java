@@ -353,7 +353,6 @@ log.info("query "+query);
 		if(this.idDelegacion!=null) {
 			condicion.append(" AND sv2.ID_DELEGACION="+this.idDelegacion);
 		}
-		condicion.append("  GROUP BY idVehiculo, fechaEntrada");
 		log.info("-> "+condicion);
 		envioDatos.put("condicion", condicion.toString());
 		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
