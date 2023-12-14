@@ -353,7 +353,7 @@ log.info("query "+query);
 		if(this.idDelegacion!=null) {
 			condicion.append(" AND sv2.ID_DELEGACION="+this.idDelegacion);
 		}
-		log.info("-> "+condicion);
+		log.info("query --> "+condicion);
 		envioDatos.put("condicion", condicion.toString());
 		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", nombrePdfReportes);
