@@ -303,7 +303,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
                          Integer idMttoSol = Integer.parseInt(response.getDatos().toString());
                  		providerRestTemplate.consumirServicio(registro.actualizarEstatus(idMttoSol, idMttoRegistro).getDatos(), urlDominioConsulta+"/actualizar",
                  				authentication);
-                         // this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
+                        //this.validaFechas(fechaRegistro,requestDto.getSolicitud().getIdMttoVehicular(),requestDto.getSolicitud().getFecRegistro(),authentication);
                     }
                     if (requestDto.getRegistro() != null) {
                         requestDto.getRegistro().setIdMttoVehicular(Integer.parseInt(response.getDatos().toString()));

@@ -19,7 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -145,7 +146,7 @@ public class DisponibilidadVehiculos {
 			where = where + " AND sv.ID_VELATORIO = " + this.idVelatorio;
 		}
 		query = query + where + " GROUP BY idVehiculo, fecha ORDER BY fecha ASC";
-
+log.info("query "+query);
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
 
 		return request;
@@ -339,14 +340,22 @@ public class DisponibilidadVehiculos {
 	  }
 	public Map<String, Object> generarReportePDF(ReporteDto reporteDto, String nombrePdfReportes) {
 		Map<String, Object> envioDatos = new HashMap<>();
-		String condicion = " ";
+		StringBuilder condicion = new StringBuilder();
 		if (this.fecIniRepo != null && this.fecFinRepo != null) {
-		condicion = " AND (DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= '" + this.fecIniRepo + "' "
+		condicion.append( " AND (DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= '" + this.fecIniRepo + "' "
 				+ FECHA_ENTRADA_MAX + this.fecFinRepo + "')"
 				+ " OR (DATE_FORMAT(sdv.FEC_SALIDA ,'%Y-%m-%d') >= '" + this.fecIniRepo + "' "
-				+ " AND DATE_FORMAT(sdv.FEC_SALIDA ,'%Y-%m-%d') <= '" + this.fecFinRepo + "') ";
+				+ " AND DATE_FORMAT(sdv.FEC_SALIDA ,'%Y-%m-%d') <= '" + this.fecFinRepo + "') ");
 		}
-		envioDatos.put("condicion", condicion);
+		if(this.idVelatorio!=null) {
+			condicion.append(" AND sv2.ID_VELATORIO="+this.idVelatorio);
+		}
+		if(this.idDelegacion!=null) {
+			condicion.append(" AND sv2.ID_DELEGACION="+this.idDelegacion);
+		}
+		condicion.append("  GROUP BY idVehiculo, fechaEntrada");
+		log.info("-> "+condicion);
+		envioDatos.put("condicion", condicion.toString());
 		envioDatos.put("tipoReporte", reporteDto.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", nombrePdfReportes);
 
