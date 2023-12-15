@@ -340,7 +340,7 @@ log.info("query "+query);
 	  }
 	public Map<String, Object> generarReportePDF(ReporteDto reporteDto, String nombrePdfReportes) {
 		Map<String, Object> envioDatos = new HashMap<>();
-		StringBuilder condicion = new StringBuilder();
+		StringBuilder condicion = new StringBuilder(" ");
 		if (this.fecIniRepo != null && this.fecFinRepo != null) {
 		condicion.append( " AND (DATE_FORMAT(sdv.FEC_ENTRADA,'%Y-%m-%d') >= '" + this.fecIniRepo + "' "
 				+ FECHA_ENTRADA_MAX + this.fecFinRepo + "')"
