@@ -29,7 +29,7 @@ public class Solicitud {
             q.agregarParametroValues("FEC_REGISTRO", "'" + request.getSolicitud().getFecRegistro() + "'");
         }
         if(request.getSolicitud().getDesMttoCorrectivo()!=null) {
-            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
+            q.agregarParametroValues("REF_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
         }
         if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", request.getSolicitud().getIdMttoModalidadDet().toString());
@@ -66,7 +66,7 @@ public class Solicitud {
         q.agregarParametroValues("ID_MTTOMODALIDAD", request.getSolicitud().getIdMttoModalidad().toString());
         q.agregarParametroValues("FEC_REGISTRO", "'" + request.getSolicitud().getFecRegistro() + "'");
         if(request.getSolicitud().getDesMttoCorrectivo()!=null) {
-            q.agregarParametroValues("DES_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
+            q.agregarParametroValues("REF_MTTO_CORRECTIVO", "'" + request.getSolicitud().getDesMttoCorrectivo() + "'");
         }
         if(request.getSolicitud().getIdMttoModalidadDet()!=null) {
             q.agregarParametroValues("ID_MTTOMODALIDAD_DET", "'" + request.getSolicitud().getIdMttoModalidadDet().toString()  + "'");
