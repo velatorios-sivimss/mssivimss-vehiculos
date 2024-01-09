@@ -233,14 +233,14 @@ log.info("query "+query);
 	}
 
 	public DatosRequest consultaOperador(DatosRequest request) {
-		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil
-				.select("so.ID_OPERADOR AS idResponsable"," CONCAT(su.NOM_USUARIO ,' ', su.NOM_APELLIDO_PATERNO ,' ', su.NOM_APELLIDO_MATERNO ) AS nombreResponsable")
-				.from(TABALA_SVT_OPERADORES_SO)
-				.innerJoin(TABLA_SVT_USUARIOS_SU, "su.ID_USUARIO  = so.ID_USUARIO");
-		final String query = queryUtil.build();
+		String query = " SELECT so.ID_OPERADOR AS idResponsable, CONCAT(sp.NOM_PERSONA , ' ', sp.NOM_PRIMER_APELLIDO , ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreResponsable "
+				+ FROM + TABALA_SVT_OPERADORES_SO + JOIN + TABLA_SVT_USUARIOS_SU + " ON su.ID_USUARIO  = so.ID_USUARIO"
+				+ " JOIN SVC_PERSONA sp ON sp.ID_PERSONA = su.ID_PERSONA WHERE 1=1 ";
+		if(this.idDelegacion != null)
+			query = query + " AND su.ID_DELEGACION = " + this.idDelegacion;
+		if (this.idVelatorio != null)
+			query = query + " AND su.ID_VELATORIO = " + this.idVelatorio;
 		request.getDatos().put(AppConstantes.QUERY, queryEncoded(query));
-
 		return request;
 	}
 	public DatosRequest obtenerVelatorio(DatosRequest request) {
