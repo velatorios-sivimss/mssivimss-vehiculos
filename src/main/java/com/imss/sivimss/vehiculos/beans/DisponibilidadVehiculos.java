@@ -157,7 +157,7 @@ log.info("query "+query);
 				+ ", sv.REF_PLACAS AS placas, sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion"
 				+ ", sos.CVE_FOLIO AS folioODS, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante"
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado"
-				+ ", sd.DES_MNPIO AS nombreDestino, " + CAMPO_SOS_ID_ORDEN_SERVICIO
+				+ ", sd.REF_MUNICIPIO AS nombreDestino, " + CAMPO_SOS_ID_ORDEN_SERVICIO
 				+ " AS idODS, IFNULL(sdv.NUM_DISPONIBLE,1) AS disponible" + ", IF(sv.ID_USOVEHICULO=1,0,1) AS ods"
 				+ FROM + TABLA_SVT_VEHICULO_SV + LEFT_JOIN + TABLA_SVT_DISPONIBILIDAD_VEHICULO_SDV + ON
 				+ VALIDACION_CAMPOS_VEHICULOS + LEFT_JOIN + TABLA_SVC_ORDEN_SERVICIO_SOS + " ON "
@@ -185,7 +185,7 @@ log.info("query "+query);
 				+ ", sv.NUM_TARJETA_CIRCULACION AS   tarjetaCirculacion, sos.CVE_FOLIO AS folioODS "
 				+ ", CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO ) AS nombreContratante "
 				+ ", CONCAT(sp2.NOM_PERSONA, ' ' , sp2.NOM_PRIMER_APELLIDO, ' ', sp2.NOM_SEGUNDO_APELLIDO ) as nombreFinado "
-				+ ", sd.DES_MNPIO AS nombreDestino, TIME_FORMAT(sdv.TIM_HORA_ENTRADA, '" + formatoHora + "') AS horaEntrada"
+				+ ", sd.REF_MUNICIPIO AS nombreDestino, TIME_FORMAT(sdv.TIM_HORA_ENTRADA, '" + formatoHora + "') AS horaEntrada"
 				+ ", TIME_FORMAT(sdv.TIM_HORA_SALIDA, '" + formatoHora + "') AS horaSalida, sdv.REF_NIVEL_GASOLINA_INICIAL AS nivelGasIni "
 				+ ", sdv.REF_NIVEL_GASOLINA_FINAL AS nivelGasFin, sdv.NUM_KM_INICIAL AS kmInicial, sdv.NUM_KM_FINAL AS kmFin"
 				+ ", DATE_FORMAT(sdv.FEC_ENTRADA,'" + formatoFecha + "') AS fechaEntrada, DATE_FORMAT(sdv.FEC_SALIDA,'" + formatoFecha + "') AS fechaSalida"
