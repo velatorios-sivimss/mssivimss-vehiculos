@@ -77,10 +77,13 @@ public class EstatusMttoServiceImpl implements EstatusMttoService {
         for (Map<String, Object> map : result) {
             Integer idMtto=(Integer) map.get("ID_MTTOVEHICULAR");
             try {
-                fechaReg = formatoConsulta.parse((String) map.get("FEC_REGISTRO_REG"));
+            	if(map.get("FEC_REGISTRO_REG")!=null) {
+            		 fechaReg = formatoConsulta.parse((String) map.get("FEC_REGISTRO_REG"));
+            	}
+               
             } catch (Exception e){
                 fechaReg=null;
-                log.error("Error al convertir fecha {}", e);
+                log.error("Error al convertir fecha {}", e.getCause());
             }
             if(fechaReg!=null) {
                 this.validarEstatusbyIdMtto(fechaRegistro, idMtto, fechaReg, authentication);

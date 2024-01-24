@@ -403,11 +403,7 @@ public class MttoVehicularServiceImpl implements MttoVehicularService {
 			log.info("res " +res.getDatos().toString());
 			diferencia = 30;
 		}
-		String respuesta = res.getDatos().toString();	
-		
-        
-        
-    	
+		String respuesta = res.getDatos().toString();
 		Pattern pattern = Pattern.compile("F=(\\d+)");
 		Matcher matcher = pattern.matcher(respuesta);
 		if (matcher.find()) {
